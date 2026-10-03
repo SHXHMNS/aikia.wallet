@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+</head><body>
+<title>aikia.wallet Developer Blueprint</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Hanken+Grotesk:wght@400;500;600;700&family=Martian+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: aikia.wrld brand system (Ink / Frost / Hyper Pink / Lilac / Ice + chrome; Dela Gothic One, Hanken Grotesk, Martian Mono). One reading column of soft rounded panels; the cover carries the product itself: a wallet pass and the lock-screen nudge. */
+:root{
+  --bg:#F5F6FA; --bg-2:#ECEEF5; --surface:#FFFFFF; --fg:#14111F; --mute:#5E5A73; --dim:#A6A3B8;
+  --line:rgba(20,17,31,.1);
+  --pink:#FF3D9A; --pink-t:#C2126A; --lilac:#A98BFF; --lilac-t:#6B4FD6; --ice:#7FE7F2; --ice-t:#0B7F8A; --ink:#14111F;
+  --panel:#14111F; --panel-fg:#F8F9FD; --panel-mute:#A9A3C2; --panel-2:#221D33;
+  --tint-pink:rgba(255,61,154,.1); --tint-lilac:rgba(169,139,255,.16); --tint-ice:rgba(127,231,242,.24);
+  --warn:#8A5A00; --warn-bg:rgba(240,170,40,.18);
+  --shadow:0 30px 70px -36px rgba(20,17,31,.35); --shadow-s:0 10px 30px -18px rgba(20,17,31,.35);
+  --display:"Dela Gothic One","Arial Black",Impact,sans-serif;
+  --body:"Hanken Grotesk","Helvetica Neue",Arial,sans-serif;
+  --mono:"Martian Mono",ui-monospace,Menlo,monospace;
+  --r-xl:32px; --r-lg:24px; --r-md:16px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#14111F; --bg-2:#1A1627; --surface:#221D33; --fg:#F8F9FD; --mute:#A9A3C2; --dim:#5F5A78;
+  --line:rgba(248,249,253,.1); --panel:#2C2543; --panel-2:#3A3157;
+  --pink-t:#FF6FB4; --lilac-t:#BBA3FF; --ice-t:#7FE7F2;
+  --tint-pink:rgba(255,61,154,.14); --tint-lilac:rgba(169,139,255,.16); --tint-ice:rgba(127,231,242,.12);
+  --warn:#F2C066; --warn-bg:rgba(240,170,40,.16);
+  --shadow:0 30px 70px -30px rgba(0,0,0,.75); --shadow-s:0 10px 30px -14px rgba(0,0,0,.7); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#14111F; --bg-2:#1A1627; --surface:#221D33; --fg:#F8F9FD; --mute:#A9A3C2; --dim:#5F5A78;
+  --line:rgba(248,249,253,.1); --panel:#2C2543; --panel-2:#3A3157;
+  --pink-t:#FF6FB4; --lilac-t:#BBA3FF; --ice-t:#7FE7F2;
+  --tint-pink:rgba(255,61,154,.14); --tint-lilac:rgba(169,139,255,.16); --tint-ice:rgba(127,231,242,.12);
+  --warn:#F2C066; --warn-bg:rgba(240,170,40,.16);
+  --shadow:0 30px 70px -30px rgba(0,0,0,.75); --shadow-s:0 10px 30px -14px rgba(0,0,0,.7); color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:400 16px/1.6 var(--body);margin:0;-webkit-font-smoothing:antialiased}
+::selection{background:var(--pink);color:var(--ink)}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:20px;padding-block:24px 80px}
+h1,h2,h3{font-weight:400;text-wrap:balance;margin:0;line-height:1.05}
+h2{font:400 clamp(28px,4vw,46px)/1 var(--display);letter-spacing:-.015em}
+h3{font:700 19px/1.3 var(--body)}
+p{margin:0;max-width:68ch}
+.eyebrow{font:600 10px/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--lilac-t)}
+.muted{color:var(--mute)}
+.small{font-size:14px}
+.stack{display:flex;flex-direction:column;gap:16px}
+
+.lockup{display:inline-flex;align-items:center;gap:10px;height:48px;padding:0 18px 0 7px;border-radius:999px;background:var(--surface);box-shadow:var(--shadow-s);color:var(--fg);font:600 13px/1 var(--mono)}
+.lockup svg{width:34px;height:34px}
+.spin{transform-box:fill-box;transform-origin:50% 50%;animation:spin 20s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation:none}}
+
+/* cover */
+.cover{position:relative;overflow:hidden;margin-top:8px;padding:clamp(24px,5vw,56px);border-radius:var(--r-xl);background:radial-gradient(120% 90% at 10% 0%,var(--tint-lilac),transparent 60%),radial-gradient(90% 80% at 100% 100%,var(--tint-ice),transparent 60%),radial-gradient(60% 60% at 80% 10%,var(--tint-pink),transparent 70%),var(--surface);box-shadow:var(--shadow);display:grid;gap:28px}
+.brandrow{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.kicker{display:inline-flex;align-items:center;gap:10px;min-height:32px;padding:6px 14px 6px 8px;border-radius:999px;background:var(--surface);box-shadow:var(--shadow-s);font:600 10px/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.kicker i{width:16px;height:16px;border-radius:50%;background:var(--pink);flex:none}
+.hero{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:32px;align-items:center}
+.hero>*{min-width:0}
+.cover h1{font:400 clamp(38px,6.4vw,78px)/.94 var(--display);letter-spacing:-.03em}
+.cover h1 em{color:var(--pink);font-style:normal}
+.lede{font-size:clamp(17px,1.5vw,20px);color:var(--mute);max-width:54ch}
+@media (max-width:820px){.hero{grid-template-columns:1fr}}
+
+/* the product: pass + nudge */
+.demo{display:flex;flex-direction:column;gap:14px;max-width:360px;width:100%;justify-self:center}
+.nudge{background:var(--surface);border-radius:20px;box-shadow:var(--shadow-s);padding:12px 14px;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:center;transform:rotate(-1.5deg)}
+.nudge svg{width:34px;height:34px;grid-row:1/span 2}
+.nudge b{font:700 14px/1.2 var(--body)}
+.nudge span{font-size:13.5px;line-height:1.35;color:var(--mute)}
+.nudge small{grid-column:1/-1;font:400 9.5px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dim);padding-top:4px}
+.pass{background:linear-gradient(150deg,#2B2444 0%,#14111F 55%,#0C0A14 100%);color:#F8F9FD;border-radius:26px;padding:22px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:18px;position:relative;overflow:hidden}
+.pass::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.09) 48%,transparent 60%);pointer-events:none}
+.pass-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.pass-top b{font:400 20px/1 var(--display)}
+.pass-top svg{width:40px;height:40px}
+.tierchip{align-self:flex-start;font:600 9.5px/1 var(--mono);letter-spacing:.16em;padding:7px 10px;border-radius:999px;color:#14111F;background:linear-gradient(180deg,#fff,#9aa3bb 48%,#d4d9e7 60%,#fff)}
+.pass-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.pass-grid span{display:block;font:600 9px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:#A9A3C2;margin-bottom:6px}
+.pass-grid div{font:600 17px/1.15 var(--body);font-variant-numeric:tabular-nums}
+.stamps{display:flex;gap:7px;flex-wrap:wrap}
+.stamps i{width:22px;height:22px;border-radius:50%;border:1.5px solid #5F5A78}
+.stamps i.on{background:#FF3D9A;border-color:#FF3D9A}
+.pass-foot{display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
+.qr{width:58px;height:58px;border-radius:10px;background:#F8F9FD;padding:6px;flex:none}
+.qr i{display:block;width:100%;height:100%;background:conic-gradient(#14111F 25%,transparent 0 50%,#14111F 0 75%,transparent 0) 0 0/11.5px 11.5px}
+.pass-foot p{font:400 9.5px/1.5 var(--mono);color:#A9A3C2}
+.sample{font:400 10px/1.4 var(--mono);color:var(--dim);text-align:center;letter-spacing:.06em}
+
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.meta div{background:var(--surface);border-radius:var(--r-md);box-shadow:var(--shadow-s);padding:14px 16px;font-weight:500}
+.meta b{display:block;font:600 9.5px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin-bottom:8px}
+
+.toc{display:flex;flex-wrap:wrap;gap:8px;padding-block:28px 4px}
+.toc a{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 14px 0 6px;border-radius:999px;background:var(--surface);box-shadow:var(--shadow-s);color:var(--fg);text-decoration:none;font:500 14px/1 var(--body)}
+.toc a span{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--bg-2);font:600 10px/1 var(--mono)}
+.toc a:hover span,.toc a:focus-visible span{background:var(--pink);color:var(--ink)}
+
+section{padding-block:56px 8px;display:flex;flex-direction:column;gap:24px}
+.chap{display:flex;align-items:center;gap:16px}
+.folio{display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:var(--pink);color:var(--ink);font:600 13px/1 var(--mono);flex:none}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:16px}
+.grid2>*,.grid3>*{min-width:0}
+.card{background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-s);padding:24px;display:flex;flex-direction:column;gap:10px}
+.card h3{font:400 20px/1.12 var(--display)}
+ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px}
+li::marker{color:var(--pink)}
+.callout{border-radius:var(--r-lg);background:linear-gradient(135deg,var(--tint-pink),var(--tint-lilac));padding:24px 26px;display:flex;flex-direction:column;gap:10px}
+.callout p{max-width:none}
+.callout .eyebrow{color:var(--pink-t)}
+.big{font:400 clamp(22px,3vw,32px)/1.15 var(--display);letter-spacing:-.01em}
+
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));gap:12px}
+.facts div{background:var(--surface);border-radius:var(--r-md);box-shadow:var(--shadow-s);padding:18px}
+.facts .n{font:400 30px/1.05 var(--display);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.facts .l{font:400 11px/1.5 var(--mono);color:var(--mute);margin-top:6px}
+
+.tbl{overflow-x:auto;border-radius:var(--r-lg);background:var(--surface);box-shadow:var(--shadow-s)}
+table{width:100%;border-collapse:collapse;font-size:15px;min-width:640px}
+th,td{text-align:left;padding:12px 14px;vertical-align:top}
+td{border-top:1px solid var(--line)}
+th{font:600 9.5px/1.35 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute);background:var(--bg-2)}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+td.us{background:var(--tint-pink);font-weight:600}
+.pill{display:inline-block;font:600 9.5px/1 var(--mono);letter-spacing:.06em;padding:5px 8px;border-radius:999px;white-space:nowrap}
+.bad{color:var(--pink-t);background:var(--tint-pink)} .warn{color:var(--warn);background:var(--warn-bg)} .ok{color:var(--ice-t);background:var(--tint-ice)}
+
+.idea{background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-s);padding:26px;display:grid;grid-template-columns:auto 1fr;gap:8px 20px}
+.idea .tag{grid-column:1;grid-row:1/span 4;display:grid;place-items:center;width:52px;height:52px;border-radius:16px;background:var(--tint-lilac);color:var(--lilac-t);font:400 20px/1 var(--display)}
+.idea h3,.idea p,.idea ul{grid-column:2}
+.idea h3{font:400 22px/1.1 var(--display)}
+.idea ul{color:var(--mute);font-size:15px;gap:4px}
+.idea .why{font:600 11px/1.6 var(--mono);color:var(--pink-t)}
+.idea.hero-idea{background:var(--panel);color:var(--panel-fg)}
+.idea.hero-idea .tag{background:var(--pink);color:var(--ink)}
+.idea.hero-idea ul{color:var(--panel-mute)}
+.idea.hero-idea .why{color:#FF6FB4}
+@media (max-width:560px){.idea{grid-template-columns:1fr}.idea .tag{grid-row:auto}.idea h3,.idea p,.idea ul{grid-column:1}}
+
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:12px;counter-reset:s}
+.flow div{background:var(--surface);border-radius:var(--r-md);box-shadow:var(--shadow-s);padding:18px;display:flex;flex-direction:column;gap:6px;counter-increment:s}
+.flow div::before{content:counter(s,decimal-leading-zero);font:600 11px/1 var(--mono);color:var(--pink-t)}
+.flow b{font:400 17px/1.15 var(--display)}
+.flow span{font-size:14.5px;color:var(--mute)}
+
+.tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));gap:16px;align-items:start}
+.tier{background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-s);padding:26px;display:flex;flex-direction:column;gap:14px}
+.tier.rec{background:var(--panel);color:var(--panel-fg);box-shadow:var(--shadow)}
+.tier.rec .setup,.tier.rec .price small{color:var(--panel-mute)}
+.tier.rec .eyebrow{color:#BBA3FF}
+.tier .price{font:400 34px/1 var(--display);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.tier .price small{font:400 13px var(--body);color:var(--mute)}
+.tier .setup{font-size:14px;color:var(--mute)}
+.tier ul{font-size:15px;gap:5px}
+.flag{align-self:flex-start;font:600 9.5px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;background:var(--pink);color:var(--ink);padding:7px 10px;border-radius:999px}
+
+.phase{padding:24px;border-radius:var(--r-lg);background:var(--surface);box-shadow:var(--shadow-s);display:flex;flex-direction:column;gap:10px}
+.phase .when{align-self:flex-start;font:600 9.5px/1 var(--mono);letter-spacing:.1em;padding:7px 10px;border-radius:999px;background:var(--tint-pink);color:var(--pink-t)}
+.phase h3{font:400 22px/1.1 var(--display)}
+.phase ul{font-size:15px;gap:5px}
+
+.qa>div{background:var(--surface);border-radius:var(--r-md);box-shadow:var(--shadow-s);padding:18px 20px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.qa b{font:400 18px/1.15 var(--display)}
+.script{background:var(--panel);color:var(--panel-fg);border-radius:var(--r-lg);padding:26px;display:flex;flex-direction:column;gap:12px}
+.script p{max-width:none;font-size:18px;line-height:1.5}
+.script .eyebrow{color:#BBA3FF}
+
+footer{margin-top:64px;padding:28px;border-radius:var(--r-xl);background:var(--panel);color:var(--panel-fg);display:grid;gap:14px}
+footer .lockup{background:var(--panel-2);color:var(--panel-fg);justify-self:start}
+footer .tag{font:400 clamp(24px,3vw,34px)/1 var(--display)}
+footer .tag em{font-style:normal;color:var(--pink)}
+footer p{font:400 11.5px/1.7 var(--mono);color:var(--panel-mute);max-width:none}
+footer .contacts{display:flex;flex-wrap:wrap;gap:8px 20px;font:600 12px/1.4 var(--mono)}
+:focus-visible{outline:2px solid var(--pink);outline-offset:3px;border-radius:6px}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="chr" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#9aa3bb"/>
+      <stop offset=".5" stop-color="#3c4158"/><stop offset=".58" stop-color="#d4d9e7"/><stop offset="1" stop-color="#ffffff"/>
+    </linearGradient>
+    <symbol id="mark" viewBox="-50 -50 100 100">
+      <g stroke="#14111F" stroke-width="3" fill="url(#chr)">
+        <ellipse cx="0" cy="-30" rx="11" ry="15"/>
+        <ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(45)"/>
+        <ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(90)"/>
+        <ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(135)"/>
+        <ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(180)"/>
+        <ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(225)"/>
+        <ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(270)"/>
+        <ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(315)"/>
+      </g>
+      <circle r="9" fill="#FF3D9A" stroke="#14111F" stroke-width="3"/>
+    </symbol>
+  </defs>
+</svg>
+
+<style>
+pre{margin:0;background:var(--panel);color:var(--panel-fg);border-radius:var(--r-md);padding:18px;overflow-x:auto;font:400 12.5px/1.75 var(--mono)}
+code{font-family:var(--mono);font-size:.86em;background:var(--bg-2);padding:2px 6px;border-radius:6px;overflow-wrap:anywhere}
+pre code{background:none;padding:0;font-size:inherit}
+.ask{border:1.5px dashed var(--lilac);border-radius:var(--r-md);padding:14px 16px;font-size:14.5px;display:flex;flex-direction:column;gap:6px}
+.ask p{max-width:none}
+.step{background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-s);padding:26px;display:flex;flex-direction:column;gap:14px}
+.step-head{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px}
+.step-head h3{font:400 23px/1.1 var(--display)}
+.when{font:600 9.5px/1 var(--mono);letter-spacing:.1em;padding:7px 10px;border-radius:999px;background:var(--tint-pink);color:var(--pink-t);white-space:nowrap}
+.done{font-size:15px;background:var(--tint-ice);border-radius:var(--r-md);padding:12px 16px}
+ol{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:8px}
+ol li::marker{font:600 12px var(--mono);color:var(--pink-t)}
+.cover h1{max-width:14ch}
+</style>
+
+<div class="wrap">
+
+<header class="cover">
+  <div class="brandrow">
+    <span class="lockup"><svg viewBox="-50 -50 100 100" aria-hidden="true"><g class="spin"><use href="#mark" x="-50" y="-50" width="100" height="100"/></g></svg>aikia.wallet</span>
+    <span class="kicker"><i></i>Internal · Developer blueprint</span>
+  </div>
+  <div class="stack">
+    <div class="eyebrow">Build guide, from zero to launch</div>
+    <h1>How to build <em>aikia.wallet.</em></h1>
+    <p class="lede">Every step, tool and cost to build the wallet system yourself, written so a beginner can follow it. Build it once as a template. After that, a new venue is a form to fill in, not new code.</p>
+  </div>
+  <div class="meta">
+    <div><b>Demo card ready</b>About 7 to 10 days</div>
+    <div><b>Sellable version</b>About 4 weeks</div>
+    <div><b>Cost to reach demo</b>About ₹8,700 (Apple fee)</div>
+    <div><b>Running cost when live</b>About ₹4,000 a month</div>
+  </div>
+  <p class="muted small">Times assume 3 to 4 hours a day with an AI coding assistant helping. They are estimates. Prices were checked in October 2026 and are converted at roughly ₹88 to the dollar.</p>
+</header>
+
+<nav class="toc" aria-label="Contents">
+  <a href="#big"><span>01</span>The big picture</a>
+  <a href="#words"><span>02</span>Words to know</a>
+  <a href="#tools"><span>03</span>Tools and costs</a>
+  <a href="#flow"><span>04</span>How the system flows</a>
+  <a href="#steps"><span>05</span>Build steps</a>
+  <a href="#data"><span>06</span>Database and code map</a>
+  <a href="#venue"><span>07</span>Adding a new venue</a>
+  <a href="#launch"><span>08</span>Test and launch</a>
+  <a href="#limits"><span>09</span>Limits to know</a>
+</nav>
+
+<section id="big">
+  <div class="chap"><span class="folio">01</span><h2>The big picture</h2></div>
+  <p>You are not building a phone app. You are building a small website with a brain behind it. The website makes digital cards. Apple Wallet and Google Wallet, which are already on every phone, hold those cards for you.</p>
+  <div class="grid2">
+    <div class="card"><div class="eyebrow">Piece 1</div><h3>Join page</h3><p class="muted">A web page the guest opens by scanning a QR code. They type their name and number and tap Add to Wallet.</p></div>
+    <div class="card"><div class="eyebrow">Piece 2</div><h3>Card maker</h3><p class="muted">Code on your server that builds the card for iPhone and for Android and keeps it up to date.</p></div>
+    <div class="card"><div class="eyebrow">Piece 3</div><h3>Staff scanner</h3><p class="muted">A web page staff open on any phone. It scans the guest's card and adds a stamp or points.</p></div>
+    <div class="card"><div class="eyebrow">Piece 4</div><h3>Owner dashboard</h3><p class="muted">A web page where the owner sees members and sends offers. You also get an admin page to add new venues.</p></div>
+  </div>
+  <div class="callout">
+    <div class="eyebrow">The one rule that makes this a business</div>
+    <p class="big">Nothing about a venue is written in the code. Name, colours, logo, rewards and location all live in the database.</p>
+    <p class="muted">That is what lets you sign a café on Monday and hand them a working card on Tuesday.</p>
+  </div>
+</section>
+
+<section id="words">
+  <div class="chap"><span class="folio">02</span><h2>Words to know</h2></div>
+  <div class="tbl"><table>
+    <thead><tr><th style="width:24%">Word</th><th>What it means in plain language</th></tr></thead>
+    <tbody>
+      <tr><td>Pass</td><td>The digital card inside Apple Wallet or Google Wallet.</td></tr>
+      <tr><td>Server / backend</td><td>Your code running on a computer on the internet. It makes and updates passes.</td></tr>
+      <tr><td>Database</td><td>An online spreadsheet your code reads and writes: venues, members, visits.</td></tr>
+      <tr><td>API</td><td>A way for two programs to talk. Your server talks to Apple and Google through their APIs.</td></tr>
+      <tr><td>Certificate</td><td>A digital signature from Apple that proves a pass really came from you.</td></tr>
+      <tr><td>.pkpass</td><td>The file type of an Apple pass. It is a zip with a few images and one text file inside.</td></tr>
+      <tr><td>Push</td><td>A silent message from your server telling a phone "this card changed, fetch the new one".</td></tr>
+      <tr><td>Deploy</td><td>Putting your code online so anyone can use it.</td></tr>
+      <tr><td>Environment variable</td><td>A secret (like a password or key) stored outside the code so it is never shared by mistake.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="tools">
+  <div class="chap"><span class="folio">03</span><h2>Tools and costs</h2></div>
+  <h3>Needed to build the demo</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Tool</th><th>What it does</th><th>Cost</th></tr></thead>
+    <tbody>
+      <tr><td>Apple Developer Program</td><td>Lets you create and sign Apple Wallet passes</td><td class="num">US$99 a year (≈ ₹8,700)</td></tr>
+      <tr><td>Google Wallet API + Google Cloud</td><td>Lets you create Google Wallet passes</td><td class="num">Free</td></tr>
+      <tr><td>VS Code</td><td>The editor you write code in. You already use it.</td><td class="num">Free</td></tr>
+      <tr><td>Node.js</td><td>Runs the code on your Mac</td><td class="num">Free</td></tr>
+      <tr><td>GitHub</td><td>Stores your code safely online</td><td class="num">Free</td></tr>
+      <tr><td>Vercel</td><td>Puts your website online</td><td class="num">Free while building</td></tr>
+      <tr><td>Supabase</td><td>Your database, logins and image storage</td><td class="num">Free while building</td></tr>
+      <tr><td>Subdomain such as wallet.aikia.world</td><td>The web address of the system</td><td class="num">₹0 if you own aikia.world</td></tr>
+      <tr><td>AI coding assistant</td><td>Writes most of the code with you</td><td class="num">Your existing plan</td></tr>
+      <tr><td>An iPhone and an Android phone</td><td>For testing. Borrowing one is fine.</td><td class="num">₹0</td></tr>
+    </tbody>
+  </table></div>
+  <h3>Needed once venues pay you</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Tool</th><th>Why</th><th>Cost</th></tr></thead>
+    <tbody>
+      <tr><td>Vercel Pro</td><td>The free plan is not allowed for commercial use</td><td class="num">US$20 a month (≈ ₹1,800)</td></tr>
+      <tr><td>Supabase Pro</td><td>Free projects pause after a week without activity. Pro adds daily backups.</td><td class="num">US$25 a month (≈ ₹2,200)</td></tr>
+      <tr><td>WhatsApp Business API (optional)</td><td>Gift a Coffee links and welcome messages</td><td class="num">Pay per message, see Meta's rate card</td></tr>
+      <tr><td>NFC tags and counter stands</td><td>Tap-to-join at the counter</td><td class="num">A few hundred rupees per venue (estimate)</td></tr>
+      <tr><td>Lawyer or CA review</td><td>Terms, privacy text, prepaid balance check</td><td class="num">One-time fee, get a quote</td></tr>
+    </tbody>
+  </table></div>
+  <div class="facts">
+    <div><div class="n">≈ ₹8,700</div><div class="l">total spend to reach a working demo</div></div>
+    <div><div class="n">≈ ₹4,000</div><div class="l">monthly running cost when live, for all venues together</div></div>
+    <div><div class="n">1 venue</div><div class="l">on the ₹4,999 plan covers the running cost</div></div>
+  </div>
+  <div class="card">
+    <div class="eyebrow">Technology choices</div><h3>The stack, and why</h3>
+    <ul>
+      <li><b>Next.js with TypeScript:</b> one project holds the web pages and the server code, and it deploys to Vercel in one click.</li>
+      <li><b>Supabase (Postgres):</b> database, login and image storage in one place.</li>
+      <li><b><code>passkit-generator</code>:</b> a free library that builds and signs Apple passes.</li>
+      <li><b><code>google-auth-library</code> and <code>jsonwebtoken</code>:</b> talk to the Google Wallet API.</li>
+      <li><b><code>html5-qrcode</code>:</b> turns a phone camera into the staff scanner.</li>
+      <li><b>Tailwind CSS:</b> styling for the pages in the aikia look.</li>
+    </ul>
+    <p class="muted small">You know Python, and the pass-making part could be written in it. JavaScript is recommended here because the pages and the server then live in one project, which is simpler to put online.</p>
+  </div>
+</section>
+
+<section id="flow">
+  <div class="chap"><span class="folio">04</span><h2>How the system flows</h2></div>
+  <h3>A guest joins</h3>
+  <div class="flow">
+    <div><b>Scan</b><span>Guest scans the QR. It opens <code>wallet.aikia.world/join/cafe-noor</code>.</span></div>
+    <div><b>Sign up</b><span>They enter name and phone. Server saves a member row.</span></div>
+    <div><b>Make the card</b><span>Server reads the venue's style and builds the pass for that phone type.</span></div>
+    <div><b>Add</b><span>Guest taps Add to Wallet. The phone tells your server "I hold this card".</span></div>
+  </div>
+  <h3>A guest pays and earns</h3>
+  <div class="flow">
+    <div><b>Show</b><span>Guest opens the card. It shows a QR with their member ID.</span></div>
+    <div><b>Scan</b><span>Staff scan it on the scanner page and tap Add stamp.</span></div>
+    <div><b>Save</b><span>Server records the visit and works out stamps, tier and rewards.</span></div>
+    <div><b>Update</b><span>Server pushes the change. The card on the phone refreshes in seconds.</span></div>
+  </div>
+  <h3>The café brings them back</h3>
+  <div class="flow">
+    <div><b>Halo</b><span>The card carries the café's map location. The phone itself shows the card on the lock screen when nearby.</span></div>
+    <div><b>Offer</b><span>Owner taps Fill My Tables. Server updates every member's card with the offer text.</span></div>
+    <div><b>Notify</b><span>Each phone shows a notification because a field on the card changed.</span></div>
+    <div><b>Expire</b><span>A timer removes the offer after 45 minutes.</span></div>
+  </div>
+</section>
+
+<section id="steps">
+  <div class="chap"><span class="folio">05</span><h2>Build steps</h2></div>
+  <p>Eight steps in order. Each one ends with something you can see working. Do not start a step until the one before it works.</p>
+
+  <div class="step">
+    <div class="step-head"><span class="when">STEP 0 · DAY 1</span><h3>Open the accounts</h3></div>
+    <ol>
+      <li>Enrol in the <b>Apple Developer Program</b> at developer.apple.com. Enrol as an individual to start. Approval can take a day or two, so do this first.</li>
+      <li>Open a <b>Google Cloud</b> account and a <b>Google Pay and Wallet Console</b> account. You get an Issuer ID.</li>
+      <li>Create free accounts on <b>GitHub</b>, <b>Vercel</b> and <b>Supabase</b>.</li>
+      <li>Install <b>Node.js</b> (the LTS version). Check it with <code>node --version</code> in the terminal.</li>
+    </ol>
+    <div class="done"><b>Done when:</b> you can log in to all five and the terminal prints a Node version.</div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="when">STEP 1 · DAY 2</span><h3>Create the project</h3></div>
+    <ol>
+      <li>In the terminal run <code>npx create-next-app@latest aikia-wallet</code>. Choose TypeScript, Tailwind and App Router.</li>
+      <li>Open the folder in VS Code. Run <code>npm run dev</code> and open <code>localhost:3000</code>.</li>
+      <li>Push the code to a new private GitHub repository.</li>
+      <li>In Vercel, import that repository. You now have a live web address.</li>
+      <li>In Supabase, create a project and run the table script from section 06.</li>
+    </ol>
+    <div class="ask"><div class="eyebrow">Ask your AI assistant</div><p>"Set up a Next.js App Router project with TypeScript, Tailwind and the Supabase client. Create the SQL for these tables: [paste section 06]. Put all secrets in .env.local."</p></div>
+    <div class="done"><b>Done when:</b> your site opens at its Vercel address and the tables exist in Supabase.</div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="when">STEP 2 · DAYS 3–4</span><h3>Make your first Apple pass</h3></div>
+    <ol>
+      <li>In the Apple Developer site go to Certificates, Identifiers and Profiles. Create a <b>Pass Type ID</b>, for example <code>pass.world.aikia.wallet</code>.</li>
+      <li>On your Mac open Keychain Access and create a Certificate Signing Request. Upload it to Apple and download the pass certificate.</li>
+      <li>Export the certificate and its key, and download Apple's WWDR certificate. Convert them to <code>.pem</code> text and store them as environment variables.</li>
+      <li>Create a template folder with <code>pass.json</code>, <code>icon.png</code>, <code>logo.png</code> and <code>strip.png</code>. Use the pass style <code>storeCard</code>.</li>
+      <li>Write an API route that uses <code>passkit-generator</code> to fill the template, sign it and return a <code>.pkpass</code> file.</li>
+      <li>Open that route in Safari on an iPhone. The card should offer Add.</li>
+    </ol>
+    <div class="ask"><div class="eyebrow">Ask your AI assistant</div><p>"Write a Next.js route GET /api/pass/apple/[serial] that uses passkit-generator to build a storeCard pass from a venue and member in Supabase. Read certificates from environment variables. Include a QR barcode with the member ID."</p></div>
+    <div class="done"><b>Done when:</b> a card with the aikia look sits in Apple Wallet on a real iPhone.</div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="when">STEP 3 · DAYS 5–6</span><h3>Make your first Google pass</h3></div>
+    <ol>
+      <li>In Google Cloud, create a project and switch on the <b>Google Wallet API</b>.</li>
+      <li>Create a <b>service account</b> and download its key file. Add that account as a user in the Wallet Console.</li>
+      <li>Write code that creates a <b>Loyalty Class</b> (the venue's card design) and a <b>Loyalty Object</b> (one member's card).</li>
+      <li>Sign a small token (a JWT) and build the link <code>pay.google.com/gp/v/save/…</code>. That link is the Add to Google Wallet button.</li>
+      <li>Test on an Android phone. New accounts start in demo mode, where only your test accounts can add cards.</li>
+    </ol>
+    <div class="ask"><div class="eyebrow">Ask your AI assistant</div><p>"Write a function that creates or updates a Google Wallet LoyaltyClass per venue and a LoyaltyObject per member, then returns a signed Add to Google Wallet link. Use the service account key from an environment variable."</p></div>
+    <div class="done"><b>Done when:</b> the same card sits in Google Wallet on a real Android phone.</div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="when">STEP 4 · DAYS 7–10</span><h3>Build the join page. This is your demo.</h3></div>
+    <ol>
+      <li>Create the page <code>/join/[venue]</code>. It loads the venue's name, logo and colours from the database.</li>
+      <li>Add a short form: name, phone number and a consent tick box.</li>
+      <li>On submit, save the member, then show the Add to Apple Wallet or Add to Google Wallet button based on the phone type.</li>
+      <li>Make a QR code that points to the page and print it on a small stand.</li>
+      <li>Add a demo venue called "Your Café" that you can rename in ten seconds before each meeting.</li>
+    </ol>
+    <div class="done"><b>Done when:</b> a stranger can scan your QR and have the card in their wallet in under 20 seconds. You can start visiting venues from here.</div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="when">STEP 5 · WEEK 2</span><h3>Scanner and live card updates</h3></div>
+    <ol>
+      <li>Build <code>/scan</code>. Staff log in with a venue PIN. The camera reads the card's QR with <code>html5-qrcode</code>.</li>
+      <li>After a scan, show the member's name, tier and usual order, with buttons: Add stamp, Redeem reward, Use balance.</li>
+      <li>Add the five Apple web service routes (listed in section 06). These let iPhones register and fetch the newest card.</li>
+      <li>When data changes, send a push through Apple's push service so the card refreshes. For Google, call the API to update the object.</li>
+      <li>Set a change message on the stamps field so the guest sees "You now have 7 stamps".</li>
+    </ol>
+    <div class="ask"><div class="eyebrow">Ask your AI assistant</div><p>"Implement the Apple Wallet web service: register device, unregister device, list updated serials, get latest pass, and log. After a visit is saved, send an APNs push to every device registered for that pass and patch the Google LoyaltyObject."</p></div>
+    <div class="done"><b>Done when:</b> you scan a card and watch the stamp count change on both phones within seconds.</div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="when">STEP 6 · WEEK 3</span><h3>Halo, offers and the owner dashboard</h3></div>
+    <ol>
+      <li><b>Halo:</b> add the venue's latitude and longitude to the Apple pass (<code>locations</code> with a <code>relevantText</code> message) and to the Google class (merchant locations).</li>
+      <li><b>Fill My Tables:</b> a button that writes an offer onto every member's card for that venue and removes it after 45 minutes.</li>
+      <li><b>Dashboard:</b> build <code>/dashboard</code> with total members, visits this week, top guests and guests who have not visited in 21 days.</li>
+      <li><b>Automation:</b> a daily scheduled job for birthdays, win-back offers and tier upgrades.</li>
+      <li><b>Tiers:</b> switch the card's colours and strip image when a member moves from Ink to Chrome to Pink.</li>
+    </ol>
+    <div class="done"><b>Done when:</b> the owner view shows real numbers and pressing the offer button lights up your test phones.</div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="when">STEP 7 · WEEKS 3–4</span><h3>Turn it into a template</h3></div>
+    <ol>
+      <li>Build <code>/admin</code> for yourself only: a form that creates a new venue.</li>
+      <li>The form takes name, colours, logo, strip image, address, map pin, reward rule and staff PIN.</li>
+      <li>On save, the system creates the join page, the QR code and the Google class automatically.</li>
+      <li>Create a second and third fake venue and check that nothing from one leaks into another.</li>
+    </ol>
+    <div class="done"><b>Done when:</b> you can add a brand-new venue from the form and get a working card without touching code.</div>
+  </div>
+</section>
+
+<section id="data">
+  <div class="chap"><span class="folio">06</span><h2>Database and code map</h2></div>
+  <h3>Tables</h3>
+  <div class="tbl"><table>
+    <thead><tr><th style="width:22%">Table</th><th style="width:38%">What it stores</th><th>Main columns</th></tr></thead>
+    <tbody>
+      <tr><td><code>venues</code></td><td>One row per café. All styling lives here.</td><td>id, slug, name, colours, logo_url, strip_url, lat, lng, halo_text, reward_rule, tier_rules, staff_pin</td></tr>
+      <tr><td><code>members</code></td><td>One row per guest per venue</td><td>id, venue_id, name, phone, birthday, consent_at, tier, stamps, points, balance, usual_order, last_visit</td></tr>
+      <tr><td><code>visits</code></td><td>Every scan</td><td>id, member_id, venue_id, type, amount, created_at</td></tr>
+      <tr><td><code>apple_devices</code></td><td>Which iPhones hold which card</td><td>device_id, push_token, serial, updated_at</td></tr>
+      <tr><td><code>campaigns</code></td><td>Offers sent</td><td>id, venue_id, text, starts_at, ends_at, redeemed_count</td></tr>
+      <tr><td><code>staff</code></td><td>Owner and staff logins</td><td>id, venue_id, role, email</td></tr>
+    </tbody>
+  </table></div>
+  <h3>Server routes</h3>
+  <pre><code>POST /api/join                      save member, return add-to-wallet links
+GET  /api/pass/apple/[serial]       build and sign the .pkpass file
+GET  /api/pass/google/[memberId]    return the Add to Google Wallet link
+POST /api/scan                      record a visit, update stamps, push update
+POST /api/campaign                  send an offer to a venue's members
+GET  /api/cron/daily                birthdays, win-back, tier upgrades
+
+Apple web service (Apple calls these, exact paths required):
+POST   /api/apple/v1/devices/[device]/registrations/[passType]/[serial]
+DELETE /api/apple/v1/devices/[device]/registrations/[passType]/[serial]
+GET    /api/apple/v1/devices/[device]/registrations/[passType]
+GET    /api/apple/v1/passes/[passType]/[serial]
+POST   /api/apple/v1/log</code></pre>
+  <h3>Folder layout</h3>
+  <pre><code>aikia-wallet/
+  app/
+    join/[venue]/page.tsx     guest sign-up page
+    scan/page.tsx             staff scanner
+    dashboard/page.tsx        owner view
+    admin/page.tsx            add and edit venues (you only)
+    api/...                   the routes above
+  lib/
+    apple.ts                  build, sign and push Apple passes
+    google.ts                 create and update Google passes
+    rewards.ts                stamp, tier and reward rules
+    db.ts                     Supabase client
+  pass-template/              pass.json and default images
+  .env.local                  secrets, never pushed to GitHub</code></pre>
+  <h3>Secrets to store as environment variables</h3>
+  <pre><code>SUPABASE_URL, SUPABASE_SERVICE_KEY
+APPLE_PASS_TYPE_ID, APPLE_TEAM_ID
+APPLE_CERT_PEM, APPLE_KEY_PEM, APPLE_WWDR_PEM
+GOOGLE_ISSUER_ID, GOOGLE_SERVICE_ACCOUNT_JSON
+PASS_AUTH_SECRET, CRON_SECRET</code></pre>
+</section>
+
+<section id="venue">
+  <div class="chap"><span class="folio">07</span><h2>Adding a new venue after a sale</h2></div>
+  <p>Once the template is built, onboarding should take one to two hours of your time per venue.</p>
+  <div class="grid2">
+    <div class="card"><div class="eyebrow">Collect from the owner</div><h3>The venue sheet</h3>
+      <ul>
+        <li>Logo as a PNG with a clear background</li>
+        <li>Two or three brand colours as hex codes</li>
+        <li>One wide photo for the card strip (1125 × 369 px for Apple)</li>
+        <li>Address and map pin (right-click in Google Maps to copy latitude and longitude)</li>
+        <li>Reward rule, for example 9 stamps = 1 free coffee</li>
+        <li>Tier rules, for example Chrome at 15 visits</li>
+        <li>The Halo message and a welcome offer</li>
+        <li>Opening hours and a staff PIN</li>
+      </ul></div>
+    <div class="card"><div class="eyebrow">You do</div><h3>Go-live checklist</h3>
+      <ol>
+        <li>Fill in the admin form and upload the images.</li>
+        <li>Add the card to your own iPhone and Android to check the look.</li>
+        <li>Print the QR stand and table tents.</li>
+        <li>Show staff the scanner and do three practice scans.</li>
+        <li>Send the owner their dashboard login.</li>
+        <li>Stand at the counter for the first hour and sign up the first members yourself.</li>
+      </ol></div>
+  </div>
+</section>
+
+<section id="launch">
+  <div class="chap"><span class="folio">08</span><h2>Test and launch</h2></div>
+  <div class="grid2">
+    <div class="card"><div class="eyebrow">Before the first real venue</div><h3>Test list</h3>
+      <ul>
+        <li>Join works on iPhone Safari and Android Chrome</li>
+        <li>Scan updates both phones within seconds</li>
+        <li>Walk away and back to the pin: Halo card appears on both phones</li>
+        <li>Offer arrives, then disappears after it expires</li>
+        <li>Deleting the card stops updates without errors</li>
+        <li>Venue A staff cannot see Venue B members</li>
+        <li>Wrong PIN and bad QR codes are rejected</li>
+        <li>Slow café Wi-Fi still completes a scan</li>
+      </ul></div>
+    <div class="card"><div class="eyebrow">Going live</div><h3>Launch list</h3>
+      <ul>
+        <li>Request <b>publishing access</b> in the Google Wallet Console so any Android user can add cards. Allow a few days for review.</li>
+        <li>Move to Vercel Pro and Supabase Pro.</li>
+        <li>Point <code>wallet.aikia.world</code> at Vercel.</li>
+        <li>Publish privacy policy and terms pages.</li>
+        <li>Set a calendar reminder: the Apple pass certificate expires yearly and must be renewed, or cards stop updating.</li>
+        <li>Turn on database backups.</li>
+      </ul></div>
+  </div>
+  <div class="tbl"><table style="min-width:560px">
+    <thead><tr><th>When</th><th>What you have</th><th>What you can do with it</th></tr></thead>
+    <tbody>
+      <tr><td class="num">Day 7–10</td><td>Join page and a real card on both phones</td><td>Start demo meetings with venues</td></tr>
+      <tr><td class="num">End of week 2</td><td>Scanner and live updates</td><td>Run a free pilot in one friendly café</td></tr>
+      <tr><td class="num">End of week 3</td><td>Halo, offers and dashboard</td><td>Show owners real numbers from the pilot</td></tr>
+      <tr><td class="num">End of week 4</td><td>Admin form and multi-venue template</td><td>Sell, and onboard each new venue in hours</td></tr>
+    </tbody>
+  </table></div>
+  <p class="muted small">Want something to show even sooner? Sign up for a free trial of a ready-made wallet-pass platform and make a mock card the same day, while you build your own system in parallel.</p>
+</section>
+
+<section id="limits">
+  <div class="chap"><span class="folio">09</span><h2>Limits to know before you promise anything</h2></div>
+  <div class="tbl"><table>
+    <thead><tr><th style="width:26%">Topic</th><th>What is true</th><th style="width:34%">What to do</th></tr></thead>
+    <tbody>
+      <tr><td>Halo distance</td><td>You give the map pin. The phone decides when "nearby" is, roughly 100 m on iPhone. Apple lets you make it smaller, not larger.</td><td>Sell it as "when they are near", not as an exact number of metres.</td></tr>
+      <tr><td>Halo is quiet</td><td>The nearby alert is a silent card on the lock screen. It does not buzz.</td><td>Use a normal push message for offers that must be seen.</td></tr>
+      <tr><td>Locations per card</td><td>Up to 10 on Apple and 10 on Google.</td><td>Plenty for one venue or a small chain.</td></tr>
+      <tr><td>Google message limit</td><td>3 notifications per card in 24 hours.</td><td>Your own cap of one a day keeps you well inside it.</td></tr>
+      <tr><td>You never see location</td><td>The wallet does not tell your server where a guest is.</td><td>Offers go to all of a venue's members, not only those nearby.</td></tr>
+      <tr><td>Payments</td><td>This card does not move money through a bank. Prepaid balance is a number in your database that the café collects for at the counter.</td><td>Keep balances tied to one venue and get the legal check done before switching this feature on.</td></tr>
+      <tr><td>Personal data</td><td>You hold names and phone numbers.</td><td>Consent tick box, a delete-my-data option, and never share one venue's list with another.</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout">
+    <div class="eyebrow">Start today</div>
+    <p class="big">Do Step 0 now. The Apple approval is the only part you have to wait for.</p>
+  </div>
+</section>
+
+<footer>
+  <span class="lockup"><svg viewBox="-50 -50 100 100" aria-hidden="true"><g class="spin"><use href="#mark" x="-50" y="-50" width="100" height="100"/></g></svg>aikia.wallet</span>
+  <div class="tag">Build once. <em>Sell many.</em></div>
+  <div class="contacts"><span>connect@aikia.world</span><span>@aikia.wrld</span></div>
+  <p>Internal developer blueprint · aikia.wrld · October 2026. Timelines are estimates. Prices and platform rules were checked in October 2026 against Apple, Google, Vercel and Supabase information and can change, so confirm them on each provider's site before paying.</p>
+</footer>
+
+</div>
+
+</body></html>

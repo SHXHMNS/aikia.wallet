@@ -1,0 +1,12 @@
+{
+  "assets/fonts/Caveat-700-latin.woff2": "891951df5e8b5b0f0bc760d31375405e795c666b5add70437de12d4a6482b33f",
+  "compositions/assets/hyperframes-logo-dark.svg": "f9f942c43b465616c3af2fb8b07daf1cc05a4776903bbb27beb2bb608060e6c7",
+  "compositions/components/echo-trail.html": "fefc245f4fa503d5a5494334e17c41b7ee07cd10083c258c17836b77d637942d",
+  "compositions/components/gloss-sweep.html": "35c6ca04fff76ddc2270d0c8324a2557956481b16a3d1c19e9e3b2bb11bf47f2",
+  "compositions/components/grain-overlay.html": "97a0da8f26feca9574abcf08b8186cef10ea4819b2aeabc30547ae16ed9ae80d",
+  "compositions/hw-path-text.html": "9d090a6196583273b5b84e77a0240f2b72e8e65b5f8a098acb623f7f08d6d56d",
+  "compositions/lib/liquid-glass.iife.js": "e960fc4e523aa639d37ebe80bebbd8da6dcb805488a77e45585e80aa9ab98e4c",
+  "compositions/liquid-glass-notification.html": "ec3cc4d069175137dca08448b1df6e56803478e97c200cab1ebf5af9a3e28aca",
+  "compositions/organic-light-leak-overlay.html": "a7cf27b41d5fc99dea3748e94fe93ab04b94ad744aa5eefe030e756b54e495f0",
+  "compositions/vfx-liquid-glass.html": "d1c29141b1b028ef8d04843ae142b36cefb2be9efb16ac098fb953364be85386"
+}

@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+</head><body>
+<title>aikia.wallet Route Comparison</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Hanken+Grotesk:wght@400;500;600;700&family=Martian+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: aikia.wrld brand system (Ink / Frost / Hyper Pink / Lilac / Ice + chrome; Dela Gothic One, Hanken Grotesk, Martian Mono). One reading column of soft rounded panels; the cover carries the product itself: a wallet pass and the lock-screen nudge. */
+:root{
+  --bg:#F5F6FA; --bg-2:#ECEEF5; --surface:#FFFFFF; --fg:#14111F; --mute:#5E5A73; --dim:#A6A3B8;
+  --line:rgba(20,17,31,.1);
+  --pink:#FF3D9A; --pink-t:#C2126A; --lilac:#A98BFF; --lilac-t:#6B4FD6; --ice:#7FE7F2; --ice-t:#0B7F8A; --ink:#14111F;
+  --panel:#14111F; --panel-fg:#F8F9FD; --panel-mute:#A9A3C2; --panel-2:#221D33;
+  --tint-pink:rgba(255,61,154,.1); --tint-lilac:rgba(169,139,255,.16); --tint-ice:rgba(127,231,242,.24);
+  --warn:#8A5A00; --warn-bg:rgba(240,170,40,.18);
+  --shadow:0 30px 70px -36px rgba(20,17,31,.35); --shadow-s:0 10px 30px -18px rgba(20,17,31,.35);
+  --display:"Dela Gothic One","Arial Black",Impact,sans-serif;
+  --body:"Hanken Grotesk","Helvetica Neue",Arial,sans-serif;
+  --mono:"Martian Mono",ui-monospace,Menlo,monospace;
+  --r-xl:32px; --r-lg:24px; --r-md:16px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#14111F; --bg-2:#1A1627; --surface:#221D33; --fg:#F8F9FD; --mute:#A9A3C2; --dim:#5F5A78;
+  --line:rgba(248,249,253,.1); --panel:#2C2543; --panel-2:#3A3157;
+  --pink-t:#FF6FB4; --lilac-t:#BBA3FF; --ice-t:#7FE7F2;
+  --tint-pink:rgba(255,61,154,.14); --tint-lilac:rgba(169,139,255,.16); --tint-ice:rgba(127,231,242,.12);
+  --warn:#F2C066; --warn-bg:rgba(240,170,40,.16);
+  --shadow:0 30px 70px -30px rgba(0,0,0,.75); --shadow-s:0 10px 30px -14px rgba(0,0,0,.7); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#14111F; --bg-2:#1A1627; --surface:#221D33; --fg:#F8F9FD; --mute:#A9A3C2; --dim:#5F5A78;
+  --line:rgba(248,249,253,.1); --panel:#2C2543; --panel-2:#3A3157;
+  --pink-t:#FF6FB4; --lilac-t:#BBA3FF; --ice-t:#7FE7F2;
+  --tint-pink:rgba(255,61,154,.14); --tint-lilac:rgba(169,139,255,.16); --tint-ice:rgba(127,231,242,.12);
+  --warn:#F2C066; --warn-bg:rgba(240,170,40,.16);
+  --shadow:0 30px 70px -30px rgba(0,0,0,.75); --shadow-s:0 10px 30px -14px rgba(0,0,0,.7); color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:400 16px/1.6 var(--body);margin:0;-webkit-font-smoothing:antialiased}
+::selection{background:var(--pink);color:var(--ink)}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:20px;padding-block:24px 80px}
+h1,h2,h3{font-weight:400;text-wrap:balance;margin:0;line-height:1.05}
+h2{font:400 clamp(28px,4vw,46px)/1 var(--display);letter-spacing:-.015em}
+h3{font:700 19px/1.3 var(--body)}
+p{margin:0;max-width:68ch}
+.eyebrow{font:600 10px/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--lilac-t)}
+.muted{color:var(--mute)}
+.small{font-size:14px}
+.stack{display:flex;flex-direction:column;gap:16px}
+
+.lockup{display:inline-flex;align-items:center;gap:10px;height:48px;padding:0 18px 0 7px;border-radius:999px;background:var(--surface);box-shadow:var(--shadow-s);color:var(--fg);font:600 13px/1 var(--mono)}
+.lockup svg{width:34px;height:34px}
+.spin{transform-box:fill-box;transform-origin:50% 50%;animation:spin 20s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation:none}}
+
+/* cover */
+.cover{position:relative;overflow:hidden;margin-top:8px;padding:clamp(24px,5vw,56px);border-radius:var(--r-xl);background:radial-gradient(120% 90% at 10% 0%,var(--tint-lilac),transparent 60%),radial-gradient(90% 80% at 100% 100%,var(--tint-ice),transparent 60%),radial-gradient(60% 60% at 80% 10%,var(--tint-pink),transparent 70%),var(--surface);box-shadow:var(--shadow);display:grid;gap:28px}
+.brandrow{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.kicker{display:inline-flex;align-items:center;gap:10px;min-height:32px;padding:6px 14px 6px 8px;border-radius:999px;background:var(--surface);box-shadow:var(--shadow-s);font:600 10px/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.kicker i{width:16px;height:16px;border-radius:50%;background:var(--pink);flex:none}
+.hero{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:32px;align-items:center}
+.hero>*{min-width:0}
+.cover h1{font:400 clamp(38px,6.4vw,78px)/.94 var(--display);letter-spacing:-.03em}
+.cover h1 em{color:var(--pink);font-style:normal}
+.lede{font-size:clamp(17px,1.5vw,20px);color:var(--mute);max-width:54ch}
+@media (max-width:820px){.hero{grid-template-columns:1fr}}
+
+/* the product: pass + nudge */
+.demo{display:flex;flex-direction:column;gap:14px;max-width:360px;width:100%;justify-self:center}
+.nudge{background:var(--surface);border-radius:20px;box-shadow:var(--shadow-s);padding:12px 14px;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:center;transform:rotate(-1.5deg)}
+.nudge svg{width:34px;height:34px;grid-row:1/span 2}
+.nudge b{font:700 14px/1.2 var(--body)}
+.nudge span{font-size:13.5px;line-height:1.35;color:var(--mute)}
+.nudge small{grid-column:1/-1;font:400 9.5px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dim);padding-top:4px}
+.pass{background:linear-gradient(150deg,#2B2444 0%,#14111F 55%,#0C0A14 100%);color:#F8F9FD;border-radius:26px;padding:22px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:18px;position:relative;overflow:hidden}
+.pass::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.09) 48%,transparent 60%);pointer-events:none}
+.pass-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.pass-top b{font:400 20px/1 var(--display)}
+.pass-top svg{width:40px;height:40px}
+.tierchip{align-self:flex-start;font:600 9.5px/1 var(--mono);letter-spacing:.16em;padding:7px 10px;border-radius:999px;color:#14111F;background:linear-gradient(180deg,#fff,#9aa3bb 48%,#d4d9e7 60%,#fff)}
+.pass-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.pass-grid span{display:block;font:600 9px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:#A9A3C2;margin-bottom:6px}
+.pass-grid div{font:600 17px/1.15 var(--body);font-variant-numeric:tabular-nums}
+.stamps{display:flex;gap:7px;flex-wrap:wrap}
+.stamps i{width:22px;height:22px;border-radius:50%;border:1.5px solid #5F5A78}
+.stamps i.on{background:#FF3D9A;border-color:#FF3D9A}
+.pass-foot{display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
+.qr{width:58px;height:58px;border-radius:10px;background:#F8F9FD;padding:6px;flex:none}
+.qr i{display:block;width:100%;height:100%;background:conic-gradient(#14111F 25%,transparent 0 50%,#14111F 0 75%,transparent 0) 0 0/11.5px 11.5px}
+.pass-foot p{font:400 9.5px/1.5 var(--mono);color:#A9A3C2}
+.sample{font:400 10px/1.4 var(--mono);color:var(--dim);text-align:center;letter-spacing:.06em}
+
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.meta div{background:var(--surface);border-radius:var(--r-md);box-shadow:var(--shadow-s);padding:14px 16px;font-weight:500}
+.meta b{display:block;font:600 9.5px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin-bottom:8px}
+
+.toc{display:flex;flex-wrap:wrap;gap:8px;padding-block:28px 4px}
+.toc a{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 14px 0 6px;border-radius:999px;background:var(--surface);box-shadow:var(--shadow-s);color:var(--fg);text-decoration:none;font:500 14px/1 var(--body)}
+.toc a span{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--bg-2);font:600 10px/1 var(--mono)}
+.toc a:hover span,.toc a:focus-visible span{background:var(--pink);color:var(--ink)}
+
+section{padding-block:56px 8px;display:flex;flex-direction:column;gap:24px}
+.chap{display:flex;align-items:center;gap:16px}
+.folio{display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:var(--pink);color:var(--ink);font:600 13px/1 var(--mono);flex:none}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:16px}
+.grid2>*,.grid3>*{min-width:0}
+.card{background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-s);padding:24px;display:flex;flex-direction:column;gap:10px}
+.card h3{font:400 20px/1.12 var(--display)}
+ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px}
+li::marker{color:var(--pink)}
+.callout{border-radius:var(--r-lg);background:linear-gradient(135deg,var(--tint-pink),var(--tint-lilac));padding:24px 26px;display:flex;flex-direction:column;gap:10px}
+.callout p{max-width:none}
+.callout .eyebrow{color:var(--pink-t)}
+.big{font:400 clamp(22px,3vw,32px)/1.15 var(--display);letter-spacing:-.01em}
+
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));gap:12px}
+.facts div{background:var(--surface);border-radius:var(--r-md);box-shadow:var(--shadow-s);padding:18px}
+.facts .n{font:400 30px/1.05 var(--display);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.facts .l{font:400 11px/1.5 var(--mono);color:var(--mute);margin-top:6px}
+
+.tbl{overflow-x:auto;border-radius:var(--r-lg);background:var(--surface);box-shadow:var(--shadow-s)}
+table{width:100%;border-collapse:collapse;font-size:15px;min-width:640px}
+th,td{text-align:left;padding:12px 14px;vertical-align:top}
+td{border-top:1px solid var(--line)}
+th{font:600 9.5px/1.35 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute);background:var(--bg-2)}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+td.us{background:var(--tint-pink);font-weight:600}
+.pill{display:inline-block;font:600 9.5px/1 var(--mono);letter-spacing:.06em;padding:5px 8px;border-radius:999px;white-space:nowrap}
+.bad{color:var(--pink-t);background:var(--tint-pink)} .warn{color:var(--warn);background:var(--warn-bg)} .ok{color:var(--ice-t);background:var(--tint-ice)}
+
+.idea{background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-s);padding:26px;display:grid;grid-template-columns:auto 1fr;gap:8px 20px}
+.idea .tag{grid-column:1;grid-row:1/span 4;display:grid;place-items:center;width:52px;height:52px;border-radius:16px;background:var(--tint-lilac);color:var(--lilac-t);font:400 20px/1 var(--display)}
+.idea h3,.idea p,.idea ul{grid-column:2}
+.idea h3{font:400 22px/1.1 var(--display)}
+.idea ul{color:var(--mute);font-size:15px;gap:4px}
+.idea .why{font:600 11px/1.6 var(--mono);color:var(--pink-t)}
+.idea.hero-idea{background:var(--panel);color:var(--panel-fg)}
+.idea.hero-idea .tag{background:var(--pink);color:var(--ink)}
+.idea.hero-idea ul{color:var(--panel-mute)}
+.idea.hero-idea .why{color:#FF6FB4}
+@media (max-width:560px){.idea{grid-template-columns:1fr}.idea .tag{grid-row:auto}.idea h3,.idea p,.idea ul{grid-column:1}}
+
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:12px;counter-reset:s}
+.flow div{background:var(--surface);border-radius:var(--r-md);box-shadow:var(--shadow-s);padding:18px;display:flex;flex-direction:column;gap:6px;counter-increment:s}
+.flow div::before{content:counter(s,decimal-leading-zero);font:600 11px/1 var(--mono);color:var(--pink-t)}
+.flow b{font:400 17px/1.15 var(--display)}
+.flow span{font-size:14.5px;color:var(--mute)}
+
+.tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));gap:16px;align-items:start}
+.tier{background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-s);padding:26px;display:flex;flex-direction:column;gap:14px}
+.tier.rec{background:var(--panel);color:var(--panel-fg);box-shadow:var(--shadow)}
+.tier.rec .setup,.tier.rec .price small{color:var(--panel-mute)}
+.tier.rec .eyebrow{color:#BBA3FF}
+.tier .price{font:400 34px/1 var(--display);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.tier .price small{font:400 13px var(--body);color:var(--mute)}
+.tier .setup{font-size:14px;color:var(--mute)}
+.tier ul{font-size:15px;gap:5px}
+.flag{align-self:flex-start;font:600 9.5px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;background:var(--pink);color:var(--ink);padding:7px 10px;border-radius:999px}
+
+.phase{padding:24px;border-radius:var(--r-lg);background:var(--surface);box-shadow:var(--shadow-s);display:flex;flex-direction:column;gap:10px}
+.phase .when{align-self:flex-start;font:600 9.5px/1 var(--mono);letter-spacing:.1em;padding:7px 10px;border-radius:999px;background:var(--tint-pink);color:var(--pink-t)}
+.phase h3{font:400 22px/1.1 var(--display)}
+.phase ul{font-size:15px;gap:5px}
+
+.qa>div{background:var(--surface);border-radius:var(--r-md);box-shadow:var(--shadow-s);padding:18px 20px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.qa b{font:400 18px/1.15 var(--display)}
+.script{background:var(--panel);color:var(--panel-fg);border-radius:var(--r-lg);padding:26px;display:flex;flex-direction:column;gap:12px}
+.script p{max-width:none;font-size:18px;line-height:1.5}
+.script .eyebrow{color:#BBA3FF}
+
+footer{margin-top:64px;padding:28px;border-radius:var(--r-xl);background:var(--panel);color:var(--panel-fg);display:grid;gap:14px}
+footer .lockup{background:var(--panel-2);color:var(--panel-fg);justify-self:start}
+footer .tag{font:400 clamp(24px,3vw,34px)/1 var(--display)}
+footer .tag em{font-style:normal;color:var(--pink)}
+footer p{font:400 11.5px/1.7 var(--mono);color:var(--panel-mute);max-width:none}
+footer .contacts{display:flex;flex-wrap:wrap;gap:8px 20px;font:600 12px/1.4 var(--mono)}
+:focus-visible{outline:2px solid var(--pink);outline-offset:3px;border-radius:6px}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="chr" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#9aa3bb"/>
+      <stop offset=".5" stop-color="#3c4158"/><stop offset=".58" stop-color="#d4d9e7"/><stop offset="1" stop-color="#ffffff"/>
+    </linearGradient>
+    <symbol id="mark" viewBox="-50 -50 100 100">
+      <g stroke="#14111F" stroke-width="3" fill="url(#chr)">
+        <ellipse cx="0" cy="-30" rx="11" ry="15"/>
+        <ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(45)"/>
+        <ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(90)"/>
+        <ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(135)"/>
+        <ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(180)"/>
+        <ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(225)"/>
+        <ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(270)"/>
+        <ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(315)"/>
+      </g>
+      <circle r="9" fill="#FF3D9A" stroke="#14111F" stroke-width="3"/>
+    </symbol>
+  </defs>
+</svg>
+
+<style>
+.cover h1{max-width:15ch}
+.verdict{background:var(--panel);color:var(--panel-fg);border-radius:var(--r-lg);padding:28px;display:flex;flex-direction:column;gap:12px}
+.verdict .eyebrow{color:#BBA3FF}
+.verdict h3{font:400 clamp(24px,3.4vw,36px)/1.08 var(--display)}
+.verdict h3 em{font-style:normal;color:var(--pink)}
+.verdict p{color:var(--panel-mute);max-width:none}
+td.win{background:var(--tint-ice);font-weight:600}
+.stage{background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-s);padding:24px;display:flex;flex-direction:column;gap:10px}
+.stage .when{align-self:flex-start;font:600 9.5px/1 var(--mono);letter-spacing:.1em;padding:7px 10px;border-radius:999px;background:var(--tint-pink);color:var(--pink-t)}
+.stage h3{font:400 22px/1.1 var(--display)}
+.stage ul{font-size:15px;gap:5px}
+</style>
+
+<div class="wrap">
+
+<header class="cover">
+  <div class="brandrow">
+    <span class="lockup"><svg viewBox="-50 -50 100 100" aria-hidden="true"><g class="spin"><use href="#mark" x="-50" y="-50" width="100" height="100"/></g></svg>aikia.wallet</span>
+    <span class="kicker"><i></i>Internal · Decision paper</span>
+  </div>
+  <div class="stack">
+    <div class="eyebrow">Which route do we take?</div>
+    <h1>PassKit or <em>our own engine.</em></h1>
+    <p class="lede">A side-by-side comparison of renting PassKit against building the pass engine ourselves, with a clear recommendation for a founder who is not a developer.</p>
+  </div>
+  <div class="verdict">
+    <div class="eyebrow">Recommendation</div>
+    <h3>Start on PassKit. <em>Build your own engine later, if the business earns it.</em></h3>
+    <p>You are selling a service to cafés, not software to engineers. PassKit removes the hardest and riskiest technical work, lets you show a real card this week, and costs little until venues are paying. Your own engine only becomes worth it at around 25 venues or more.</p>
+  </div>
+</header>
+
+<nav class="toc" aria-label="Contents">
+  <a href="#apple"><span>01</span>The Apple fee question</a>
+  <a href="#side"><span>02</span>Side by side</a>
+  <a href="#money"><span>03</span>Cost as you grow</a>
+  <a href="#scen"><span>04</span>Scenarios</a>
+  <a href="#why"><span>05</span>Why this recommendation</a>
+  <a href="#path"><span>06</span>The path to follow</a>
+</nav>
+
+<section id="apple">
+  <div class="chap"><span class="folio">01</span><h2>Do you still pay Apple on the PassKit route?</h2></div>
+  <div class="callout">
+    <div class="eyebrow">Short answer</div>
+    <p class="big">Yes. You pay Apple US$99 a year on both routes.</p>
+    <p>PassKit states that live Apple Wallet cards must be signed with a certificate from your own Apple Developer account, and that there is no alternative. So the PassKit route costs the Apple fee plus PassKit's fees. Google's wallet account is free on both routes.</p>
+  </div>
+  <p class="muted">There is an upside. Because the cards carry your certificate and not PassKit's, they belong to your Apple account. That makes a later move to your own engine far easier.</p>
+</section>
+
+<section id="side">
+  <div class="chap"><span class="folio">02</span><h2>Side by side</h2></div>
+  <div class="tbl"><table>
+    <thead><tr><th style="width:24%"></th><th>PassKit route</th><th>Own engine</th></tr></thead>
+    <tbody>
+      <tr><td>First demo card</td><td class="win">Day 1</td><td>7 to 10 days</td></tr>
+      <tr><td>Ready to sell</td><td class="win">About 2 to 3 weeks</td><td>About 4 weeks, plus a pilot</td></tr>
+      <tr><td>Can start with zero code</td><td class="win">Yes, using PassKit's own scanner and portal</td><td>No</td></tr>
+      <tr><td>Technical skill needed</td><td class="win">Low to medium. A web scanner and dashboard.</td><td>High. Certificates, signing, push, two wallet systems.</td></tr>
+      <tr><td>Who fixes it when Apple or Google change rules</td><td class="win">PassKit</td><td>You</td></tr>
+      <tr><td>Who is responsible for card security</td><td class="win">Shared. PassKit secures the engine.</td><td>You alone</td></tr>
+      <tr><td>Upfront cost</td><td>Apple fee, PassKit trial is free</td><td>Apple fee</td></tr>
+      <tr><td>Monthly cost at 10 venues</td><td>About ₹26,000</td><td class="win">About ₹4,000</td></tr>
+      <tr><td>Cost grows with members</td><td>Yes, per card</td><td class="win">Barely</td></tr>
+      <tr><td>Billed in</td><td>US dollars</td><td class="win">Mostly dollars too, but small</td></tr>
+      <tr><td>Freedom to invent features</td><td>Within what PassKit allows</td><td class="win">Unlimited</td></tr>
+      <tr><td>Branding</td><td>Card is yours. Scanner and dashboard are yours only if you build them.</td><td class="win">Everything is yours</td></tr>
+      <tr><td>Dependence on a supplier</td><td>High</td><td class="win">Low</td></tr>
+      <tr><td>Where member data lives</td><td>PassKit and your database</td><td class="win">Your database only</td></tr>
+      <tr><td>Value of the company to an investor</td><td>A service business on rented tech</td><td class="win">Owns its technology</td></tr>
+      <tr><td>What you lose if no café buys</td><td class="win">A few weeks and the Apple fee</td><td>A month or more of build time</td></tr>
+    </tbody>
+  </table></div>
+  <p class="muted small">Shaded cells mark the stronger side on each line. PassKit wins the lines that matter at the start. Own engine wins the lines that matter at scale.</p>
+</section>
+
+<section id="money">
+  <div class="chap"><span class="folio">03</span><h2>Cost as you grow</h2></div>
+  <p>Assumes 600 members per venue, venues on the ₹9,999 Signature plan, one PassKit team seat, and roughly ₹88 to the dollar.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Venues</th><th>Cards</th><th>Your monthly revenue</th><th>PassKit route cost</th><th>Own engine cost</th></tr></thead>
+    <tbody>
+      <tr><td class="num">3</td><td class="num">1,800</td><td class="num">≈ ₹30,000</td><td class="num">≈ ₹13,600</td><td class="num">≈ ₹4,000</td></tr>
+      <tr><td class="num">10</td><td class="num">6,000</td><td class="num">≈ ₹1.0 L</td><td class="num">≈ ₹26,000</td><td class="num">≈ ₹4,000</td></tr>
+      <tr><td class="num">50</td><td class="num">30,000</td><td class="num">≈ ₹5.0 L</td><td class="num">≈ ₹61,000</td><td class="num">≈ ₹4,000 to ₹9,000</td></tr>
+    </tbody>
+  </table></div>
+  <div class="grid2">
+    <div class="card"><div class="eyebrow">What the table shows</div><h3>PassKit is affordable at every stage</h3><p class="muted">Even at 50 venues it takes about 12% of revenue. It never threatens the business. It only trims the margin.</p></div>
+    <div class="card"><div class="eyebrow">What the table hides</div><h3>Own engine has a people cost</h3><p class="muted">The ₹4,000 is servers only. Someone must maintain the engine, renew certificates and fix breakages. A part-time developer costs far more than the PassKit bill at 10 venues.</p></div>
+  </div>
+  <p class="muted small">PassKit route cost = PassKit bill plus ₹4,000 for our own scanner and dashboard hosting. PassKit bills are my estimates from its public rate card, charging each volume band at its own rate. Paid branding add-ons are not included because PassKit does not publish their prices. Check all figures in PassKit's calculator.</p>
+</section>
+
+<section id="scen">
+  <div class="chap"><span class="folio">04</span><h2>Scenarios</h2></div>
+  <div class="tbl"><table>
+    <thead><tr><th style="width:36%">If this happens</th><th>Better route</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td>You work alone and want to sell next week</td><td><span class="pill ok">PASSKIT</span></td><td>A demo card today and no code needed for the first pilot.</td></tr>
+      <tr><td>No café buys after 20 meetings</td><td><span class="pill ok">PASSKIT</span></td><td>You learn that cheaply and change the offer, with nothing built to throw away.</td></tr>
+      <tr><td>Three cafés sign in the first month</td><td><span class="pill ok">PASSKIT</span></td><td>You can serve them straight away while the aikia scanner and dashboard are built.</td></tr>
+      <tr><td>Something breaks on a Saturday rush</td><td><span class="pill ok">PASSKIT</span></td><td>The engine has a company behind it. With your own, the fix waits for you.</td></tr>
+      <tr><td>Apple or Google change the wallet rules</td><td><span class="pill ok">PASSKIT</span></td><td>They update. You do nothing.</td></tr>
+      <tr><td>You hire or partner with a strong developer</td><td><span class="pill warn">EITHER</span></td><td>Own engine becomes realistic, but starting on PassKit still gets revenue sooner.</td></tr>
+      <tr><td>You pass 25 venues</td><td><span class="pill bad">OWN ENGINE</span></td><td>The PassKit bill now funds real developer time, and you have proof the business works.</td></tr>
+      <tr><td>PassKit raises prices sharply or shuts down</td><td><span class="pill bad">OWN ENGINE</span></td><td>This is the main risk of renting. Your own Apple certificate and your own ledger are the protection.</td></tr>
+      <tr><td>You want the Circle and features no one else has</td><td><span class="pill bad">OWN ENGINE</span></td><td>Deep features need full control, though most can be built in your own layer on top of PassKit first.</td></tr>
+      <tr><td>You plan to raise investment</td><td><span class="pill bad">OWN ENGINE</span></td><td>Investors value owned technology. Paying customers on PassKit come first and make that conversation possible.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="why">
+  <div class="chap"><span class="folio">05</span><h2>Why I recommend PassKit first</h2></div>
+  <div class="grid2">
+    <div class="card"><div class="eyebrow">Reason 1</div><h3>The real risk is sales, not software</h3><p class="muted">Nobody knows yet whether cafés will pay ₹9,999 a month. Find that out in weeks with a rented engine before spending a month building one.</p></div>
+    <div class="card"><div class="eyebrow">Reason 2</div><h3>The hardest part is the part you rent</h3><p class="muted">Signing cards, certificates and pushing updates to two wallet systems is where a non-developer gets stuck. Scanner and dashboard pages are far easier to build with AI help.</p></div>
+    <div class="card"><div class="eyebrow">Reason 3</div><h3>Mistakes cost less</h3><p class="muted">The two promises, correct counts and private lists, are easier to keep when a specialist runs the engine and you focus on one small layer.</p></div>
+    <div class="card"><div class="eyebrow">Reason 4</div><h3>Nothing is wasted</h3><p class="muted">The join page, scanner, dashboard, ledger and venue process you build on PassKit all carry over when you switch engines.</p></div>
+  </div>
+  <div class="card">
+    <div class="eyebrow">What would change my answer</div><h3>Choose your own engine from day one only if</h3>
+    <ul>
+      <li>you have a committed developer or technical co-founder, and</li>
+      <li>you can wait a month or more before the first sale, and</li>
+      <li>owning the technology matters more to you right now than proving demand.</li>
+    </ul>
+    <p class="muted small">This is a business judgement based on what you have told me. The numbers behind it are estimates, and the decision is yours.</p>
+  </div>
+</section>
+
+<section id="path">
+  <div class="chap"><span class="folio">06</span><h2>The path to follow</h2></div>
+  <div class="grid3">
+    <div class="stage"><div class="when">STAGE 1 · WEEKS 1–3</div><h3>Sell with no code</h3>
+      <ul><li>Join the Apple Developer Program</li><li>Start the PassKit trial and design the demo card</li><li>Use PassKit's scanner app for the first pilot café</li><li>Run 20 venue meetings</li></ul>
+      <p class="muted small">Goal: one to three cafés say yes.</p></div>
+    <div class="stage"><div class="when">STAGE 2 · MONTHS 1–3</div><h3>Add the aikia layer</h3>
+      <ul><li>Build our own join page, web scanner and dashboard</li><li>Keep every stamp in our own ledger</li><li>Add Fill My Tables and tiers</li><li>Pass the launch gates</li></ul>
+      <p class="muted small">Goal: 10 paying venues, nothing shows PassKit.</p></div>
+    <div class="stage"><div class="when">STAGE 3 · ABOUT 25 VENUES</div><h3>Decide on our own engine</h3>
+      <ul><li>Compare the PassKit bill with a developer's cost</li><li>If it pays, build the engine from the Developer Blueprint</li><li>Move venues across one at a time</li></ul>
+      <p class="muted small">Goal: own the technology once revenue justifies it.</p></div>
+  </div>
+  <div class="callout">
+    <div class="eyebrow">This week</div>
+    <p class="big">Enrol with Apple, start the PassKit trial and make the demo card.</p>
+  </div>
+</section>
+
+<footer>
+  <span class="lockup"><svg viewBox="-50 -50 100 100" aria-hidden="true"><g class="spin"><use href="#mark" x="-50" y="-50" width="100" height="100"/></g></svg>aikia.wallet</span>
+  <div class="tag">Prove it first. <em>Own it later.</em></div>
+  <div class="contacts"><span>connect@aikia.world</span><span>@aikia.wrld</span></div>
+  <p>Internal decision paper · aikia.wrld · October 2026. PassKit's Apple Developer requirement and rate card were read from help.passkit.com and passkit.com in October 2026 and can change. Cost and timeline figures are estimates.</p>
+</footer>
+
+</div>
+
+</body></html>

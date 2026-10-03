@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+</head><body>
+<title>aikia.wallet Blueprint</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Hanken+Grotesk:wght@400;500;600;700&family=Martian+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: aikia.wrld brand system (Ink / Frost / Hyper Pink / Lilac / Ice + chrome; Dela Gothic One, Hanken Grotesk, Martian Mono). One reading column of soft rounded panels; the cover carries the product itself: a wallet pass and the lock-screen nudge. */
+:root{
+  --bg:#F5F6FA; --bg-2:#ECEEF5; --surface:#FFFFFF; --fg:#14111F; --mute:#5E5A73; --dim:#A6A3B8;
+  --line:rgba(20,17,31,.1);
+  --pink:#FF3D9A; --pink-t:#C2126A; --lilac:#A98BFF; --lilac-t:#6B4FD6; --ice:#7FE7F2; --ice-t:#0B7F8A; --ink:#14111F;
+  --panel:#14111F; --panel-fg:#F8F9FD; --panel-mute:#A9A3C2; --panel-2:#221D33;
+  --tint-pink:rgba(255,61,154,.1); --tint-lilac:rgba(169,139,255,.16); --tint-ice:rgba(127,231,242,.24);
+  --warn:#8A5A00; --warn-bg:rgba(240,170,40,.18);
+  --shadow:0 30px 70px -36px rgba(20,17,31,.35); --shadow-s:0 10px 30px -18px rgba(20,17,31,.35);
+  --display:"Dela Gothic One","Arial Black",Impact,sans-serif;
+  --body:"Hanken Grotesk","Helvetica Neue",Arial,sans-serif;
+  --mono:"Martian Mono",ui-monospace,Menlo,monospace;
+  --r-xl:32px; --r-lg:24px; --r-md:16px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#14111F; --bg-2:#1A1627; --surface:#221D33; --fg:#F8F9FD; --mute:#A9A3C2; --dim:#5F5A78;
+  --line:rgba(248,249,253,.1); --panel:#2C2543; --panel-2:#3A3157;
+  --pink-t:#FF6FB4; --lilac-t:#BBA3FF; --ice-t:#7FE7F2;
+  --tint-pink:rgba(255,61,154,.14); --tint-lilac:rgba(169,139,255,.16); --tint-ice:rgba(127,231,242,.12);
+  --warn:#F2C066; --warn-bg:rgba(240,170,40,.16);
+  --shadow:0 30px 70px -30px rgba(0,0,0,.75); --shadow-s:0 10px 30px -14px rgba(0,0,0,.7); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#14111F; --bg-2:#1A1627; --surface:#221D33; --fg:#F8F9FD; --mute:#A9A3C2; --dim:#5F5A78;
+  --line:rgba(248,249,253,.1); --panel:#2C2543; --panel-2:#3A3157;
+  --pink-t:#FF6FB4; --lilac-t:#BBA3FF; --ice-t:#7FE7F2;
+  --tint-pink:rgba(255,61,154,.14); --tint-lilac:rgba(169,139,255,.16); --tint-ice:rgba(127,231,242,.12);
+  --warn:#F2C066; --warn-bg:rgba(240,170,40,.16);
+  --shadow:0 30px 70px -30px rgba(0,0,0,.75); --shadow-s:0 10px 30px -14px rgba(0,0,0,.7); color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:400 16px/1.6 var(--body);margin:0;-webkit-font-smoothing:antialiased}
+::selection{background:var(--pink);color:var(--ink)}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:20px;padding-block:24px 80px}
+h1,h2,h3{font-weight:400;text-wrap:balance;margin:0;line-height:1.05}
+h2{font:400 clamp(28px,4vw,46px)/1 var(--display);letter-spacing:-.015em}
+h3{font:700 19px/1.3 var(--body)}
+p{margin:0;max-width:68ch}
+.eyebrow{font:600 10px/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--lilac-t)}
+.muted{color:var(--mute)}
+.small{font-size:14px}
+.stack{display:flex;flex-direction:column;gap:16px}
+
+.lockup{display:inline-flex;align-items:center;gap:10px;height:48px;padding:0 18px 0 7px;border-radius:999px;background:var(--surface);box-shadow:var(--shadow-s);color:var(--fg);font:600 13px/1 var(--mono)}
+.lockup svg{width:34px;height:34px}
+.spin{transform-box:fill-box;transform-origin:50% 50%;animation:spin 20s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation:none}}
+
+/* cover */
+.cover{position:relative;overflow:hidden;margin-top:8px;padding:clamp(24px,5vw,56px);border-radius:var(--r-xl);background:radial-gradient(120% 90% at 10% 0%,var(--tint-lilac),transparent 60%),radial-gradient(90% 80% at 100% 100%,var(--tint-ice),transparent 60%),radial-gradient(60% 60% at 80% 10%,var(--tint-pink),transparent 70%),var(--surface);box-shadow:var(--shadow);display:grid;gap:28px}
+.brandrow{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.kicker{display:inline-flex;align-items:center;gap:10px;min-height:32px;padding:6px 14px 6px 8px;border-radius:999px;background:var(--surface);box-shadow:var(--shadow-s);font:600 10px/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.kicker i{width:16px;height:16px;border-radius:50%;background:var(--pink);flex:none}
+.hero{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:32px;align-items:center}
+.hero>*{min-width:0}
+.cover h1{font:400 clamp(38px,6.4vw,78px)/.94 var(--display);letter-spacing:-.03em}
+.cover h1 em{color:var(--pink);font-style:normal}
+.lede{font-size:clamp(17px,1.5vw,20px);color:var(--mute);max-width:54ch}
+@media (max-width:820px){.hero{grid-template-columns:1fr}}
+
+/* the product: pass + nudge */
+.demo{display:flex;flex-direction:column;gap:14px;max-width:360px;width:100%;justify-self:center}
+.nudge{background:var(--surface);border-radius:20px;box-shadow:var(--shadow-s);padding:12px 14px;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:center;transform:rotate(-1.5deg)}
+.nudge svg{width:34px;height:34px;grid-row:1/span 2}
+.nudge b{font:700 14px/1.2 var(--body)}
+.nudge span{font-size:13.5px;line-height:1.35;color:var(--mute)}
+.nudge small{grid-column:1/-1;font:400 9.5px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dim);padding-top:4px}
+.pass{background:linear-gradient(150deg,#2B2444 0%,#14111F 55%,#0C0A14 100%);color:#F8F9FD;border-radius:26px;padding:22px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:18px;position:relative;overflow:hidden}
+.pass::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.09) 48%,transparent 60%);pointer-events:none}
+.pass-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.pass-top b{font:400 20px/1 var(--display)}
+.pass-top svg{width:40px;height:40px}
+.tierchip{align-self:flex-start;font:600 9.5px/1 var(--mono);letter-spacing:.16em;padding:7px 10px;border-radius:999px;color:#14111F;background:linear-gradient(180deg,#fff,#9aa3bb 48%,#d4d9e7 60%,#fff)}
+.pass-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.pass-grid span{display:block;font:600 9px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:#A9A3C2;margin-bottom:6px}
+.pass-grid div{font:600 17px/1.15 var(--body);font-variant-numeric:tabular-nums}
+.stamps{display:flex;gap:7px;flex-wrap:wrap}
+.stamps i{width:22px;height:22px;border-radius:50%;border:1.5px solid #5F5A78}
+.stamps i.on{background:#FF3D9A;border-color:#FF3D9A}
+.pass-foot{display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
+.qr{width:58px;height:58px;border-radius:10px;background:#F8F9FD;padding:6px;flex:none}
+.qr i{display:block;width:100%;height:100%;background:conic-gradient(#14111F 25%,transparent 0 50%,#14111F 0 75%,transparent 0) 0 0/11.5px 11.5px}
+.pass-foot p{font:400 9.5px/1.5 var(--mono);color:#A9A3C2}
+.sample{font:400 10px/1.4 var(--mono);color:var(--dim);text-align:center;letter-spacing:.06em}
+
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.meta div{background:var(--surface);border-radius:var(--r-md);box-shadow:var(--shadow-s);padding:14px 16px;font-weight:500}
+.meta b{display:block;font:600 9.5px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin-bottom:8px}
+
+.toc{display:flex;flex-wrap:wrap;gap:8px;padding-block:28px 4px}
+.toc a{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 14px 0 6px;border-radius:999px;background:var(--surface);box-shadow:var(--shadow-s);color:var(--fg);text-decoration:none;font:500 14px/1 var(--body)}
+.toc a span{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--bg-2);font:600 10px/1 var(--mono)}
+.toc a:hover span,.toc a:focus-visible span{background:var(--pink);color:var(--ink)}
+
+section{padding-block:56px 8px;display:flex;flex-direction:column;gap:24px}
+.chap{display:flex;align-items:center;gap:16px}
+.folio{display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:var(--pink);color:var(--ink);font:600 13px/1 var(--mono);flex:none}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:16px}
+.grid2>*,.grid3>*{min-width:0}
+.card{background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-s);padding:24px;display:flex;flex-direction:column;gap:10px}
+.card h3{font:400 20px/1.12 var(--display)}
+ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px}
+li::marker{color:var(--pink)}
+.callout{border-radius:var(--r-lg);background:linear-gradient(135deg,var(--tint-pink),var(--tint-lilac));padding:24px 26px;display:flex;flex-direction:column;gap:10px}
+.callout p{max-width:none}
+.callout .eyebrow{color:var(--pink-t)}
+.big{font:400 clamp(22px,3vw,32px)/1.15 var(--display);letter-spacing:-.01em}
+
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));gap:12px}
+.facts div{background:var(--surface);border-radius:var(--r-md);box-shadow:var(--shadow-s);padding:18px}
+.facts .n{font:400 30px/1.05 var(--display);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.facts .l{font:400 11px/1.5 var(--mono);color:var(--mute);margin-top:6px}
+
+.tbl{overflow-x:auto;border-radius:var(--r-lg);background:var(--surface);box-shadow:var(--shadow-s)}
+table{width:100%;border-collapse:collapse;font-size:15px;min-width:640px}
+th,td{text-align:left;padding:12px 14px;vertical-align:top}
+td{border-top:1px solid var(--line)}
+th{font:600 9.5px/1.35 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute);background:var(--bg-2)}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+td.us{background:var(--tint-pink);font-weight:600}
+.pill{display:inline-block;font:600 9.5px/1 var(--mono);letter-spacing:.06em;padding:5px 8px;border-radius:999px;white-space:nowrap}
+.bad{color:var(--pink-t);background:var(--tint-pink)} .warn{color:var(--warn);background:var(--warn-bg)} .ok{color:var(--ice-t);background:var(--tint-ice)}
+
+.idea{background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-s);padding:26px;display:grid;grid-template-columns:auto 1fr;gap:8px 20px}
+.idea .tag{grid-column:1;grid-row:1/span 4;display:grid;place-items:center;width:52px;height:52px;border-radius:16px;background:var(--tint-lilac);color:var(--lilac-t);font:400 20px/1 var(--display)}
+.idea h3,.idea p,.idea ul{grid-column:2}
+.idea h3{font:400 22px/1.1 var(--display)}
+.idea ul{color:var(--mute);font-size:15px;gap:4px}
+.idea .why{font:600 11px/1.6 var(--mono);color:var(--pink-t)}
+.idea.hero-idea{background:var(--panel);color:var(--panel-fg)}
+.idea.hero-idea .tag{background:var(--pink);color:var(--ink)}
+.idea.hero-idea ul{color:var(--panel-mute)}
+.idea.hero-idea .why{color:#FF6FB4}
+@media (max-width:560px){.idea{grid-template-columns:1fr}.idea .tag{grid-row:auto}.idea h3,.idea p,.idea ul{grid-column:1}}
+
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:12px;counter-reset:s}
+.flow div{background:var(--surface);border-radius:var(--r-md);box-shadow:var(--shadow-s);padding:18px;display:flex;flex-direction:column;gap:6px;counter-increment:s}
+.flow div::before{content:counter(s,decimal-leading-zero);font:600 11px/1 var(--mono);color:var(--pink-t)}
+.flow b{font:400 17px/1.15 var(--display)}
+.flow span{font-size:14.5px;color:var(--mute)}
+
+.tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));gap:16px;align-items:start}
+.tier{background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-s);padding:26px;display:flex;flex-direction:column;gap:14px}
+.tier.rec{background:var(--panel);color:var(--panel-fg);box-shadow:var(--shadow)}
+.tier.rec .setup,.tier.rec .price small{color:var(--panel-mute)}
+.tier.rec .eyebrow{color:#BBA3FF}
+.tier .price{font:400 34px/1 var(--display);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.tier .price small{font:400 13px var(--body);color:var(--mute)}
+.tier .setup{font-size:14px;color:var(--mute)}
+.tier ul{font-size:15px;gap:5px}
+.flag{align-self:flex-start;font:600 9.5px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;background:var(--pink);color:var(--ink);padding:7px 10px;border-radius:999px}
+
+.phase{padding:24px;border-radius:var(--r-lg);background:var(--surface);box-shadow:var(--shadow-s);display:flex;flex-direction:column;gap:10px}
+.phase .when{align-self:flex-start;font:600 9.5px/1 var(--mono);letter-spacing:.1em;padding:7px 10px;border-radius:999px;background:var(--tint-pink);color:var(--pink-t)}
+.phase h3{font:400 22px/1.1 var(--display)}
+.phase ul{font-size:15px;gap:5px}
+
+.qa>div{background:var(--surface);border-radius:var(--r-md);box-shadow:var(--shadow-s);padding:18px 20px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.qa b{font:400 18px/1.15 var(--display)}
+.script{background:var(--panel);color:var(--panel-fg);border-radius:var(--r-lg);padding:26px;display:flex;flex-direction:column;gap:12px}
+.script p{max-width:none;font-size:18px;line-height:1.5}
+.script .eyebrow{color:#BBA3FF}
+
+footer{margin-top:64px;padding:28px;border-radius:var(--r-xl);background:var(--panel);color:var(--panel-fg);display:grid;gap:14px}
+footer .lockup{background:var(--panel-2);color:var(--panel-fg);justify-self:start}
+footer .tag{font:400 clamp(24px,3vw,34px)/1 var(--display)}
+footer .tag em{font-style:normal;color:var(--pink)}
+footer p{font:400 11.5px/1.7 var(--mono);color:var(--panel-mute);max-width:none}
+footer .contacts{display:flex;flex-wrap:wrap;gap:8px 20px;font:600 12px/1.4 var(--mono)}
+:focus-visible{outline:2px solid var(--pink);outline-offset:3px;border-radius:6px}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="chr" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#9aa3bb"/>
+      <stop offset=".5" stop-color="#3c4158"/><stop offset=".58" stop-color="#d4d9e7"/><stop offset="1" stop-color="#ffffff"/>
+    </linearGradient>
+    <symbol id="mark" viewBox="-50 -50 100 100">
+      <g stroke="#14111F" stroke-width="3" fill="url(#chr)">
+        <ellipse cx="0" cy="-30" rx="11" ry="15"/>
+        <ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(45)"/>
+        <ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(90)"/>
+        <ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(135)"/>
+        <ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(180)"/>
+        <ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(225)"/>
+        <ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(270)"/>
+        <ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(315)"/>
+      </g>
+      <circle r="9" fill="#FF3D9A" stroke="#14111F" stroke-width="3"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+
+<header class="cover">
+  <div class="brandrow">
+    <span class="lockup"><svg viewBox="-50 -50 100 100" aria-hidden="true"><g class="spin"><use href="#mark" x="-50" y="-50" width="100" height="100"/></g></svg>aikia.wallet</span>
+    <span class="kicker"><i></i>Internal · Product and go-to-market blueprint</span>
+  </div>
+  <div class="hero">
+    <div class="stack">
+      <div class="eyebrow">A new product from aikia.wrld</div>
+      <h1>The black card <em>for every café.</em></h1>
+      <p class="lede">A members' card that lives in the wallet already on a guest's phone. No app to download. It knows when they walk past, remembers their usual, and brings them back on the days the café needs them most.</p>
+    </div>
+    <div class="demo" aria-label="Sample of the lock-screen nudge and the wallet pass">
+      <div class="nudge">
+        <svg viewBox="-50 -50 100 100" aria-hidden="true"><use href="#mark" x="-50" y="-50" width="100" height="100"/></svg>
+        <b>Café Noor · 120 m away</b>
+        <span>Morning, Aarav. Your flat white is on us until 11.</span>
+        <small>Wallet · now</small>
+      </div>
+      <div class="pass">
+        <div class="pass-top"><b>Café Noor</b><svg viewBox="-50 -50 100 100" aria-hidden="true"><use href="#mark" x="-50" y="-50" width="100" height="100"/></svg></div>
+        <span class="tierchip">CHROME MEMBER</span>
+        <div class="pass-grid">
+          <div><span>Member</span>Aarav Shah</div>
+          <div><span>Balance</span>₹1,840</div>
+          <div><span>The usual</span>Flat white, oat</div>
+          <div><span>Streak</span>6 mornings</div>
+        </div>
+        <div class="stamps" aria-label="7 of 9 stamps"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></div>
+        <div class="pass-foot"><p>2 visits to your free cup<br>Powered by aikia.wallet</p><div class="qr"><i></i></div></div>
+      </div>
+      <div class="sample">Sample. Café and member are illustrative.</div>
+    </div>
+  </div>
+  <div class="meta">
+    <div><b>What it is</b>Loyalty, prepaid balance and messaging in one wallet pass</div>
+    <div><b>Who it is for</b>Cafés, restaurants, bakeries, bars, cloud kitchens</div>
+    <div><b>How we earn</b>Setup fee plus monthly subscription</div>
+    <div><b>First goal</b>10 founding venues in 90 days</div>
+  </div>
+</header>
+
+<nav class="toc" aria-label="Contents">
+  <a href="#idea"><span>01</span>The idea</a>
+  <a href="#problem"><span>02</span>The problem</a>
+  <a href="#how"><span>03</span>How it works</a>
+  <a href="#features"><span>04</span>Signature features</a>
+  <a href="#unique"><span>05</span>Why it is different</a>
+  <a href="#build"><span>06</span>What we need</a>
+  <a href="#pricing"><span>07</span>Pricing</a>
+  <a href="#numbers"><span>08</span>The numbers</a>
+  <a href="#sell"><span>09</span>How we sell it</a>
+  <a href="#roadmap"><span>10</span>90-day launch</a>
+  <a href="#risks"><span>11</span>Rules and risks</a>
+</nav>
+
+<section id="idea">
+  <div class="chap"><span class="folio">01</span><h2>The idea in one minute</h2></div>
+  <p>Every café has regulars, and almost none of them know who those regulars are. Paper stamp cards get lost. Loyalty apps never get downloaded. Delivery platforms keep the customer's number and charge commission on every order.</p>
+  <p>aikia.wallet gives each venue its own members' card inside Apple Wallet and Google Wallet. A guest scans one QR code at the counter and has the card in ten seconds. From then on the venue can recognise them, reward them, hold their prepaid balance and message their lock screen for free.</p>
+  <div class="callout">
+    <div class="eyebrow">The positioning</div>
+    <p class="big">We do not sell a loyalty program. We sell a members' club, designed by a luxury agency and run for the owner.</p>
+    <p class="muted">Software companies hand a café a dashboard and leave. aikia designs the card, writes the offers, runs the campaigns and reports the extra revenue. That service layer is what competitors cannot copy.</p>
+  </div>
+</section>
+
+<section id="problem">
+  <div class="chap"><span class="folio">02</span><h2>The problem we solve for owners</h2></div>
+  <div class="grid2">
+    <div class="card"><div class="eyebrow">Pain 1</div><h3>They do not own their customers</h3><p class="muted">Aggregators and payment apps hold the phone number. The café cannot reach its own regulars without paying someone.</p></div>
+    <div class="card"><div class="eyebrow">Pain 2</div><h3>Empty hours cost money</h3><p class="muted">Rent and staff are fixed. A quiet Tuesday at 3 pm is pure loss, and the owner has no button to press to fill it.</p></div>
+    <div class="card"><div class="eyebrow">Pain 3</div><h3>Discounts go to strangers</h3><p class="muted">Blanket offers attract one-time deal hunters. Regulars who would have come anyway get the same discount.</p></div>
+    <div class="card"><div class="eyebrow">Pain 4</div><h3>Nobody downloads café apps</h3><p class="muted">A single-venue app is expensive to build and guests will not install it. The wallet is already on every phone.</p></div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="chap"><span class="folio">03</span><h2>How it works</h2></div>
+  <h3>For the guest: ten seconds, no app</h3>
+  <div class="flow">
+    <div><b>Scan</b><span>QR on the table tent, bill or an NFC stand at the counter.</span></div>
+    <div><b>Add</b><span>Name and phone number, then one tap on Add to Wallet.</span></div>
+    <div><b>Use</b><span>Show the card when paying. Staff scan it, points and balance update live.</span></div>
+    <div><b>Return</b><span>The card nudges them when nearby, on their streak, or when a reward is ready.</span></div>
+  </div>
+  <h3>For the owner: one tablet, one dashboard</h3>
+  <div class="flow">
+    <div><b>We set it up</b><span>aikia designs the card, loads the menu rewards and trains the staff in one visit.</span></div>
+    <div><b>Staff scan</b><span>Any phone or tablet works as the scanner. POS link is optional at the start.</span></div>
+    <div><b>Owner sees</b><span>Members, visits, top 50 guests, lapsed guests and revenue the card brought in.</span></div>
+    <div><b>We run it</b><span>Monthly campaigns, offers and a one-page report from the aikia team.</span></div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="chap"><span class="folio">04</span><h2>Signature features</h2></div>
+  <p>Four headline features carry the pitch. The rest make the product hard to leave.</p>
+
+  <div class="idea hero-idea"><div class="tag">I</div><h3>Halo: the walk-past nudge</h3>
+    <p>When a member comes within a set distance of the café, their lock screen lights up with a personal offer. This is your original idea, and it becomes the demo that closes the sale.</p>
+    <ul><li>Works on iPhone and Android. The phone decides the exact distance (roughly 100 m), and each card can watch up to 10 spots.</li><li>Smart rules: the nudge is switched off outside opening hours and for the rest of the day after a visit.</li><li>The message changes with context: morning coffee, a rainy-day hot chocolate, a slow-afternoon treat.</li></ul>
+    <p class="why">Why it wins: it turns footfall that was walking past into footfall that walks in, at zero cost per message.</p></div>
+
+  <div class="idea hero-idea"><div class="tag">II</div><h3>Fill My Tables: the quiet-hour button</h3>
+    <p>The owner taps one button when the room is empty. Every member of that café gets a 45-minute offer on their phone. When the room fills, the offer ends by itself.</p>
+    <ul><li>Offers go only to members, so the public menu price is never discounted.</li><li>The dashboard shows how many came and what they spent.</li></ul>
+    <p class="why">Why it wins: airlines and hotels price by demand. No independent café can do it today.</p></div>
+
+  <div class="idea hero-idea"><div class="tag">III</div><h3>Status you can see: Ink, Chrome, Pink</h3>
+    <p>The card itself changes as a guest climbs. It starts as Ink, turns Chrome, then Hyper Pink for the top few percent. People chase status harder than they chase points.</p>
+    <ul><li>Each tier unlocks things money cannot buy: a secret menu, a reserved table, first taste of new items.</li><li>Staff see the tier and the guest's name on scan and greet them by it.</li></ul>
+    <p class="why">Why it wins: a free coffee is forgotten. Being a Pink member at your café is talked about.</p></div>
+
+  <div class="idea hero-idea"><div class="tag">IV</div><h3>The Circle: one city, one passport</h3>
+    <p>Every venue on aikia.wallet joins a curated network. A member of one café discovers the others, and their status is recognised across the Circle.</p>
+    <ul><li>Venues send each other guests instead of paying for ads.</li><li>City challenges: visit five Circle venues this month and unlock a reward.</li><li>Balances stay with each venue. Only status and discovery travel.</li></ul>
+    <p class="why">Why it wins: each new venue makes the card more valuable for every other venue. This is how the product becomes a network and not a tool.</p></div>
+
+  <div class="grid3">
+    <div class="card"><div class="eyebrow">Money in advance</div><h3>Prepaid balance</h3><p class="muted">Load ₹2,000 and get ₹2,300 to spend. The café receives cash upfront and a guest who is committed to returning.</p></div>
+    <div class="card"><div class="eyebrow">Recurring revenue</div><h3>Coffee Club</h3><p class="muted">A paid monthly membership, for example one coffee a day for a fixed fee. Predictable income for the owner.</p></div>
+    <div class="card"><div class="eyebrow">Growth</div><h3>Gift a Coffee</h3><p class="muted">A member sends a drink to a friend over WhatsApp. The friend claims it by adding the card. Every gift is a new member.</p></div>
+    <div class="card"><div class="eyebrow">Service</div><h3>The Usual</h3><p class="muted">The card remembers the last order. Staff see it on scan, so a regular is served like a regular by any staff member.</p></div>
+    <div class="card"><div class="eyebrow">Habit</div><h3>Streaks and rituals</h3><p class="muted">Five mornings in a row earns a reward. Missing a day sends a gentle reminder.</p></div>
+    <div class="card"><div class="eyebrow">Retention</div><h3>Win-back autopilot</h3><p class="muted">A member who has not visited in 21 days gets an automatic come-back offer.</p></div>
+    <div class="card"><div class="eyebrow">Reputation</div><h3>Review engine</h3><p class="muted">After a third happy visit the card asks for a Google review. Ratings rise with no extra effort.</p></div>
+    <div class="card"><div class="eyebrow">Moments</div><h3>Birthday and firsts</h3><p class="muted">Birthday treat, visit number 10, one year as a member. Each is sent automatically.</p></div>
+    <div class="card"><div class="eyebrow">Exclusivity</div><h3>Drops and secret menu</h3><p class="muted">Limited items that only members see, released to the top tier first.</p></div>
+    <div class="card"><div class="eyebrow">Acquisition</div><h3>Bring a friend</h3><p class="muted">Both people earn when a member's friend joins and makes a first visit.</p></div>
+    <div class="card"><div class="eyebrow">B2B</div><h3>Office packs</h3><p class="muted">A nearby company buys 50 prepaid cards for its team. One sale, fifty members.</p></div>
+    <div class="card"><div class="eyebrow">Insight</div><h3>Owner intelligence</h3><p class="muted">Best guests, quiet hours, items that bring people back, and the revenue the card produced.</p></div>
+  </div>
+</section>
+
+<section id="unique">
+  <div class="chap"><span class="folio">05</span><h2>Why it is different</h2></div>
+  <div class="tbl">
+    <table>
+      <thead><tr><th></th><th>Paper stamp card</th><th>Café's own app</th><th>Delivery platform</th><th>aikia.wallet</th></tr></thead>
+      <tbody>
+        <tr><td>Guest effort to join</td><td>None</td><td>Download and sign up</td><td>Already has it</td><td class="us">10-second scan, no app</td></tr>
+        <tr><td>Who owns the customer</td><td>Nobody</td><td>The café</td><td>The platform</td><td class="us">The café</td></tr>
+        <tr><td>Can message the guest</td><td>No</td><td>If installed</td><td>Paid ads only</td><td class="us">Free lock-screen messages</td></tr>
+        <tr><td>Knows when guest is nearby</td><td>No</td><td>Rarely</td><td>No</td><td class="us">Yes, Halo</td></tr>
+        <tr><td>Cost to the café</td><td>Printing</td><td>Lakhs to build</td><td>Commission per order</td><td class="us">Flat monthly fee</td></tr>
+        <tr><td>Design and campaigns</td><td>Do it yourself</td><td>Do it yourself</td><td>Template</td><td class="us">Done by aikia</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="muted small">Wallet-pass loyalty tools already exist abroad. Our edge is not the pass. It is the luxury design, the done-for-you campaigns, the quiet-hour button and the Circle network.</p>
+</section>
+
+<section id="build">
+  <div class="chap"><span class="folio">06</span><h2>What we need to build and run it</h2></div>
+  <div class="grid2">
+    <div class="card"><div class="eyebrow">Technology</div><h3>The stack</h3>
+      <ul><li>Apple Developer account and a Pass Type ID certificate</li><li>Google Wallet issuer account</li><li>Pass engine: creates, updates and pushes to cards</li><li>Staff scanner as a web app for any phone or tablet</li><li>Owner dashboard and campaign builder</li><li>WhatsApp Business API for joins, gifts and receipts</li><li>Later: links to common POS systems</li></ul></div>
+    <div class="card"><div class="eyebrow">Fastest route</div><h3>Rent first, build second</h3>
+      <ul><li><b>Phase 1:</b> launch on a white-label wallet-pass platform under our brand. Live in weeks, low cost, proves demand.</li><li><b>Phase 2:</b> once 25 or more venues pay, build our own engine for margin and for Circle features nobody else has.</li></ul>
+      <p class="muted small">This avoids spending months building before a single café has paid.</p></div>
+    <div class="card"><div class="eyebrow">People</div><h3>The team</h3>
+      <ul><li>1 full-stack developer (or a dev partner)</li><li>1 designer for card and in-store kit</li><li>1 or 2 field sales people for café visits</li><li>1 campaign and success manager</li><li>Founders on the first 10 deals</li></ul></div>
+    <div class="card"><div class="eyebrow">In-store kit</div><h3>What each venue gets</h3>
+      <ul><li>Custom-designed card in three tiers</li><li>Counter stand with QR and NFC tap</li><li>Table tents and a bill-folder insert</li><li>Staff script: one sentence to offer the card</li><li>Launch-week offer to seed the first 100 members</li></ul></div>
+    <div class="card"><div class="eyebrow">Legal</div><h3>Paperwork</h3>
+      <ul><li>Merchant agreement and service terms</li><li>Privacy policy and member consent text</li><li>GST on our fees</li><li>Legal check on prepaid balances before launch</li></ul></div>
+    <div class="card"><div class="eyebrow">Sales tools</div><h3>What we carry</h3>
+      <ul><li>A live demo card the owner adds to their own phone</li><li>One-page offer and ROI calculator</li><li>Case study from the first pilot venue</li><li>A landing page on aikia.world</li></ul></div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="chap"><span class="folio">07</span><h2>Pricing</h2></div>
+  <p>Flat monthly fee. No commission on sales, which is the opposite of what delivery platforms charge. These are proposed starting prices to test with the first venues.</p>
+  <div class="tiers">
+    <div class="tier">
+      <div class="eyebrow">Essential</div>
+      <div class="price">₹4,999<small> / month</small></div>
+      <div class="setup">+ ₹15,000 setup</div>
+      <ul><li>Branded card, stamps and points</li><li>Scanner and dashboard</li><li>Birthday and win-back automation</li><li>Halo nudge at one location</li><li>In-store kit</li></ul>
+    </div>
+    <div class="tier rec">
+      <div class="flag">Recommended</div>
+      <div class="eyebrow">Signature</div>
+      <div class="price">₹9,999<small> / month</small></div>
+      <div class="setup">+ ₹25,000 setup</div>
+      <ul><li>Everything in Essential</li><li>Three-tier status card</li><li>Fill My Tables button</li><li>Prepaid balance and Gift a Coffee</li><li>Circle network membership</li><li>Two campaigns a month run by aikia</li><li>Monthly revenue report</li></ul>
+    </div>
+    <div class="tier">
+      <div class="eyebrow">Maison</div>
+      <div class="price">₹19,999<small> / month</small></div>
+      <div class="setup">+ ₹50,000 setup · up to 5 outlets</div>
+      <ul><li>Everything in Signature</li><li>Multi-outlet card and reporting</li><li>Coffee Club paid membership</li><li>POS integration</li><li>Dedicated success manager</li><li>Content and PR support from aikia.wrld</li></ul>
+    </div>
+  </div>
+</section>
+
+<section id="numbers">
+  <div class="chap"><span class="folio">08</span><h2>The numbers</h2></div>
+  <h3>For one café on Signature (worked example)</h3>
+  <div class="facts">
+    <div><div class="n">600</div><div class="l">members after 90 days</div></div>
+    <div><div class="n">+1</div><div class="l">extra visit per member per month</div></div>
+    <div><div class="n">₹350</div><div class="l">average bill</div></div>
+    <div><div class="n">₹2.1 L</div><div class="l">extra monthly revenue (600 × ₹350)</div></div>
+    <div><div class="n">21×</div><div class="l">return on the ₹9,999 fee</div></div>
+  </div>
+  <h3>For aikia</h3>
+  <div class="tbl">
+    <table style="min-width:520px">
+      <thead><tr><th>Venues on Signature</th><th>Monthly recurring revenue</th><th>Setup fees collected</th></tr></thead>
+      <tbody>
+        <tr><td class="num">10</td><td class="num">≈ ₹1.0 L</td><td class="num">₹2.5 L</td></tr>
+        <tr><td class="num">30</td><td class="num">≈ ₹3.0 L</td><td class="num">₹7.5 L</td></tr>
+        <tr><td class="num">100</td><td class="num">≈ ₹10.0 L</td><td class="num">₹25 L</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="muted small">All figures are planning assumptions, not measured results. Replace them with real data from the pilot venues before using them in a sales pitch.</p>
+</section>
+
+<section id="sell">
+  <div class="chap"><span class="folio">09</span><h2>How we sell it</h2></div>
+  <div class="script">
+    <div class="eyebrow">The 30-second pitch</div>
+    <p>"How many of your regulars can you message right now? With us, every guest carries your card in their phone wallet. When they walk past, their phone tells them to come in. When your café is empty, you press one button and fill it. We design it, we run it, and you pay a flat fee with no commission."</p>
+  </div>
+  <div class="grid2">
+    <div class="card"><div class="eyebrow">The demo</div><h3>Make them feel it</h3>
+      <ul><li>Owner scans our QR and adds a demo card with their café's name on it.</li><li>We send a live notification to their phone while they watch.</li><li>We show the dashboard with sample members and revenue.</li></ul>
+      <p class="muted small">The card on their own lock screen sells better than any slide.</p></div>
+    <div class="card"><div class="eyebrow">The offer</div><h3>Founding 10</h3>
+      <ul><li>First 10 venues get setup free and 60 days at no charge.</li><li>In return: a case study, a video testimonial and two referrals.</li><li>Founding venues keep a locked price for life.</li></ul></div>
+    <div class="card"><div class="eyebrow">Who we approach first</div><h3>Targets</h3>
+      <ul><li>Independent specialty cafés with strong repeat traffic</li><li>Premium bakeries and dessert bars</li><li>Venues near offices, colleges and gyms</li><li>Existing aikia.wrld clients and their networks</li><li>Small groups with 2 to 5 outlets</li></ul></div>
+    <div class="card"><div class="eyebrow">Channels</div><h3>How we reach them</h3>
+      <ul><li>Walk in during quiet hours and ask for the owner</li><li>Instagram DMs with a mock-up of their card</li><li>Referrals between Circle venues</li><li>Partnerships with POS resellers and café suppliers</li><li>A launch event for founding venues</li></ul></div>
+  </div>
+  <h3>Likely objections</h3>
+  <div class="grid2 qa">
+    <div><b>"We already have a stamp card."</b><p class="muted">Keep the idea, lose the paper. Ours cannot be lost, tells you who the guest is and lets you message them.</p></div>
+    <div><b>"My staff are too busy."</b><p class="muted">Staff say one sentence and scan one code. We train them and the scan takes two seconds.</p></div>
+    <div><b>"Will guests find it annoying?"</b><p class="muted">Messages are capped at one a day and only sent when relevant. Guests can remove the card in one tap.</p></div>
+    <div><b>"It is another monthly cost."</b><p class="muted">It pays for itself at roughly 30 extra visits a month. Founding venues pay nothing for 60 days.</p></div>
+  </div>
+</section>
+
+<section id="roadmap">
+  <div class="chap"><span class="folio">10</span><h2>90-day launch</h2></div>
+  <div class="grid3">
+    <div class="phase"><div class="when">DAYS 1–30 · BUILD</div><h3>Prototype</h3>
+      <ul><li>Open Apple and Google wallet accounts</li><li>Pick the white-label platform</li><li>Design the three-tier card system</li><li>Build the demo card and sales page</li><li>Draft merchant terms and consent text</li><li>List 50 target venues</li></ul></div>
+    <div class="phase"><div class="when">DAYS 31–60 · PILOT</div><h3>First 3 venues</h3>
+      <ul><li>Go live in three friendly cafés</li><li>Seed the first 100 members in each</li><li>Test Halo radius and message timing</li><li>Run the first Fill My Tables offers</li><li>Measure visits, spend and opt-outs</li></ul></div>
+    <div class="phase"><div class="when">DAYS 61–90 · SELL</div><h3>Founding 10</h3>
+      <ul><li>Publish the pilot case study</li><li>Sign the Founding 10</li><li>Switch on the Circle between venues</li><li>Start paid plans for new sign-ups</li><li>Decide on building our own engine</li></ul></div>
+  </div>
+</section>
+
+<section id="risks">
+  <div class="chap"><span class="folio">11</span><h2>Rules and risks to handle early</h2></div>
+  <div class="tbl">
+    <table>
+      <thead><tr><th style="width:24%">Area</th><th style="width:38%">What to know</th><th>What we do</th></tr></thead>
+      <tbody>
+        <tr><td>Nearby alerts <span class="pill ok">design</span></td><td>Both Apple Wallet and Google Wallet support nearby alerts, up to 10 locations per card. The alert is a quiet lock-screen card, not a loud buzz, and the phone controls the distance.</td><td>Test on both phones in the pilot. Pair Halo with normal push messages for offers that must be noticed.</td></tr>
+        <tr><td>Prepaid balances <span class="pill warn">legal check</span></td><td>Stored value that works only at the issuing café is treated more lightly in India than a wallet usable across merchants.</td><td>Keep every balance tied to one venue. Confirm with a CA or lawyer before launch. No cross-venue money.</td></tr>
+        <tr><td>Privacy and consent <span class="pill warn">legal check</span></td><td>We hold names, phone numbers and visit history. India's data protection law requires clear consent and a way to withdraw.</td><td>Plain consent at sign-up, one-tap opt-out, no selling of data, venue owns its member list.</td></tr>
+        <tr><td>Notification fatigue <span class="pill ok">design</span></td><td>Too many messages and guests delete the card.</td><td>Hard cap of one nudge a day. Track removal rate per venue.</td></tr>
+        <tr><td>Staff adoption <span class="pill ok">design</span></td><td>If staff do not offer the card, nobody joins.</td><td>One-line script, a small staff reward per sign-up, weekly leaderboard.</td></tr>
+        <tr><td>Copycats <span class="pill bad">strategy</span></td><td>The pass itself is easy to copy.</td><td>Win on design, service and the Circle network, which grows stronger with each venue.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout">
+    <div class="eyebrow">Three decisions needed from you</div>
+    <ul>
+      <li><b>Launch city:</b> which city and which neighbourhoods do we start in?</li>
+      <li><b>Build route:</b> white-label platform first (recommended) or our own engine from day one?</li>
+      <li><b>Pilot venues:</b> which three cafés do we already know well enough to ask?</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <span class="lockup"><svg viewBox="-50 -50 100 100" aria-hidden="true"><g class="spin"><use href="#mark" x="-50" y="-50" width="100" height="100"/></g></svg>aikia.wallet</span>
+  <div class="tag">No app. <em>One card.</em></div>
+  <div class="contacts"><span>connect@aikia.world</span><span>@aikia.wrld</span></div>
+  <p>Internal blueprint · aikia.wrld · October 2026. Prices, revenue and return figures are planning assumptions for discussion. Platform behaviour and legal points marked for verification must be confirmed before launch.</p>
+</footer>
+
+</div>
+
+</body></html>

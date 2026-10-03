@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+</head><body>
+<title>aikia.wallet Launch Readiness</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Hanken+Grotesk:wght@400;500;600;700&family=Martian+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: aikia.wrld brand system (Ink / Frost / Hyper Pink / Lilac / Ice + chrome; Dela Gothic One, Hanken Grotesk, Martian Mono). One reading column of soft rounded panels; the cover carries the product itself: a wallet pass and the lock-screen nudge. */
+:root{
+  --bg:#F5F6FA; --bg-2:#ECEEF5; --surface:#FFFFFF; --fg:#14111F; --mute:#5E5A73; --dim:#A6A3B8;
+  --line:rgba(20,17,31,.1);
+  --pink:#FF3D9A; --pink-t:#C2126A; --lilac:#A98BFF; --lilac-t:#6B4FD6; --ice:#7FE7F2; --ice-t:#0B7F8A; --ink:#14111F;
+  --panel:#14111F; --panel-fg:#F8F9FD; --panel-mute:#A9A3C2; --panel-2:#221D33;
+  --tint-pink:rgba(255,61,154,.1); --tint-lilac:rgba(169,139,255,.16); --tint-ice:rgba(127,231,242,.24);
+  --warn:#8A5A00; --warn-bg:rgba(240,170,40,.18);
+  --shadow:0 30px 70px -36px rgba(20,17,31,.35); --shadow-s:0 10px 30px -18px rgba(20,17,31,.35);
+  --display:"Dela Gothic One","Arial Black",Impact,sans-serif;
+  --body:"Hanken Grotesk","Helvetica Neue",Arial,sans-serif;
+  --mono:"Martian Mono",ui-monospace,Menlo,monospace;
+  --r-xl:32px; --r-lg:24px; --r-md:16px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#14111F; --bg-2:#1A1627; --surface:#221D33; --fg:#F8F9FD; --mute:#A9A3C2; --dim:#5F5A78;
+  --line:rgba(248,249,253,.1); --panel:#2C2543; --panel-2:#3A3157;
+  --pink-t:#FF6FB4; --lilac-t:#BBA3FF; --ice-t:#7FE7F2;
+  --tint-pink:rgba(255,61,154,.14); --tint-lilac:rgba(169,139,255,.16); --tint-ice:rgba(127,231,242,.12);
+  --warn:#F2C066; --warn-bg:rgba(240,170,40,.16);
+  --shadow:0 30px 70px -30px rgba(0,0,0,.75); --shadow-s:0 10px 30px -14px rgba(0,0,0,.7); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#14111F; --bg-2:#1A1627; --surface:#221D33; --fg:#F8F9FD; --mute:#A9A3C2; --dim:#5F5A78;
+  --line:rgba(248,249,253,.1); --panel:#2C2543; --panel-2:#3A3157;
+  --pink-t:#FF6FB4; --lilac-t:#BBA3FF; --ice-t:#7FE7F2;
+  --tint-pink:rgba(255,61,154,.14); --tint-lilac:rgba(169,139,255,.16); --tint-ice:rgba(127,231,242,.12);
+  --warn:#F2C066; --warn-bg:rgba(240,170,40,.16);
+  --shadow:0 30px 70px -30px rgba(0,0,0,.75); --shadow-s:0 10px 30px -14px rgba(0,0,0,.7); color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:400 16px/1.6 var(--body);margin:0;-webkit-font-smoothing:antialiased}
+::selection{background:var(--pink);color:var(--ink)}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:20px;padding-block:24px 80px}
+h1,h2,h3{font-weight:400;text-wrap:balance;margin:0;line-height:1.05}
+h2{font:400 clamp(28px,4vw,46px)/1 var(--display);letter-spacing:-.015em}
+h3{font:700 19px/1.3 var(--body)}
+p{margin:0;max-width:68ch}
+.eyebrow{font:600 10px/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--lilac-t)}
+.muted{color:var(--mute)}
+.small{font-size:14px}
+.stack{display:flex;flex-direction:column;gap:16px}
+
+.lockup{display:inline-flex;align-items:center;gap:10px;height:48px;padding:0 18px 0 7px;border-radius:999px;background:var(--surface);box-shadow:var(--shadow-s);color:var(--fg);font:600 13px/1 var(--mono)}
+.lockup svg{width:34px;height:34px}
+.spin{transform-box:fill-box;transform-origin:50% 50%;animation:spin 20s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation:none}}
+
+/* cover */
+.cover{position:relative;overflow:hidden;margin-top:8px;padding:clamp(24px,5vw,56px);border-radius:var(--r-xl);background:radial-gradient(120% 90% at 10% 0%,var(--tint-lilac),transparent 60%),radial-gradient(90% 80% at 100% 100%,var(--tint-ice),transparent 60%),radial-gradient(60% 60% at 80% 10%,var(--tint-pink),transparent 70%),var(--surface);box-shadow:var(--shadow);display:grid;gap:28px}
+.brandrow{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.kicker{display:inline-flex;align-items:center;gap:10px;min-height:32px;padding:6px 14px 6px 8px;border-radius:999px;background:var(--surface);box-shadow:var(--shadow-s);font:600 10px/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.kicker i{width:16px;height:16px;border-radius:50%;background:var(--pink);flex:none}
+.hero{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:32px;align-items:center}
+.hero>*{min-width:0}
+.cover h1{font:400 clamp(38px,6.4vw,78px)/.94 var(--display);letter-spacing:-.03em}
+.cover h1 em{color:var(--pink);font-style:normal}
+.lede{font-size:clamp(17px,1.5vw,20px);color:var(--mute);max-width:54ch}
+@media (max-width:820px){.hero{grid-template-columns:1fr}}
+
+/* the product: pass + nudge */
+.demo{display:flex;flex-direction:column;gap:14px;max-width:360px;width:100%;justify-self:center}
+.nudge{background:var(--surface);border-radius:20px;box-shadow:var(--shadow-s);padding:12px 14px;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:center;transform:rotate(-1.5deg)}
+.nudge svg{width:34px;height:34px;grid-row:1/span 2}
+.nudge b{font:700 14px/1.2 var(--body)}
+.nudge span{font-size:13.5px;line-height:1.35;color:var(--mute)}
+.nudge small{grid-column:1/-1;font:400 9.5px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dim);padding-top:4px}
+.pass{background:linear-gradient(150deg,#2B2444 0%,#14111F 55%,#0C0A14 100%);color:#F8F9FD;border-radius:26px;padding:22px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:18px;position:relative;overflow:hidden}
+.pass::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.09) 48%,transparent 60%);pointer-events:none}
+.pass-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.pass-top b{font:400 20px/1 var(--display)}
+.pass-top svg{width:40px;height:40px}
+.tierchip{align-self:flex-start;font:600 9.5px/1 var(--mono);letter-spacing:.16em;padding:7px 10px;border-radius:999px;color:#14111F;background:linear-gradient(180deg,#fff,#9aa3bb 48%,#d4d9e7 60%,#fff)}
+.pass-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.pass-grid span{display:block;font:600 9px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:#A9A3C2;margin-bottom:6px}
+.pass-grid div{font:600 17px/1.15 var(--body);font-variant-numeric:tabular-nums}
+.stamps{display:flex;gap:7px;flex-wrap:wrap}
+.stamps i{width:22px;height:22px;border-radius:50%;border:1.5px solid #5F5A78}
+.stamps i.on{background:#FF3D9A;border-color:#FF3D9A}
+.pass-foot{display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
+.qr{width:58px;height:58px;border-radius:10px;background:#F8F9FD;padding:6px;flex:none}
+.qr i{display:block;width:100%;height:100%;background:conic-gradient(#14111F 25%,transparent 0 50%,#14111F 0 75%,transparent 0) 0 0/11.5px 11.5px}
+.pass-foot p{font:400 9.5px/1.5 var(--mono);color:#A9A3C2}
+.sample{font:400 10px/1.4 var(--mono);color:var(--dim);text-align:center;letter-spacing:.06em}
+
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.meta div{background:var(--surface);border-radius:var(--r-md);box-shadow:var(--shadow-s);padding:14px 16px;font-weight:500}
+.meta b{display:block;font:600 9.5px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin-bottom:8px}
+
+.toc{display:flex;flex-wrap:wrap;gap:8px;padding-block:28px 4px}
+.toc a{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 14px 0 6px;border-radius:999px;background:var(--surface);box-shadow:var(--shadow-s);color:var(--fg);text-decoration:none;font:500 14px/1 var(--body)}
+.toc a span{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--bg-2);font:600 10px/1 var(--mono)}
+.toc a:hover span,.toc a:focus-visible span{background:var(--pink);color:var(--ink)}
+
+section{padding-block:56px 8px;display:flex;flex-direction:column;gap:24px}
+.chap{display:flex;align-items:center;gap:16px}
+.folio{display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:var(--pink);color:var(--ink);font:600 13px/1 var(--mono);flex:none}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:16px}
+.grid2>*,.grid3>*{min-width:0}
+.card{background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-s);padding:24px;display:flex;flex-direction:column;gap:10px}
+.card h3{font:400 20px/1.12 var(--display)}
+ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px}
+li::marker{color:var(--pink)}
+.callout{border-radius:var(--r-lg);background:linear-gradient(135deg,var(--tint-pink),var(--tint-lilac));padding:24px 26px;display:flex;flex-direction:column;gap:10px}
+.callout p{max-width:none}
+.callout .eyebrow{color:var(--pink-t)}
+.big{font:400 clamp(22px,3vw,32px)/1.15 var(--display);letter-spacing:-.01em}
+
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));gap:12px}
+.facts div{background:var(--surface);border-radius:var(--r-md);box-shadow:var(--shadow-s);padding:18px}
+.facts .n{font:400 30px/1.05 var(--display);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.facts .l{font:400 11px/1.5 var(--mono);color:var(--mute);margin-top:6px}
+
+.tbl{overflow-x:auto;border-radius:var(--r-lg);background:var(--surface);box-shadow:var(--shadow-s)}
+table{width:100%;border-collapse:collapse;font-size:15px;min-width:640px}
+th,td{text-align:left;padding:12px 14px;vertical-align:top}
+td{border-top:1px solid var(--line)}
+th{font:600 9.5px/1.35 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute);background:var(--bg-2)}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+td.us{background:var(--tint-pink);font-weight:600}
+.pill{display:inline-block;font:600 9.5px/1 var(--mono);letter-spacing:.06em;padding:5px 8px;border-radius:999px;white-space:nowrap}
+.bad{color:var(--pink-t);background:var(--tint-pink)} .warn{color:var(--warn);background:var(--warn-bg)} .ok{color:var(--ice-t);background:var(--tint-ice)}
+
+.idea{background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-s);padding:26px;display:grid;grid-template-columns:auto 1fr;gap:8px 20px}
+.idea .tag{grid-column:1;grid-row:1/span 4;display:grid;place-items:center;width:52px;height:52px;border-radius:16px;background:var(--tint-lilac);color:var(--lilac-t);font:400 20px/1 var(--display)}
+.idea h3,.idea p,.idea ul{grid-column:2}
+.idea h3{font:400 22px/1.1 var(--display)}
+.idea ul{color:var(--mute);font-size:15px;gap:4px}
+.idea .why{font:600 11px/1.6 var(--mono);color:var(--pink-t)}
+.idea.hero-idea{background:var(--panel);color:var(--panel-fg)}
+.idea.hero-idea .tag{background:var(--pink);color:var(--ink)}
+.idea.hero-idea ul{color:var(--panel-mute)}
+.idea.hero-idea .why{color:#FF6FB4}
+@media (max-width:560px){.idea{grid-template-columns:1fr}.idea .tag{grid-row:auto}.idea h3,.idea p,.idea ul{grid-column:1}}
+
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:12px;counter-reset:s}
+.flow div{background:var(--surface);border-radius:var(--r-md);box-shadow:var(--shadow-s);padding:18px;display:flex;flex-direction:column;gap:6px;counter-increment:s}
+.flow div::before{content:counter(s,decimal-leading-zero);font:600 11px/1 var(--mono);color:var(--pink-t)}
+.flow b{font:400 17px/1.15 var(--display)}
+.flow span{font-size:14.5px;color:var(--mute)}
+
+.tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));gap:16px;align-items:start}
+.tier{background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-s);padding:26px;display:flex;flex-direction:column;gap:14px}
+.tier.rec{background:var(--panel);color:var(--panel-fg);box-shadow:var(--shadow)}
+.tier.rec .setup,.tier.rec .price small{color:var(--panel-mute)}
+.tier.rec .eyebrow{color:#BBA3FF}
+.tier .price{font:400 34px/1 var(--display);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.tier .price small{font:400 13px var(--body);color:var(--mute)}
+.tier .setup{font-size:14px;color:var(--mute)}
+.tier ul{font-size:15px;gap:5px}
+.flag{align-self:flex-start;font:600 9.5px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;background:var(--pink);color:var(--ink);padding:7px 10px;border-radius:999px}
+
+.phase{padding:24px;border-radius:var(--r-lg);background:var(--surface);box-shadow:var(--shadow-s);display:flex;flex-direction:column;gap:10px}
+.phase .when{align-self:flex-start;font:600 9.5px/1 var(--mono);letter-spacing:.1em;padding:7px 10px;border-radius:999px;background:var(--tint-pink);color:var(--pink-t)}
+.phase h3{font:400 22px/1.1 var(--display)}
+.phase ul{font-size:15px;gap:5px}
+
+.qa>div{background:var(--surface);border-radius:var(--r-md);box-shadow:var(--shadow-s);padding:18px 20px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.qa b{font:400 18px/1.15 var(--display)}
+.script{background:var(--panel);color:var(--panel-fg);border-radius:var(--r-lg);padding:26px;display:flex;flex-direction:column;gap:12px}
+.script p{max-width:none;font-size:18px;line-height:1.5}
+.script .eyebrow{color:#BBA3FF}
+
+footer{margin-top:64px;padding:28px;border-radius:var(--r-xl);background:var(--panel);color:var(--panel-fg);display:grid;gap:14px}
+footer .lockup{background:var(--panel-2);color:var(--panel-fg);justify-self:start}
+footer .tag{font:400 clamp(24px,3vw,34px)/1 var(--display)}
+footer .tag em{font-style:normal;color:var(--pink)}
+footer p{font:400 11.5px/1.7 var(--mono);color:var(--panel-mute);max-width:none}
+footer .contacts{display:flex;flex-wrap:wrap;gap:8px 20px;font:600 12px/1.4 var(--mono)}
+:focus-visible{outline:2px solid var(--pink);outline-offset:3px;border-radius:6px}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="chr" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#9aa3bb"/>
+      <stop offset=".5" stop-color="#3c4158"/><stop offset=".58" stop-color="#d4d9e7"/><stop offset="1" stop-color="#ffffff"/>
+    </linearGradient>
+    <symbol id="mark" viewBox="-50 -50 100 100">
+      <g stroke="#14111F" stroke-width="3" fill="url(#chr)">
+        <ellipse cx="0" cy="-30" rx="11" ry="15"/>
+        <ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(45)"/>
+        <ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(90)"/>
+        <ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(135)"/>
+        <ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(180)"/>
+        <ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(225)"/>
+        <ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(270)"/>
+        <ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(315)"/>
+      </g>
+      <circle r="9" fill="#FF3D9A" stroke="#14111F" stroke-width="3"/>
+    </symbol>
+  </defs>
+</svg>
+
+<style>
+code{font-family:var(--mono);font-size:.86em;background:var(--bg-2);padding:2px 6px;border-radius:6px;overflow-wrap:anywhere}
+.cover h1{max-width:13ch}
+.must{color:var(--pink-t);background:var(--tint-pink)} .should{color:var(--warn);background:var(--warn-bg)} .later{color:var(--ice-t);background:var(--tint-ice)}
+.promise{background:var(--panel);color:var(--panel-fg);border-radius:var(--r-lg);padding:26px;display:flex;flex-direction:column;gap:10px}
+.promise .eyebrow{color:#BBA3FF}
+.promise h3{font:400 24px/1.1 var(--display)}
+.promise p{color:var(--panel-mute);max-width:none}
+.gates{display:flex;flex-direction:column;gap:8px;list-style:none;padding:0}
+.gates label{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:start;background:var(--surface);border-radius:var(--r-md);box-shadow:var(--shadow-s);padding:14px 16px;cursor:pointer}
+.gates input{width:20px;height:20px;margin:2px 0 0;accent-color:var(--pink)}
+.gates input:checked+span{color:var(--mute);text-decoration:line-through}
+.gates span{min-width:0}
+.count{font:600 12px/1 var(--mono);color:var(--mute)}
+td .pill{margin-top:2px}
+</style>
+
+<div class="wrap">
+
+<header class="cover">
+  <div class="brandrow">
+    <span class="lockup"><svg viewBox="-50 -50 100 100" aria-hidden="true"><g class="spin"><use href="#mark" x="-50" y="-50" width="100" height="100"/></g></svg>aikia.wallet</span>
+    <span class="kicker"><i></i>Internal · For the development team</span>
+  </div>
+  <div class="stack">
+    <div class="eyebrow">Launch readiness blueprint</div>
+    <h1>Before we <em>go live.</em></h1>
+    <p class="lede">Everything that must be true before a real café and real guests use aikia.wallet. It covers what the first two blueprints did not: fraud, the points ledger, scale, recovery, support, billing and the law.</p>
+  </div>
+  <div class="meta">
+    <div><b>Read with</b>Master Blueprint and Developer Blueprint</div>
+    <div><b>Audience</b>Developers, founders, first hires</div>
+    <div><b>How to use</b>Work the tables, then tick the launch gates in section 08</div>
+    <div><b>Priority labels</b>Must, Should, Later</div>
+  </div>
+</header>
+
+<nav class="toc" aria-label="Contents">
+  <a href="#core"><span>01</span>The most important thing</a>
+  <a href="#new"><span>02</span>What we have not discussed</a>
+  <a href="#ledger"><span>03</span>Data and ledger</a>
+  <a href="#security"><span>04</span>Security</a>
+  <a href="#fraud"><span>05</span>Fraud and abuse</a>
+  <a href="#platform"><span>06</span>Apple, Google and scale</a>
+  <a href="#ops"><span>07</span>Operations and law</a>
+  <a href="#gates"><span>08</span>Launch gates</a>
+  <a href="#after"><span>09</span>First 30 days</a>
+</nav>
+
+<section id="core">
+  <div class="chap"><span class="folio">01</span><h2>The most important thing</h2></div>
+  <p>A café is handing us its customers and its reputation. The product survives a missing feature. It does not survive a broken promise. Two promises come before everything else in this document.</p>
+  <div class="grid2">
+    <div class="promise"><div class="eyebrow">Promise 1</div><h3>Every stamp and every rupee is correct.</h3><p>A guest who sees 6 stamps when they earned 7, or a balance that is ₹200 short, tells the owner. The owner cancels. The count on the card must always match a record we can show.</p></div>
+    <div class="promise"><div class="eyebrow">Promise 2</div><h3>One venue's guests are never seen by anyone else.</h3><p>A member list is a café's most valuable asset. If Venue A can see Venue B's members, or a list leaks online, the business ends that week.</p></div>
+  </div>
+  <div class="callout">
+    <div class="eyebrow">The rule for the team</div>
+    <p class="big">When a feature and one of these two promises pull in different directions, the promise wins.</p>
+  </div>
+</section>
+
+<section id="new">
+  <div class="chap"><span class="folio">02</span><h2>What we have not discussed yet</h2></div>
+  <p class="muted">Twelve topics that are missing from the earlier blueprints. Each is expanded in the sections that follow.</p>
+  <div class="grid3">
+    <div class="card"><div class="eyebrow">Fraud</div><h3>Staff and guests will cheat</h3><p class="muted">Free stamps for friends, shared screenshots of a QR code, fake sign-ups to farm welcome rewards.</p></div>
+    <div class="card"><div class="eyebrow">Ledger</div><h3>Points are money</h3><p class="muted">Balances must come from a permanent history of transactions, never from a number someone can overwrite.</p></div>
+    <div class="card"><div class="eyebrow">Identity</div><h3>Is the phone number real?</h3><p class="muted">Without a one-time code, anyone can join with a fake number. In India, sending SMS codes needs telecom registration first.</p></div>
+    <div class="card"><div class="eyebrow">Scale</div><h3>One button, 2,000 cards</h3><p class="muted">Fill My Tables updates every member at once. That needs a queue, not one long request that times out.</p></div>
+    <div class="card"><div class="eyebrow">Offline</div><h3>Café Wi-Fi fails</h3><p class="muted">The scanner needs a fallback for no signal and for a guest whose phone is dead.</p></div>
+    <div class="card"><div class="eyebrow">Recovery</div><h3>Lost or new phone</h3><p class="muted">A guest must get their card, stamps and balance back without calling anyone.</p></div>
+    <div class="card"><div class="eyebrow">Permanent IDs</div><h3>Choices we can never change</h3><p class="muted">The Apple Pass Type ID and Google Issuer ID are tied to every card ever issued. Changing them orphans all cards.</p></div>
+    <div class="card"><div class="eyebrow">Exit</div><h3>When a venue leaves</h3><p class="muted">What happens to guests' cards, unspent prepaid balances and the member list when a café cancels or stops paying.</p></div>
+    <div class="card"><div class="eyebrow">Our revenue</div><h3>Collecting our own fee</h3><p class="muted">Automatic monthly billing, GST invoices and a clear process for failed payments.</p></div>
+    <div class="card"><div class="eyebrow">Visibility</div><h3>Knowing before the café does</h3><p class="muted">Error tracking, uptime checks and alerts so we find a failure before an owner phones us.</p></div>
+    <div class="card"><div class="eyebrow">Ownership</div><h3>Accounts in the company's name</h3><p class="muted">Apple, Google, hosting and domain accounts must sit on company email with two people able to log in.</p></div>
+    <div class="card"><div class="eyebrow">Proof</div><h3>Showing the café it works</h3><p class="muted">If the report cannot show extra visits and revenue honestly, venues leave after three months.</p></div>
+  </div>
+</section>
+
+<section id="ledger">
+  <div class="chap"><span class="folio">03</span><h2>Backend: data and ledger</h2></div>
+  <div class="tbl"><table>
+    <thead><tr><th style="width:24%">Item</th><th>What to build</th><th style="width:11%">Priority</th></tr></thead>
+    <tbody>
+      <tr><td>Append-only ledger</td><td>A <code>transactions</code> table where rows are only ever added. Stamps, points and balance are the sum of those rows. A correction is a new row, never an edit.</td><td><span class="pill must">MUST</span></td></tr>
+      <tr><td>No double counting</td><td>Every scan carries a unique request ID. If slow Wi-Fi sends it twice, the server records it once.</td><td><span class="pill must">MUST</span></td></tr>
+      <tr><td>All-or-nothing writes</td><td>Adding a stamp, upgrading a tier and unlocking a reward happen in one database transaction. Either all succeed or none do.</td><td><span class="pill must">MUST</span></td></tr>
+      <tr><td>Guard rails in the database</td><td>Balances cannot go below zero. A reward cannot be redeemed twice. Enforce this in the database, not only in the page.</td><td><span class="pill must">MUST</span></td></tr>
+      <tr><td>Audit trail</td><td>Every change records who did it (which staff login), when, and from which device.</td><td><span class="pill must">MUST</span></td></tr>
+      <tr><td>Backups you have tested</td><td>Daily automatic backups, and one practice restore before launch. An untested backup is not a backup.</td><td><span class="pill must">MUST</span></td></tr>
+      <tr><td>Time handling</td><td>Store all times in UTC, show them in India time. Offer expiry, birthdays and streaks depend on this being right.</td><td><span class="pill must">MUST</span></td></tr>
+      <tr><td>Duplicate members</td><td>One phone number equals one member per venue. Decide how to merge if someone joins twice.</td><td><span class="pill should">SHOULD</span></td></tr>
+      <tr><td>Schema changes</td><td>Database changes go through versioned migration files, tested on a copy first.</td><td><span class="pill should">SHOULD</span></td></tr>
+      <tr><td>Data region</td><td>Host the database in the Mumbai region for speed for Indian users.</td><td><span class="pill should">SHOULD</span></td></tr>
+      <tr><td>Deletion and retention</td><td>A way to delete one member's data on request, and a rule for how long inactive members are kept.</td><td><span class="pill must">MUST</span></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="security">
+  <div class="chap"><span class="folio">04</span><h2>Backend: security</h2></div>
+  <div class="tbl"><table>
+    <thead><tr><th style="width:24%">Item</th><th>What to build</th><th style="width:11%">Priority</th></tr></thead>
+    <tbody>
+      <tr><td>Venue isolation</td><td>Row-level security on every table so a query can only return rows for the logged-in venue. Write an automated test that logs in as Venue A and tries to read Venue B.</td><td><span class="pill must">MUST</span></td></tr>
+      <tr><td>Secrets</td><td>Certificates and keys live only in the hosting provider's secret store. Never in the code, never in chat, never in a screenshot. Turn on secret scanning in GitHub.</td><td><span class="pill must">MUST</span></td></tr>
+      <tr><td>Master database key</td><td>The key that bypasses all rules is used only on the server. It must never reach a web page.</td><td><span class="pill must">MUST</span></td></tr>
+      <tr><td>Two-step login everywhere</td><td>Apple, Google, GitHub, hosting, database and domain accounts all use two-step verification.</td><td><span class="pill must">MUST</span></td></tr>
+      <tr><td>Roles</td><td>Three levels: staff (scan only), owner (their venue's data), aikia admin (everything). Staff must not be able to export a member list.</td><td><span class="pill must">MUST</span></td></tr>
+      <tr><td>Staff PIN protection</td><td>Lock the scanner after five wrong PINs. Let the owner reset PINs when staff leave.</td><td><span class="pill must">MUST</span></td></tr>
+      <tr><td>Rate limits</td><td>Limit sign-ups and scans per device and per minute so a script cannot flood the system.</td><td><span class="pill must">MUST</span></td></tr>
+      <tr><td>Input checks</td><td>Validate every field on the server. Never trust what the page sends.</td><td><span class="pill must">MUST</span></td></tr>
+      <tr><td>Signed card codes</td><td>The QR on a card carries a signed token, so nobody can invent a valid code by guessing member numbers.</td><td><span class="pill must">MUST</span></td></tr>
+      <tr><td>Clean logs</td><td>Logs must not contain phone numbers, names or keys.</td><td><span class="pill should">SHOULD</span></td></tr>
+      <tr><td>Separate environments</td><td>A test copy and the live system, with separate databases and a separate test Pass Type ID. Nobody experiments on live data.</td><td><span class="pill must">MUST</span></td></tr>
+      <tr><td>Dependency updates</td><td>Automatic alerts for vulnerable libraries, reviewed monthly.</td><td><span class="pill should">SHOULD</span></td></tr>
+      <tr><td>Outside security test</td><td>Pay an independent tester to attack the system once there are 10 or more venues.</td><td><span class="pill later">LATER</span></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="fraud">
+  <div class="chap"><span class="folio">05</span><h2>Fraud and abuse</h2></div>
+  <p>Assume every reward will be gamed. Owners forgive bugs faster than they forgive paying for free coffee that was never earned.</p>
+  <div class="tbl"><table>
+    <thead><tr><th style="width:28%">How people cheat</th><th>Defence</th><th style="width:11%">Priority</th></tr></thead>
+    <tbody>
+      <tr><td>Staff give stamps to friends or themselves</td><td>Every stamp is tied to a staff login. Owner gets a weekly report of stamps per staff member and an alert on unusual numbers.</td><td><span class="pill must">MUST</span></td></tr>
+      <tr><td>Same card scanned again and again</td><td>A cooldown per member, for example one stamp every two hours, and a daily maximum.</td><td><span class="pill must">MUST</span></td></tr>
+      <tr><td>Screenshot of a QR shared in a group</td><td>The cooldown limits the damage. Staff see the member's name on scan. Balance spends above a set amount ask for a PIN.</td><td><span class="pill must">MUST</span></td></tr>
+      <tr><td>Fake numbers to farm the welcome reward</td><td>Verify the phone number with a one-time code before any reward unlocks. One reward per number.</td><td><span class="pill must">MUST</span></td></tr>
+      <tr><td>Referral loops</td><td>Referral reward only after the friend's first paid visit, with a monthly cap.</td><td><span class="pill should">SHOULD</span></td></tr>
+      <tr><td>Stolen prepaid balance</td><td>Spending balance needs a PIN or a tap-to-confirm on the guest's phone. Large top-ups are logged for the owner.</td><td><span class="pill must">MUST</span></td></tr>
+      <tr><td>Owner disputes a number</td><td>The audit trail from section 03 lets us show exactly what happened.</td><td><span class="pill must">MUST</span></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="platform">
+  <div class="chap"><span class="folio">06</span><h2>Backend: Apple, Google and scale</h2></div>
+  <div class="tbl"><table>
+    <thead><tr><th style="width:24%">Item</th><th>What to know and build</th><th style="width:11%">Priority</th></tr></thead>
+    <tbody>
+      <tr><td>Permanent identifiers</td><td>Decide the Apple Pass Type ID, Google Issuer ID and card ID format once. Issue them from the company account. They cannot change after the first real card.</td><td><span class="pill must">MUST</span></td></tr>
+      <tr><td>Certificate expiry</td><td>The Apple pass certificate expires about once a year. If it lapses, no card can be created or updated. Set reminders 60 and 30 days ahead and write down the renewal steps.</td><td><span class="pill must">MUST</span></td></tr>
+      <tr><td>Per-card secret</td><td>Each Apple card carries its own authentication token. The server must check it on every update request.</td><td><span class="pill must">MUST</span></td></tr>
+      <tr><td>Background queue</td><td>Sending an offer to a whole venue runs as queued jobs in small batches with retries, not as one request.</td><td><span class="pill must">MUST</span></td></tr>
+      <tr><td>Message caps in code</td><td>Google allows 3 notifications per card per day. Enforce our own limit of one a day per member in the server so no campaign can exceed it.</td><td><span class="pill must">MUST</span></td></tr>
+      <tr><td>Dead devices</td><td>When Apple reports a device no longer holds the card, remove it from the list so we stop pushing to it.</td><td><span class="pill should">SHOULD</span></td></tr>
+      <tr><td>Scheduled jobs that are safe to repeat</td><td>Birthday and win-back jobs must not send twice if they run twice.</td><td><span class="pill must">MUST</span></td></tr>
+      <tr><td>Phones without a wallet</td><td>Some Android phones have no Google Wallet. Give those guests a simple web page version of the card with the same QR.</td><td><span class="pill should">SHOULD</span></td></tr>
+      <tr><td>Offline scanning</td><td>If the scanner has no signal, let staff look a guest up by phone number later, or queue the scan and send it when the signal returns.</td><td><span class="pill should">SHOULD</span></td></tr>
+      <tr><td>Card recovery</td><td>A guest re-enters their number, gets a code, and re-adds the same card with history intact.</td><td><span class="pill must">MUST</span></td></tr>
+      <tr><td>Brand rules</td><td>Use the official Add to Apple Wallet and Add to Google Wallet buttons exactly as their guidelines require. Google reviews this before granting public access.</td><td><span class="pill must">MUST</span></td></tr>
+      <tr><td>Load test</td><td>Simulate 500 sign-ups in an hour and an offer to 2,000 cards before the first busy launch.</td><td><span class="pill should">SHOULD</span></td></tr>
+      <tr><td>Monitoring</td><td>Error tracking, an uptime check every minute, and an alert to the team's phones when scans or pushes start failing.</td><td><span class="pill must">MUST</span></td></tr>
+      <tr><td>Safe releases</td><td>Changes go to the test copy first. Each release can be rolled back in one step.</td><td><span class="pill should">SHOULD</span></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="ops">
+  <div class="chap"><span class="folio">07</span><h2>Operations and law</h2></div>
+  <div class="grid2">
+    <div class="card"><div class="eyebrow">Support</div><h3>When something breaks at 9 am</h3>
+      <ul><li>One WhatsApp number for venues, with a promised reply time</li><li>A short fix-it guide: card not updating, scanner will not open, guest lost their card</li><li>A manual fallback so the café can keep serving: note the number, add the stamp later</li><li>A named person on call during café hours</li></ul></div>
+    <div class="card"><div class="eyebrow">Billing</div><h3>Getting paid automatically</h3>
+      <ul><li>Monthly auto-debit through a payment provider</li><li>GST invoice sent each month</li><li>Failed payment: reminder, grace period, then pause new sign-ups before anything harsher</li><li>Never switch off guests' existing rewards over a late bill without warning</li></ul></div>
+    <div class="card"><div class="eyebrow">Contract with venues</div><h3>What the agreement must say</h3>
+      <ul><li>The venue owns its member list and can export it</li><li>aikia processes that data only to run the service</li><li>What happens to cards and data on cancellation</li><li>Prepaid money is collected and owed by the venue, not by aikia</li><li>Service level, liability limits and notice period</li></ul></div>
+    <div class="card"><div class="eyebrow">Venue exit</div><h3>Leaving cleanly</h3>
+      <ul><li>Guests get a final message and a date</li><li>Unspent prepaid balance is the venue's duty to honour or refund</li><li>The venue receives its data export</li><li>Cards are marked expired, then data is deleted after the agreed period</li></ul></div>
+    <div class="card"><div class="eyebrow">Legal: confirm with a lawyer</div><h3>Privacy law</h3>
+      <ul><li>Clear consent notice at sign-up, in plain words</li><li>A way to withdraw consent and delete data</li><li>A named contact for complaints</li><li>India's data law treats under-18s as children who need a parent's consent. Decide whether to add an age question.</li><li>A written plan for what we do in the first 72 hours of a data leak</li></ul></div>
+    <div class="card"><div class="eyebrow">Legal: confirm with a CA</div><h3>Money and messages</h3>
+      <ul><li>Prepaid balances stay tied to one venue. Check the rules before switching this feature on.</li><li>How GST applies to prepaid top-ups and free rewards</li><li>SMS one-time codes in India need sender and template registration with the telecom operators. WhatsApp codes are an alternative.</li><li>Marketing messages only to guests who agreed to them</li></ul></div>
+    <div class="card"><div class="eyebrow">Company hygiene</div><h3>Nothing depends on one person</h3>
+      <ul><li>All accounts on company email, with two admins</li><li>Recovery codes stored in a shared password manager</li><li>A one-page map of every service, who owns it and when it renews</li><li>Check the name aikia.wallet for trademark conflicts</li></ul></div>
+    <div class="card"><div class="eyebrow">Proof of value</div><h3>The monthly report</h3>
+      <ul><li>Members joined, visits, repeat rate, rewards redeemed</li><li>Visits that followed an offer or a Halo nudge</li><li>Revenue only where staff entered the bill amount. Never estimate it and present it as fact.</li><li>Removal rate of cards, as an early warning</li></ul></div>
+  </div>
+</section>
+
+<section id="gates">
+  <div class="chap"><span class="folio">08</span><h2>Launch gates</h2></div>
+  <p>Do not sign a paying venue until every box is ticked. Ticks are saved in this browser only. <span class="count" id="count"></span></p>
+  <ul class="gates" id="gates">
+    <li><label><input type="checkbox" id="g1"><span>A test proves Venue A cannot read Venue B's members.</span><span class="pill must">DATA</span></label></li>
+    <li><label><input type="checkbox" id="g2"><span>Stamps and balances come from an append-only ledger, and a double scan counts once.</span><span class="pill must">DATA</span></label></li>
+    <li><label><input type="checkbox" id="g3"><span>A backup has been restored successfully in a practice run.</span><span class="pill must">DATA</span></label></li>
+    <li><label><input type="checkbox" id="g4"><span>No secret exists in the code repository, and all accounts use two-step login.</span><span class="pill must">SECURITY</span></label></li>
+    <li><label><input type="checkbox" id="g5"><span>Phone numbers are verified before any reward unlocks.</span><span class="pill must">FRAUD</span></label></li>
+    <li><label><input type="checkbox" id="g6"><span>Scan cooldown, daily cap and per-staff logging are live.</span><span class="pill must">FRAUD</span></label></li>
+    <li><label><input type="checkbox" id="g7"><span>Cards add, update and show Halo on a real iPhone and a real Android phone.</span><span class="pill must">PRODUCT</span></label></li>
+    <li><label><input type="checkbox" id="g8"><span>Google has granted public access for the wallet account.</span><span class="pill must">PRODUCT</span></label></li>
+    <li><label><input type="checkbox" id="g9"><span>An offer to 2,000 test cards completes without errors.</span><span class="pill must">SCALE</span></label></li>
+    <li><label><input type="checkbox" id="g10"><span>A guest can recover their card on a new phone.</span><span class="pill must">PRODUCT</span></label></li>
+    <li><label><input type="checkbox" id="g11"><span>Error tracking and uptime alerts reach the team's phones.</span><span class="pill must">RELIABILITY</span></label></li>
+    <li><label><input type="checkbox" id="g12"><span>Certificate renewal reminders are set and the steps are written down.</span><span class="pill must">RELIABILITY</span></label></li>
+    <li><label><input type="checkbox" id="g13"><span>Venue contract, privacy policy and consent text are reviewed by a lawyer.</span><span class="pill must">LEGAL</span></label></li>
+    <li><label><input type="checkbox" id="g14"><span>Prepaid balance has a CA's sign-off, or the feature is switched off.</span><span class="pill must">LEGAL</span></label></li>
+    <li><label><input type="checkbox" id="g15"><span>Automatic billing and GST invoices work end to end.</span><span class="pill should">BUSINESS</span></label></li>
+    <li><label><input type="checkbox" id="g16"><span>Support number, fix-it guide and staff training sheet are ready.</span><span class="pill should">BUSINESS</span></label></li>
+    <li><label><input type="checkbox" id="g17"><span>One friendly café has run the system for two weeks without a data or count error.</span><span class="pill must">PILOT</span></label></li>
+  </ul>
+</section>
+
+<section id="after">
+  <div class="chap"><span class="folio">09</span><h2>First 30 days after launch</h2></div>
+  <div class="tbl"><table style="min-width:560px">
+    <thead><tr><th>Watch this</th><th>Healthy sign</th><th>Act if</th></tr></thead>
+    <tbody>
+      <tr><td>Sign-ups per venue per day</td><td>Steady or rising</td><td>Near zero: staff are not offering the card</td></tr>
+      <tr><td>Card removals</td><td>Rare</td><td>Rising after a campaign: messages are too frequent</td></tr>
+      <tr><td>Failed scans and failed pushes</td><td>Almost none</td><td>Any cluster at one venue or one phone type</td></tr>
+      <tr><td>Stamps per staff member</td><td>Similar across staff</td><td>One person far above the rest</td></tr>
+      <tr><td>Repeat visit rate</td><td>Members return more often than before</td><td>Flat after a month: change the reward, not the software</td></tr>
+      <tr><td>Support messages</td><td>Falling week by week</td><td>The same question three times: fix it in the product</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout">
+    <div class="eyebrow">Weekly routine</div>
+    <p>Review these six numbers every Monday, apply library updates once a month, and practise a backup restore once a quarter.</p>
+  </div>
+</section>
+
+<footer>
+  <span class="lockup"><svg viewBox="-50 -50 100 100" aria-hidden="true"><g class="spin"><use href="#mark" x="-50" y="-50" width="100" height="100"/></g></svg>aikia.wallet</span>
+  <div class="tag">Correct counts. <em>Private lists.</em></div>
+  <div class="contacts"><span>connect@aikia.world</span><span>@aikia.wrld</span></div>
+  <p>Internal launch readiness blueprint · aikia.wrld · October 2026. Legal and tax points are prompts for a lawyer and a chartered accountant, not legal advice. Platform rules can change, so confirm them on Apple's and Google's sites before launch.</p>
+</footer>
+
+</div>
+<script>
+(function(){
+  var boxes=document.querySelectorAll('#gates input'),count=document.getElementById('count'),K='aikia-launch-gates',saved={};
+  try{saved=JSON.parse(localStorage.getItem(K)||'{}')||{}}catch(e){}
+  function show(){var n=0;boxes.forEach(function(b){if(b.checked)n++});count.textContent=n+' of '+boxes.length+' done';}
+  boxes.forEach(function(b){
+    if(saved[b.id])b.checked=true;
+    b.addEventListener('change',function(){saved[b.id]=b.checked;try{localStorage.setItem(K,JSON.stringify(saved))}catch(e){}show();});
+  });
+  show();
+})();
+</script>
+
+</body></html>

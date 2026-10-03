@@ -1,0 +1,28 @@
+# Secrets and local environment configuration
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+
+# JavaScript and framework output
+node_modules/
+**/node_modules/
+.next/
+**/.next/
+out/
+coverage/
+*.tsbuildinfo
+*.log
+
+# Editor and operating-system noise
+.DS_Store
+**/.DS_Store
+.vscode/
+.idea/
+.hyperframes/
+**/.hyperframes/
+
+# Old, superseded working directory with downloaded tooling and temporary renders
+brag-output/

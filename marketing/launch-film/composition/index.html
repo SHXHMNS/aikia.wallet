@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1920, height=1080">
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script src="audio-data.js"></script>
+    <style>
+      @font-face { font-family: "Dela Gothic One"; font-weight: 400; src: url(assets/fonts/DelaGothicOne-400-latin.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+      @font-face { font-family: "Dela Gothic One"; font-weight: 400; src: url(assets/fonts/DelaGothicOne-400-latinext.woff2) format("woff2"); unicode-range: U+0100-024F, U+20A0-20C0, U+2C60-2C7F, U+A720-A7FF; }
+      @font-face { font-family: "Hanken Grotesk"; font-weight: 100 900; src: url(assets/fonts/HankenGrotesk-latin.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+      @font-face { font-family: "Hanken Grotesk"; font-weight: 100 900; src: url(assets/fonts/HankenGrotesk-latinext.woff2) format("woff2"); unicode-range: U+0100-024F, U+20A0-20C0, U+2C60-2C7F, U+A720-A7FF; }
+      @font-face { font-family: "Martian Mono"; font-weight: 500; src: url(assets/fonts/MartianMono-500-latin.woff2) format("woff2"); unicode-range: U+0000-00FF, U+2000-206F; }
+      @font-face { font-family: "Martian Mono"; font-weight: 500; src: url(assets/fonts/MartianMono-500-latinext.woff2) format("woff2"); unicode-range: U+0100-024F, U+20A0-20C0; }
+      @font-face { font-family: "Caveat"; font-weight: 700; src: url(assets/fonts/Caveat-700-latin.woff2) format("woff2"); }
+
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: #F5F6FA; }
+      #root { width: 100%; height: 100%; position: relative; overflow: hidden; font-family: "Hanken Grotesk", sans-serif; color: #14111F; -webkit-font-smoothing: antialiased; }
+
+      .scene { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden; }
+      #sA { z-index: 1; background: #F5F6FA; }
+      #sB { z-index: 2; background: #14111F; opacity: 0; }
+      #sC { z-index: 3; background: #F5F6FA; opacity: 0; }
+      #sD { z-index: 4; background: #14111F; opacity: 0; }
+      #sE { z-index: 5; background: #F5F6FA; opacity: 0; }
+      .abs { position: absolute; }
+      .layer { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+
+      .display { font-family: "Dela Gothic One", sans-serif; font-weight: 400; letter-spacing: -0.03em; line-height: 0.98; }
+      .eyebrow { font-family: "Martian Mono", monospace; font-weight: 500; font-size: 22px; letter-spacing: 0.16em; text-transform: uppercase; }
+      .hand { font-family: "Caveat", cursive; font-weight: 700; }
+      .line { display: block; white-space: nowrap; }
+      .w { display: inline-block; white-space: pre; }
+
+      /* ---------- light world ---------- */
+      .glow { position: absolute; border-radius: 50%; }
+      .beam { position: absolute; width: 260px; height: 2200px; background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.85) 50%, rgba(255,255,255,0) 100%); filter: blur(18px); }
+      .shade { position: absolute; width: 90px; height: 2400px; background: rgba(20,17,31,0.07); filter: blur(22px); }
+
+      /* ghosts */
+      .ghost { position: absolute; left: 0; top: 0; width: 200px; height: 270px; transform-origin: 50% 100%; }
+      .ghost svg { width: 200px; height: 270px; display: block; }
+
+      /* cup */
+      #cup { left: 1400px; top: 520px; width: 330px; height: 470px; }
+      #cupLabel { left: 70px; top: 226px; width: 190px; height: 110px; }
+      .q { font-size: 104px; line-height: 1; color: #F8F9FD; }
+      .name { font-size: 84px; line-height: 1; color: #C2126A; white-space: nowrap; }
+
+      /* liquid glass */
+      .glass { position: absolute; isolation: isolate; }
+      .glass .rim { position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+        box-shadow: inset 2px 2px 1px -1px rgba(255,255,255,0.95), inset -2px -2px 1px -1px rgba(255,255,255,0.7), inset 0 0 22px rgba(255,255,255,0.35), inset 0 -18px 30px -18px rgba(255,255,255,0.55); }
+      .glass .spec { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: linear-gradient(160deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.08) 32%, rgba(255,255,255,0) 55%, rgba(255,255,255,0.18) 100%); mix-blend-mode: soft-light; }
+
+      #notif { left: 960px; top: 96px; width: 860px; height: 176px; border-radius: 52px; box-shadow: 0 30px 60px -26px rgba(20,17,31,0.45); background: rgba(255,255,255,0.16); }
+      .notif-in { position: absolute; inset: 0; display: grid; grid-template-columns: 96px 1fr; align-items: center; column-gap: 26px; padding: 0 40px 0 34px; }
+      .notif-in svg { width: 92px; height: 92px; }
+      .nt1 { font-weight: 700; font-size: 31px; line-height: 1.2; color: #14111F; }
+      .nt2 { font-weight: 500; font-size: 29px; line-height: 1.3; color: #3A3550; }
+      .nt3 { font-family: "Martian Mono", monospace; font-weight: 500; font-size: 17px; letter-spacing: 0.12em; color: #5E5A73; margin-top: 6px; }
+
+      .chip { display: inline-flex; align-items: center; gap: 14px; height: 64px; padding: 0 28px 0 12px; border-radius: 999px; background: #14111F; color: #F8F9FD; font-weight: 700; font-size: 28px; white-space: nowrap; box-shadow: 0 16px 34px -16px rgba(20,17,31,0.6); }
+      .chip i { width: 42px; height: 42px; border-radius: 50%; background: #FF3D9A; display: block; box-shadow: 0 0 0 4px rgba(255,61,154,0.3); }
+
+      /* ---------- pass ---------- */
+      .pass { position: absolute; left: 0; top: 0; width: 560px; border-radius: 40px; padding: 34px; display: flex; flex-direction: column; gap: 26px; overflow: hidden;
+        background: linear-gradient(150deg, #2B2444 0%, #14111F 55%, #0C0A14 100%); color: #F8F9FD; box-shadow: 0 0 0 1.5px rgba(248,249,253,0.1) inset; }
+      .pass .sheen { position: absolute; left: -60%; top: -40%; width: 70%; height: 180%; background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.22) 50%, rgba(255,255,255,0) 100%); }
+      .pass-top { display: flex; justify-content: space-between; align-items: center; }
+      .pass-top b { font-family: "Dela Gothic One", sans-serif; font-weight: 400; font-size: 32px; line-height: 1; }
+      .pass-top svg { width: 62px; height: 62px; }
+      .tierchip { align-self: flex-start; font-family: "Martian Mono", monospace; font-weight: 500; font-size: 16px; letter-spacing: 0.16em; padding: 11px 16px; border-radius: 999px; color: #14111F; background: linear-gradient(180deg, #fff, #9aa3bb 48%, #d4d9e7 60%, #fff); }
+      .pass-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+      .pass-grid span { display: block; font-family: "Martian Mono", monospace; font-weight: 500; font-size: 14px; letter-spacing: 0.14em; text-transform: uppercase; color: #A9A3C2; margin-bottom: 10px; }
+      .pass-grid div { font-weight: 600; font-size: 28px; line-height: 1.15; font-variant-numeric: tabular-nums; }
+      .stamps { display: flex; gap: 12px; }
+      .stamps i { width: 36px; height: 36px; border-radius: 50%; border: 2.5px solid #5F5A78; display: block; }
+      .stamps i.on { background: #FF3D9A; border-color: #FF3D9A; }
+      .pass-foot { display: flex; justify-content: space-between; align-items: flex-end; }
+      .pass-foot p { font-family: "Martian Mono", monospace; font-weight: 500; font-size: 15px; line-height: 1.6; color: #A9A3C2; }
+      .qr { width: 92px; height: 92px; border-radius: 16px; background: #F8F9FD; padding: 10px; }
+      .qr i { display: block; width: 100%; height: 100%; background: conic-gradient(#14111F 25%, #F8F9FD 0 50%, #14111F 0 75%, #F8F9FD 0) 0 0 / 18px 18px; }
+      .pass.ink .tierchip { background: #14111F; color: #F8F9FD; box-shadow: 0 0 0 2px #A98BFF inset; }
+      .pass.chrome { background: linear-gradient(160deg, #FFFFFF 0%, #C9CEDD 40%, #8E95AC 52%, #DDE1EC 64%, #FFFFFF 100%); color: #14111F; }
+      .pass.chrome .pass-grid span, .pass.chrome .pass-foot p { color: #3F3B55; }
+      .pass.chrome .stamps i { border-color: #6E7590; }
+      .pass.chrome .tierchip { background: #14111F; color: #F8F9FD; }
+      .pass.pink { background: linear-gradient(150deg, #FF7AC0 0%, #FF3D9A 45%, #C2126A 100%); color: #14111F; }
+      .pass.pink .pass-grid span, .pass.pink .pass-foot p { color: #3D0A26; }
+      .pass.pink .stamps i { border-color: #14111F; }
+      .pass.pink .stamps i.on { background: #14111F; border-color: #14111F; }
+      .pass.pink .tierchip { background: #14111F; color: #FF7AC0; }
+
+      /* dark scenes */
+      .lockup { display: inline-flex; align-items: center; gap: 16px; height: 78px; padding: 0 32px 0 10px; border-radius: 999px; background: #221D33; color: #F8F9FD; font-family: "Martian Mono", monospace; font-weight: 500; font-size: 24px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.12); }
+      .lockup svg { width: 60px; height: 60px; }
+
+      /* scrub scene */
+      #clockWrap { left: 140px; top: 172px; width: 900px; height: 190px; }
+      .clock { position: absolute; left: 0; top: 0; font-family: "Dela Gothic One", sans-serif; font-size: 168px; line-height: 1; letter-spacing: -0.04em; white-space: nowrap; color: #14111F; font-variant-numeric: tabular-nums; }
+      .clock small { font-size: 0.42em; letter-spacing: 0; margin-left: 18px; }
+      #rail { left: 140px; top: 930px; width: 1640px; height: 6px; border-radius: 3px; background: rgba(20,17,31,0.14); }
+      #railFill { left: 0; top: 0; width: 1640px; height: 6px; border-radius: 3px; background: #FF3D9A; transform-origin: 0 50%; }
+      .tick { position: absolute; top: 960px; font-family: "Martian Mono", monospace; font-weight: 500; font-size: 18px; color: #5E5A73; letter-spacing: 0.08em; }
+      .tickbar { position: absolute; top: 905px; width: 3px; height: 56px; border-radius: 2px; background: rgba(20,17,31,0.22); }
+      #knob { left: 0; top: 0; width: 132px; height: 132px; border-radius: 50%; background: rgba(255,255,255,0.12); box-shadow: 0 18px 36px -14px rgba(20,17,31,0.45); }
+      #fillBtn { left: 1010px; top: 160px; width: 770px; height: 156px; border-radius: 999px; background: rgba(255,61,154,0.82); box-shadow: 0 30px 60px -24px rgba(194,18,106,0.65); }
+      .btn-in { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: "Dela Gothic One", sans-serif; font-size: 54px; color: #14111F; letter-spacing: -0.01em; }
+      #btnLive { gap: 22px; color: #F8F9FD; background: #14111F; border-radius: 999px; font-size: 50px; opacity: 0; }
+      #btnLive i { width: 24px; height: 24px; border-radius: 50%; background: #FF3D9A; display: block; }
+      .members { left: 1010px; top: 380px; width: 770px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+      .mem { position: relative; height: 196px; border-radius: 30px; background: rgba(255,255,255,0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 14px 30px -20px rgba(20,17,31,0.4); }
+      .mem .av { position: relative; width: 92px; height: 92px; border-radius: 50%; }
+      .mem .av svg { position: absolute; inset: 0; width: 92px; height: 92px; }
+      .mem .ring { position: absolute; inset: -7px; border-radius: 50%; border: 5px solid #FF3D9A; }
+      .mem b { font-weight: 700; font-size: 26px; color: #14111F; }
+      .mem span { font-family: "Martian Mono", monospace; font-weight: 500; font-size: 15px; letter-spacing: 0.08em; color: #C2126A; }
+      .roomchip { left: 140px; top: 400px; display: inline-flex; align-items: center; gap: 14px; height: 60px; padding: 0 26px; border-radius: 999px; background: #FFFFFF; box-shadow: 0 12px 26px -16px rgba(20,17,31,0.5); font-family: "Martian Mono", monospace; font-weight: 500; font-size: 20px; letter-spacing: 0.1em; color: #3A3550; white-space: nowrap; }
+      .roomchip i { width: 14px; height: 14px; border-radius: 50%; background: #A6A3B8; display: block; }
+
+      /* outro */
+      #outroStack { left: 0; top: 0; width: 1920px; height: 1080px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 30px; }
+      #bigmark { width: 210px; height: 210px; }
+      #lens { left: 0; top: 0; width: 420px; height: 240px; border-radius: 120px; background: rgba(255,255,255,0.1); box-shadow: 0 30px 60px -24px rgba(20,17,31,0.35); }
+
+      #grain { position: absolute; left: -50%; top: -50%; width: 200%; height: 200%; z-index: 50; pointer-events: none; opacity: 0.075; mix-blend-mode: multiply;
+        background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+      #blackout { left: 0; top: 0; width: 1920px; height: 1080px; z-index: 40; background: radial-gradient(120% 120% at 70% 20%, #2B2444 0%, #14111F 50%, #0C0A14 100%); opacity: 0; clip-path: inset(680px 242px 230px 1452px round 6px); }
+      #flash { left: 0; top: 0; width: 1920px; height: 1080px; z-index: 41; background: #FFFFFF; opacity: 0; }
+    </style>
+  </head>
+  <body>
+    <svg data-hf-id="hf-p3r6" width="0" height="0" style="position: absolute" aria-hidden="true">
+      <defs data-hf-id="hf-uota" id="defs">
+        <lineargradient data-hf-id="hf-ijd1" id="chr" x1="0" y1="0" x2="0" y2="1">
+          <stop data-hf-id="hf-10d0" offset="0" stop-color="#ffffff" /><stop data-hf-id="hf-n6of" offset=".45" stop-color="#9aa3bb" />
+          <stop data-hf-id="hf-r111" offset=".5" stop-color="#3c4158" /><stop data-hf-id="hf-lzam" offset=".58" stop-color="#d4d9e7" /><stop data-hf-id="hf-yqcb" offset="1" stop-color="#ffffff" />
+        </lineargradient>
+        <symbol data-hf-id="hf-4858" id="mark" viewBox="-50 -50 100 100">
+          <g data-hf-id="hf-h7yw" stroke="#14111F" stroke-width="3" fill="url(#chr)">
+            <ellipse data-hf-id="hf-opbm" cx="0" cy="-30" rx="11" ry="15" />
+            <ellipse data-hf-id="hf-k7l0" cx="0" cy="-30" rx="11" ry="15" transform="rotate(45)" />
+            <ellipse data-hf-id="hf-yznm" cx="0" cy="-30" rx="11" ry="15" transform="rotate(90)" />
+            <ellipse data-hf-id="hf-8nt4" cx="0" cy="-30" rx="11" ry="15" transform="rotate(135)" />
+            <ellipse data-hf-id="hf-dvgo" cx="0" cy="-30" rx="11" ry="15" transform="rotate(180)" />
+            <ellipse data-hf-id="hf-ne5s" cx="0" cy="-30" rx="11" ry="15" transform="rotate(225)" />
+            <ellipse data-hf-id="hf-afxy" cx="0" cy="-30" rx="11" ry="15" transform="rotate(270)" />
+            <ellipse data-hf-id="hf-2icg" cx="0" cy="-30" rx="11" ry="15" transform="rotate(315)" />
+          </g>
+          <circle data-hf-id="hf-e75p" r="9" fill="#FF3D9A" stroke="#14111F" stroke-width="3" />
+        </symbol>
+        <symbol data-hf-id="hf-pk7o" id="bust" viewBox="0 0 200 270">
+          <circle data-hf-id="hf-oxhc" cx="100" cy="66" r="52" />
+          <path data-hf-id="hf-7j5w" d="M8 270 C8 176 52 136 100 136 C148 136 192 176 192 270 Z" />
+        </symbol>
+      </defs>
+    </svg>
+
+    <div data-hf-id="hf-1j7r" id="root" data-composition-id="main" data-start="0" data-duration="24.5" data-width="1920" data-height="1080">
+      <!-- ================= A: the café, morning (light) ================= -->
+      <div data-hf-id="hf-lboy" id="sA" class="scene">
+        <div data-hf-id="hf-ke06" class="layer" id="aLight">
+          <div data-hf-id="hf-he8k" class="glow" data-layout-ignore="" id="aG1" style="left:-300px;top:-420px;width:1300px;height:1300px;background:radial-gradient(closest-side,rgba(169,139,255,0.30),rgba(169,139,255,0))"></div>
+          <div data-hf-id="hf-nynt" class="glow" data-layout-ignore="" id="aG2" style="left:1150px;top:-200px;width:1100px;height:1100px;background:radial-gradient(closest-side,rgba(255,61,154,0.20),rgba(255,61,154,0))"></div>
+          <div data-hf-id="hf-of7q" class="glow" data-layout-ignore="" id="aG3" style="left:900px;top:560px;width:1200px;height:1000px;background:radial-gradient(closest-side,rgba(127,231,242,0.26),rgba(127,231,242,0))"></div>
+          <div data-hf-id="hf-wg9z" id="aShades" class="layer" data-layout-ignore="">
+            <div data-hf-id="hf-ze17" class="shade" style="left:620px;top:-600px"></div>
+            <div data-hf-id="hf-lpoo" class="shade" style="left:980px;top:-600px"></div>
+            <div data-hf-id="hf-gd5z" class="shade" style="left:1340px;top:-600px"></div>
+            <div data-hf-id="hf-c2gv" class="shade" style="left:1700px;top:-600px"></div>
+            <div data-hf-id="hf-vgee" class="beam" style="left:760px;top:-600px"></div>
+            <div data-hf-id="hf-cxjt" class="beam" style="left:1480px;top:-600px;opacity:.7"></div>
+          </div>
+        </div>
+        <div data-hf-id="hf-k31k" class="layer" id="ghosts" data-layout-ignore=""></div>
+
+        <div data-hf-id="hf-wyh5" class="abs" id="cup" data-layout-allow-overflow="">
+          <svg data-hf-id="hf-e1a6" width="330" height="470" viewBox="0 0 330 470" style="position:absolute;left:0;top:0">
+            <defs data-hf-id="hf-mh0t">
+              <lineargradient data-hf-id="hf-kkmh" id="cupBody" x1="0" x2="1"><stop data-hf-id="hf-sxs0" offset="0" stop-color="#E6E7EF" /><stop data-hf-id="hf-bsje" offset=".35" stop-color="#FFFFFF" /><stop data-hf-id="hf-388c" offset=".8" stop-color="#F1F2F7" /><stop data-hf-id="hf-9er5" offset="1" stop-color="#D9DBE6" /></lineargradient>
+              <lineargradient data-hf-id="hf-9y3z" id="sleeve" x1="0" x2="1"><stop data-hf-id="hf-5k7t" offset="0" stop-color="#0C0A14" /><stop data-hf-id="hf-6wfs" offset=".4" stop-color="#2B2444" /><stop data-hf-id="hf-09gi" offset="1" stop-color="#0C0A14" /></lineargradient>
+            </defs>
+            <ellipse data-hf-id="hf-c8bn" cx="165" cy="458" rx="140" ry="12" fill="rgba(20,17,31,0.16)" />
+            <path data-hf-id="hf-ftg2" d="M40 70 L290 70 L262 452 Q165 466 68 452 Z" fill="url(#cupBody)" />
+            <path data-hf-id="hf-ngy0" d="M52 160 L278 160 L266 330 L64 330 Z" fill="url(#sleeve)" />
+            <use data-hf-id="hf-p38h" href="#mark" x="145" y="170" width="40" height="40" />
+            <rect data-hf-id="hf-lb87" x="24" y="40" width="282" height="40" rx="16" fill="#14111F" />
+            <rect data-hf-id="hf-lfgo" x="44" y="22" width="242" height="26" rx="12" fill="#221D33" />
+            <path data-hf-id="hf-wmeu" id="steam1" d="M130 0 C110 -40 150 -70 128 -110 C110 -140 140 -170 130 -200" stroke="rgba(20,17,31,0.18)" stroke-width="7" stroke-linecap="round" fill="none" />
+            <path data-hf-id="hf-hsxn" id="steam2" d="M200 0 C220 -36 184 -66 206 -104 C224 -136 194 -160 204 -190" stroke="rgba(20,17,31,0.13)" stroke-width="6" stroke-linecap="round" fill="none" />
+          </svg>
+          <div data-hf-id="hf-ap7o" class="abs" id="cupLabel">
+            <div data-hf-id="hf-ee1s" class="abs hand q" id="qMark" style="left:80px;top:0px">?</div>
+            <svg data-hf-id="hf-rnbu" class="abs" id="strike" width="190" height="110" viewBox="0 0 190 110" style="left:0;top:0"><path data-hf-id="hf-n8cu" id="strikePath" d="M56 66 C80 50 100 62 132 40" stroke="#FF7AC0" stroke-width="9" stroke-linecap="round" fill="none" stroke-dasharray="200" stroke-dashoffset="200" /></svg>
+          </div>
+          <div data-hf-id="hf-mhg6" class="abs hand name" id="cupName" style="left:84px;top:346px">Aarav</div>
+        </div>
+
+        <div data-hf-id="hf-z2my" class="abs eyebrow" id="aEyebrow" style="left:144px;top:316px;color:#5A40C4">8:41 am · Café Noor</div>
+        <div data-hf-id="hf-8jnc" class="abs display" id="aHead" style="left:140px;top:370px;font-size:116px;color:#14111F">
+          <span data-hf-id="hf-6c9z" class="line"><span data-hf-id="hf-qws5" data-layout-allow-overlap="" class="w">Every </span><span data-hf-id="hf-g30n" data-layout-allow-overlap="" class="w">café</span></span>
+          <span data-hf-id="hf-tvt3" class="line"><span data-hf-id="hf-i7eu" data-layout-allow-overlap="" class="w">has </span><span data-hf-id="hf-ht4n" data-layout-allow-overlap="" class="w">regulars.</span></span>
+        </div>
+        <div data-hf-id="hf-svin" class="abs hand" id="aHand" style="left:150px;top:618px;font-size:70px;color:#C2126A;white-space:nowrap">almost none know who they are.</div>
+
+        <div data-hf-id="hf-mqz0" class="abs display" id="bHead" style="left:140px;top:420px;font-size:108px;color:#14111F">
+          <span data-hf-id="hf-thi2" class="line"><span data-hf-id="hf-19or" data-layout-allow-overlap="" class="w">It </span><span data-hf-id="hf-3xdy" data-layout-allow-overlap="" class="w">knows </span><span data-hf-id="hf-sk8m" data-layout-allow-overlap="" class="w">when</span></span>
+          <span data-hf-id="hf-t371" class="line"><span data-hf-id="hf-22fw" data-layout-allow-overlap="" class="w">they </span><span data-hf-id="hf-nhvz" data-layout-allow-overlap="" class="w">walk </span><span data-hf-id="hf-5gkz" data-layout-allow-overlap="" class="w" style="color:#C2126A">past.</span></span>
+        </div>
+        <div data-hf-id="hf-qynk" class="abs eyebrow" id="bEyebrow" style="left:144px;top:366px;color:#5A40C4">Halo · the walk-past nudge</div>
+
+        <div data-hf-id="hf-v9if" class="abs" id="aaravChip" style="left:1010px;top:652px"><div data-hf-id="hf-kmtk" class="chip"><i data-hf-id="hf-wt6k"></i>Aarav · Chrome member</div></div>
+
+        <div data-hf-id="hf-f1b8" class="glass" id="notif" data-glass="notif">
+          <div data-hf-id="hf-5gs0" class="rim"></div><div data-hf-id="hf-j07t" class="spec"></div>
+          <div data-hf-id="hf-lon6" class="notif-in">
+            <svg data-hf-id="hf-pcxp" viewBox="-50 -50 100 100"><use data-hf-id="hf-tbhp" href="#mark" x="-50" y="-50" width="100" height="100" /></svg>
+            <div data-hf-id="hf-yeow">
+              <div data-hf-id="hf-utsf" class="nt1">Café Noor · 120 m away</div>
+              <div data-hf-id="hf-3a5b" class="nt2">Morning, Aarav. Your flat white is on us until 11.</div>
+              <div data-hf-id="hf-uj01" class="nt3">WALLET · NOW</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= B: the black card (dark) ================= -->
+      <div data-hf-id="hf-hdkx" id="sB" class="scene">
+        <div data-hf-id="hf-3l48" class="glow" data-layout-ignore="" id="bG1" style="left:900px;top:-80px;width:1200px;height:1200px;background:radial-gradient(closest-side,rgba(169,139,255,0.34),rgba(169,139,255,0))"></div>
+        <div data-hf-id="hf-131i" class="glow" data-layout-ignore="" id="bG2" style="left:-300px;top:500px;width:1000px;height:1000px;background:radial-gradient(closest-side,rgba(255,61,154,0.16),rgba(255,61,154,0))"></div>
+        <div data-hf-id="hf-3zbr" class="abs" id="bLock" style="left:140px;top:150px"><div data-hf-id="hf-pfqu" class="lockup"><svg data-hf-id="hf-q09d" viewBox="-50 -50 100 100"><g data-hf-id="hf-hrk3" id="bSpin"><use data-hf-id="hf-7p5t" href="#mark" x="-50" y="-50" width="100" height="100" /></g></svg>aikia.wallet</div></div>
+        <div data-hf-id="hf-quuh" class="abs display" id="cHead" style="left:140px;top:340px;font-size:108px;color:#F8F9FD">
+          <span data-hf-id="hf-vvc8" class="line"><span data-hf-id="hf-e4tp" data-layout-allow-overlap="" class="w">The </span><span data-hf-id="hf-16wx" data-layout-allow-overlap="" class="w">black </span><span data-hf-id="hf-w2ic" data-layout-allow-overlap="" class="w">card</span></span>
+          <span data-hf-id="hf-6c5w" class="line" style="color:#FF3D9A"><span data-hf-id="hf-bd8d" data-layout-allow-overlap="" class="w">for </span><span data-hf-id="hf-alzp" data-layout-allow-overlap="" class="w">every </span><span data-hf-id="hf-f58r" data-layout-allow-overlap="" class="w">café.</span></span>
+        </div>
+        <div data-hf-id="hf-u2jz" class="abs" id="cSub" style="left:144px;top:610px;width:820px;font-size:38px;line-height:1.35;font-weight:500;color:#C9C4DE">Lives in the wallet already on your phone. <span data-hf-id="hf-lc5e" style="color:#F8F9FD;font-weight:700">No app to download.</span></div>
+        <div data-hf-id="hf-fccm" class="abs" id="cStage" style="left:1180px;top:210px;width:560px;height:700px;perspective:1800px">
+          <div data-hf-id="hf-tl5a" class="abs" id="cTilt" style="left:0;top:0;width:560px;height:620px;transform-style:preserve-3d">
+            <div data-hf-id="hf-cjfh" id="passB" class="pass" data-pass="B"></div>
+          </div>
+          <div data-hf-id="hf-5840" class="abs" id="cReflect" style="left:0;top:640px;width:560px;height:200px;opacity:0.18;transform-origin:50% 0;overflow:hidden" data-layout-ignore=""></div>
+        </div>
+      </div>
+
+      <!-- ================= C: scrubbing the day (light) ================= -->
+      <div data-hf-id="hf-glx4" id="sC" class="scene">
+        <div data-hf-id="hf-prgv" class="layer" id="cSky"></div>
+        <div data-hf-id="hf-xwf9" class="glow" data-layout-ignore="" id="sun" style="left:0;top:0;width:900px;height:900px;background:radial-gradient(closest-side,rgba(255,196,140,0.55),rgba(255,196,140,0))"></div>
+        <div data-hf-id="hf-ycb9" class="glow" data-layout-ignore="" id="cG2" style="left:1100px;top:500px;width:1100px;height:900px;background:radial-gradient(closest-side,rgba(169,139,255,0.22),rgba(169,139,255,0))"></div>
+        <div data-hf-id="hf-qpp5" id="cShades" class="layer" data-layout-ignore="">
+          <div data-hf-id="hf-lfjr" class="shade" style="left:300px;top:-700px"></div>
+          <div data-hf-id="hf-twu3" class="shade" style="left:700px;top:-700px"></div>
+          <div data-hf-id="hf-wclc" class="shade" style="left:1100px;top:-700px"></div>
+          <div data-hf-id="hf-6y4k" class="shade" style="left:1500px;top:-700px"></div>
+          <div data-hf-id="hf-ycmw" class="shade" style="left:1900px;top:-700px"></div>
+        </div>
+        <div data-hf-id="hf-nxsu" class="abs eyebrow" id="dEyebrow" style="left:144px;top:92px;color:#5A40C4">For the owner</div>
+        <div data-hf-id="hf-hpps" class="abs" id="clockWrap">
+          <div data-hf-id="hf-zb98" class="clock" data-layout-allow-overlap="" id="clk3" style="opacity:0"></div>
+          <div data-hf-id="hf-oe6l" class="clock" data-layout-allow-overlap="" id="clk2" style="opacity:0"></div>
+          <div data-hf-id="hf-6xda" class="clock" data-layout-allow-overlap="" id="clk1" style="opacity:0"></div>
+          <div data-hf-id="hf-u13e" class="clock" data-layout-allow-overlap="" id="clk0">8:42<small data-hf-id="hf-mvhl" data-layout-allow-overlap="">am</small></div>
+        </div>
+        <div data-hf-id="hf-qvdq" class="abs roomchip" id="roomchip"><i data-hf-id="hf-qss9" id="roomDot"></i><span data-hf-id="hf-rfl7" style="position:relative;display:inline-block"><span data-hf-id="hf-6dmv" id="roomTxt">Tue · room quiet</span><span data-hf-id="hf-nyyw" id="roomTxt2" style="position:absolute;left:0;top:0;opacity:0">Tue · offer sent</span></span></div>
+        <div data-hf-id="hf-x33r" class="abs eyebrow" id="dEyebrow2" style="left:144px;top:520px;color:#C2126A">Fill My Tables</div>
+        <div data-hf-id="hf-6g8u" class="abs" id="dCap" style="left:140px;top:566px;width:780px;font-family:'Dela Gothic One',sans-serif;font-size:62px;line-height:1.08;letter-spacing:-0.02em;color:#14111F">
+          <span data-hf-id="hf-vh17" class="line"><span data-hf-id="hf-if4e" data-layout-allow-overlap="" class="w">One </span><span data-hf-id="hf-zzs3" data-layout-allow-overlap="" class="w">tap.</span></span>
+          <span data-hf-id="hf-v2q6" class="line"><span data-hf-id="hf-8v55" data-layout-allow-overlap="" class="w">Every </span><span data-hf-id="hf-85yo" data-layout-allow-overlap="" class="w">member </span><span data-hf-id="hf-wxmr" data-layout-allow-overlap="" class="w">gets</span></span>
+          <span data-hf-id="hf-uof5" class="line"><span data-hf-id="hf-73dx" data-layout-allow-overlap="" class="w">a </span><span data-hf-id="hf-lg00" data-layout-allow-overlap="" class="w">45‑minute </span><span data-hf-id="hf-1957" data-layout-allow-overlap="" class="w" style="color:#C2126A">offer.</span></span>
+        </div>
+        <div data-hf-id="hf-skat" class="glass" id="fillBtn" data-glass="btn">
+          <div data-hf-id="hf-yq6g" class="rim"></div><div data-hf-id="hf-dpd9" class="spec"></div>
+          <div data-hf-id="hf-jh4i" class="btn-in" id="btnIdle" data-layout-allow-occlusion="">Fill My Tables</div>
+          <div data-hf-id="hf-sado" class="btn-in" id="btnLive" data-layout-allow-occlusion=""><i data-hf-id="hf-zeb8"></i><span data-hf-id="hf-tvd6" id="liveTxt">Offer live · 45:00</span></div>
+        </div>
+        <div data-hf-id="hf-vzx8" class="abs members" id="members"></div>
+        <div data-hf-id="hf-1w0c" class="abs" id="tapRing" style="left:1340px;top:182px;width:110px;height:110px;border-radius:50%;border:4px solid rgba(20,17,31,0.55);background:rgba(20,17,31,0.12);opacity:0"></div>
+        <div data-hf-id="hf-2m3u" class="abs" id="rail"><div data-hf-id="hf-9sh5" class="abs" id="railFill"></div></div>
+        <div data-hf-id="hf-lrw5" id="ticks"></div>
+        <div data-hf-id="hf-2g40" class="glass" id="knob" data-glass="knob"><div data-hf-id="hf-xj9d" class="rim"></div><div data-hf-id="hf-ewac" class="spec"></div></div>
+      </div>
+
+      <!-- ================= D: status you can see (dark) ================= -->
+      <div data-hf-id="hf-cnt3" id="sD" class="scene">
+        <div data-hf-id="hf-y4p7" class="glow" data-layout-ignore="" id="dG1" style="left:850px;top:-60px;width:1200px;height:1200px;background:radial-gradient(closest-side,rgba(255,61,154,0.26),rgba(255,61,154,0))"></div>
+        <div data-hf-id="hf-e9yw" class="glow" data-layout-ignore="" id="dG2" style="left:-200px;top:-300px;width:1000px;height:1000px;background:radial-gradient(closest-side,rgba(127,231,242,0.14),rgba(127,231,242,0))"></div>
+        <div data-hf-id="hf-4w6j" class="abs eyebrow" id="eEyebrow" style="left:144px;top:270px;color:#BBA3FF">Status you can see</div>
+        <div data-hf-id="hf-5snh" class="abs display" id="tiers" style="left:140px;top:330px;font-size:130px;line-height:1.04">
+          <span data-hf-id="hf-ro05" data-layout-allow-overlap="" class="line" id="t1" style="color:#F8F9FD">Ink.</span>
+          <span data-hf-id="hf-7lh2" data-layout-allow-overlap="" class="line" id="t2" style="color:#D4D9E7">Chrome.</span>
+          <span data-hf-id="hf-vuer" data-layout-allow-overlap="" class="line" id="t3" style="color:#FF3D9A">Hyper Pink.</span>
+        </div>
+        <div data-hf-id="hf-zjv3" class="abs" id="eStage" data-layout-allow-overlap="" style="left:1170px;top:230px;width:560px;height:620px;perspective:1800px" data-layout-allow-overflow="">
+          <div data-hf-id="hf-nfzy" class="abs" id="eEcho3" style="left:0;top:0;width:560px;height:620px"></div>
+          <div data-hf-id="hf-gkkv" class="abs" id="eEcho2" style="left:0;top:0;width:560px;height:620px"></div>
+          <div data-hf-id="hf-gzqg" class="abs" id="eEcho1" style="left:0;top:0;width:560px;height:620px"></div>
+          <div data-hf-id="hf-0w4t" class="abs" id="eMain" style="left:0;top:0;width:560px;height:620px"></div>
+        </div>
+      </div>
+
+      <!-- ================= E: outro (light) ================= -->
+      <div data-hf-id="hf-8pp2" id="sE" class="scene">
+        <div data-hf-id="hf-nkrz" class="glow" data-layout-ignore="" id="fG1" style="left:-200px;top:-500px;width:1300px;height:1300px;background:radial-gradient(closest-side,rgba(169,139,255,0.30),rgba(169,139,255,0))"></div>
+        <div data-hf-id="hf-7jp8" class="glow" data-layout-ignore="" id="fG2" style="left:1000px;top:300px;width:1300px;height:1300px;background:radial-gradient(closest-side,rgba(255,61,154,0.20),rgba(255,61,154,0))"></div>
+        <div data-hf-id="hf-o4bb" class="glow" data-layout-ignore="" id="fG3" style="left:500px;top:500px;width:1000px;height:900px;background:radial-gradient(closest-side,rgba(127,231,242,0.24),rgba(127,231,242,0))"></div>
+        <div data-hf-id="hf-x34p" class="abs" id="outroStack">
+          <svg data-hf-id="hf-uxwa" id="bigmark" viewBox="-50 -50 100 100"><g data-hf-id="hf-0m3b" id="bigSpin"><use data-hf-id="hf-8w2w" href="#mark" x="-50" y="-50" width="100" height="100" /></g></svg>
+          <div data-hf-id="hf-jfxo" class="display" id="wordmark" style="font-size:168px;color:#14111F;line-height:1">aikia.wallet</div>
+          <div data-hf-id="hf-6el3" id="tagline" style="font-size:50px;font-weight:500;color:#3A3550;white-space:nowrap"><span data-hf-id="hf-jt6t" data-layout-allow-overlap="" class="w">A </span><span data-hf-id="hf-82yi" data-layout-allow-overlap="" class="w">members' </span><span data-hf-id="hf-6chw" data-layout-allow-overlap="" class="w">club. </span><span data-hf-id="hf-yfb3" data-layout-allow-overlap="" class="w" style="color:#14111F;font-weight:700">Not </span><span data-hf-id="hf-utzt" data-layout-allow-overlap="" class="w" style="color:#14111F;font-weight:700">a </span><span data-hf-id="hf-bxmg" data-layout-allow-overlap="" class="w" style="color:#14111F;font-weight:700">loyalty </span><span data-hf-id="hf-7yo4" data-layout-allow-overlap="" class="w" style="color:#14111F;font-weight:700">program.</span></div>
+          <div data-hf-id="hf-dfgv" class="eyebrow" id="fromW" style="color:#5E5A73;margin-top:8px">from aikia.wrld</div>
+        </div>
+        <div data-hf-id="hf-vcth" class="glass" id="lens" data-glass="lens" data-layout-allow-overflow=""><div data-hf-id="hf-xxke" class="rim"></div><div data-hf-id="hf-ehzb" class="spec"></div></div>
+      </div>
+
+      <div data-hf-id="hf-e0dh" class="abs" id="blackout"></div>
+      <div data-hf-id="hf-a760" class="abs" id="flash"></div>
+      <div data-hf-id="hf-ksa1" id="grain" data-layout-ignore=""></div>
+
+      <!-- ================= audio ================= -->
+      <audio data-hf-id="hf-w5g3" id="bgm" data-start="0" data-duration="24.5" data-track-index="10" data-volume="0.36" src="assets/music/bed.m4a"></audio>
+      <audio data-hf-id="hf-65ls" id="sfxHand1" data-start="1.95" data-duration="0.6" data-track-index="11" data-volume="0.28" src="assets/sfx/casino/card-slide-1.ogg"></audio>
+      <audio data-hf-id="hf-l1pr" id="sfxGlass" data-start="4.6" data-duration="0.21" data-track-index="12" data-volume="0.42" src="assets/sfx/impact/impactGlass_light_001.ogg"></audio>
+      <audio data-hf-id="hf-x8xe" id="sfxHand2" data-start="6.62" data-duration="0.6" data-track-index="13" data-volume="0.26" src="assets/sfx/casino/card-slide-1.ogg"></audio>
+      <audio data-hf-id="hf-hofh" id="sfxCut" data-start="8.7" data-duration="0.19" data-track-index="14" data-volume="0.7" src="assets/sfx/impact/impactSoft_medium_001.ogg"></audio>
+      <audio data-hf-id="hf-duo3" id="sfxWhip" data-start="13.05" data-duration="0.15" data-track-index="15" data-volume="0.45" src="assets/sfx/impact/impactSoft_medium_004.ogg"></audio>
+      <audio data-hf-id="hf-fxrc" id="sfxTap" data-start="15.29" data-duration="0.01" data-track-index="16" data-volume="0.7" src="assets/sfx/interface/click_003.ogg"></audio>
+      <audio data-hf-id="hf-s4rp" id="sfxMem1" data-start="15.57" data-duration="0.11" data-track-index="17" data-volume="0.45" src="assets/sfx/interface/drop_001.ogg"></audio>
+      <audio data-hf-id="hf-6xn3" id="sfxMem2" data-start="17.47" data-duration="0.19" data-track-index="18" data-volume="0.45" src="assets/sfx/interface/drop_002.ogg"></audio>
+      <audio data-hf-id="hf-7ped" id="sfxFlip1" data-start="19.06" data-duration="0.06" data-track-index="19" data-volume="0.4" src="assets/sfx/ui/rollover2.ogg"></audio>
+      <audio data-hf-id="hf-hmai" id="sfxFlip2" data-start="20.15" data-duration="0.06" data-track-index="20" data-volume="0.4" src="assets/sfx/ui/rollover2.ogg"></audio>
+      <audio data-hf-id="hf-v7g3" id="sfxLogo" data-start="21.84" data-duration="1.48" data-track-index="21" data-volume="0.45" src="assets/sfx/impact/impactBell_heavy_000.ogg"></audio>
+    </div>
+
+    <script>
+      // ---------- helpers (setup only; all motion is a pure function of timeline time) ----------
+      var $ = function (id) { return document.getElementById(id); };
+      var clamp = function (x, a, b) { return Math.min(b === undefined ? 1 : b, Math.max(a === undefined ? 0 : a, x)); };
+      var P = function (t, a, b) { return clamp((t - a) / (b - a)); };
+      var eOut = function (x) { return 1 - Math.pow(1 - x, 3); };
+      var eInOut = function (x) { return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+      var eExpo = function (x) { return x >= 1 ? 1 : 1 - Math.pow(2, -10 * x); };
+      var lerp = function (a, b, x) { return a + (b - a) * x; };
+      function mulberry32(a) { return function () { a |= 0; a = (a + 0x6d2b79f5) | 0; var t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+
+      // ---------- liquid glass: per-element SVG displacement filter (edge refraction + chromatic split) ----------
+      function glassFilter(id, w, h, r, border, scale, blurPx) {
+        var map =
+          "<svg xmlns='http://www.w3.org/2000/svg' width='" + w + "' height='" + h + "' viewBox='0 0 " + w + " " + h + "'>" +
+          "<defs><linearGradient id='r' x1='100%' y1='0%' x2='0%' y2='0%'><stop offset='0%' stop-color='#000'/><stop offset='100%' stop-color='#f00'/></linearGradient>" +
+          "<linearGradient id='b' x1='0%' y1='0%' x2='0%' y2='100%'><stop offset='0%' stop-color='#000'/><stop offset='100%' stop-color='#00f'/></linearGradient></defs>" +
+          "<rect width='" + w + "' height='" + h + "' fill='#000'/>" +
+          "<rect width='" + w + "' height='" + h + "' rx='" + r + "' fill='url(#r)'/>" +
+          "<rect width='" + w + "' height='" + h + "' rx='" + r + "' fill='url(#b)' style='mix-blend-mode:difference'/>" +
+          "<rect x='" + border + "' y='" + border + "' width='" + (w - 2 * border) + "' height='" + (h - 2 * border) + "' rx='" + Math.max(0, r - border) + "' fill='hsl(0 0% 50% / 0.94)' style='filter:blur(" + blurPx + "px)'/></svg>";
+        var href = "data:image/svg+xml;utf8," + encodeURIComponent(map);
+        var ns = "http://www.w3.org/2000/svg";
+        var f = document.createElementNS(ns, "filter");
+        f.setAttribute("id", id); f.setAttribute("x", "0"); f.setAttribute("y", "0"); f.setAttribute("width", w); f.setAttribute("height", h);
+        f.setAttribute("filterUnits", "userSpaceOnUse"); f.setAttribute("primitiveUnits", "userSpaceOnUse"); f.setAttribute("color-interpolation-filters", "sRGB");
+        var parts = [
+          "<feImage href='" + href + "' x='0' y='0' width='" + w + "' height='" + h + "' preserveAspectRatio='none' result='map'/>",
+          "<feDisplacementMap in='SourceGraphic' in2='map' scale='" + scale + "' xChannelSelector='R' yChannelSelector='B' result='dR'/>",
+          "<feColorMatrix in='dR' type='matrix' values='1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0' result='cR'/>",
+          "<feDisplacementMap in='SourceGraphic' in2='map' scale='" + scale * 1.05 + "' xChannelSelector='R' yChannelSelector='B' result='dG'/>",
+          "<feColorMatrix in='dG' type='matrix' values='0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 1 0' result='cG'/>",
+          "<feDisplacementMap in='SourceGraphic' in2='map' scale='" + scale * 1.1 + "' xChannelSelector='R' yChannelSelector='B' result='dB'/>",
+          "<feColorMatrix in='dB' type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 0' result='cB'/>",
+          "<feBlend in='cR' in2='cG' mode='screen' result='rg'/>",
+          "<feBlend in='rg' in2='cB' mode='screen' result='rgb'/>",
+          "<feGaussianBlur in='rgb' stdDeviation='0.7'/>",
+        ];
+        f.innerHTML = parts.join("");
+        $("defs").appendChild(f);
+        return "url(#" + id + ")";
+      }
+      function applyGlass(el, id, w, h, r, border, scale, blurPx, extra) {
+        var u = glassFilter(id, w, h, r, border, scale, blurPx);
+        el.style.backdropFilter = u + " " + (extra || "saturate(1.5) brightness(1.04)");
+        el.style.webkitBackdropFilter = el.style.backdropFilter;
+        el.style.borderRadius = r + "px";
+      }
+      applyGlass($("notif"), "lgNotif", 860, 176, 52, 22, -150, 10, "blur(1.5px) saturate(1.6) brightness(1.05)");
+      applyGlass($("knob"), "lgKnob", 132, 132, 66, 16, -110, 9, "saturate(1.7) brightness(1.06)");
+      applyGlass($("fillBtn"), "lgBtn", 770, 156, 78, 20, -120, 10, "blur(2px) saturate(1.8)");
+      applyGlass($("lens"), "lgLens", 420, 240, 120, 46, -95, 22, "saturate(1.4) brightness(1.04)");
+
+      // ---------- passes ----------
+      function passHTML(tier, chip, opts) {
+        opts = opts || {};
+        var s = "";
+        for (var i = 0; i < 9; i++) s += "<i class='" + (i < 7 ? "on" : "") + "'></i>";
+        return "<div class='sheen' data-layout-ignore></div>" +
+          "<div class='pass-top'><b>Café Noor</b><svg viewBox='-50 -50 100 100'><use href='#mark' x='-50' y='-50' width='100' height='100'/></svg></div>" +
+          "<span class='tierchip'>" + chip + "</span>" +
+          "<div class='pass-grid'><div><span>Member</span>Aarav Shah</div><div><span>Balance</span>₹1,840</div>" +
+          "<div><span>The usual</span>Flat white, oat</div><div><span>Streak</span>6 mornings</div></div>" +
+          "<div class='stamps'>" + s + "</div>" +
+          "<div class='pass-foot'><p>2 visits to your free cup<br>Powered by aikia.wallet</p><div class='qr'><i></i></div></div>";
+      }
+      $("passB").innerHTML = passHTML("chrome", "CHROME MEMBER");
+      var refl = document.createElement("div");
+      refl.className = "pass"; refl.style.transform = "scaleY(-1)"; refl.style.transformOrigin = "50% 0"; refl.style.top = "0px";
+      refl.innerHTML = passHTML("chrome", "CHROME MEMBER");
+      refl.style.webkitMaskImage = "linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,1) 100%)";
+      $("cReflect").appendChild(refl);
+
+      var TIERS = [["ink", "INK MEMBER"], ["chrome", "CHROME MEMBER"], ["pink", "HYPER PINK MEMBER"]];
+      function tierStack(host) {
+        var faces = [];
+        for (var k = 0; k < 3; k++) {
+          var p = document.createElement("div");
+          p.className = "pass " + TIERS[k][0];
+          p.innerHTML = passHTML(TIERS[k][0], TIERS[k][1]);
+          p.style.opacity = k === 0 ? "1" : "0";
+          host.appendChild(p);
+          faces.push(p);
+        }
+        return faces;
+      }
+      var stackMain = tierStack($("eMain")), stackE1 = tierStack($("eEcho1")), stackE2 = tierStack($("eEcho2")), stackE3 = tierStack($("eEcho3"));
+
+      // ---------- ghosts (scene A) ----------
+      var GH = [
+        // id, depth scale, base alpha, blur, start x, end x, t0, t1, bottom y
+        { s: 1.45, a: 0.2, blur: 1.2, x0: -320, x1: 1030, t0: 0.0, t1: 6.0, ease: true, y: 1100, hero: true },
+        { s: 0.95, a: 0.15, blur: 2.4, x0: 2050, x1: -400, t0: 0.0, t1: 9.0, y: 1010 },
+        { s: 0.72, a: 0.12, blur: 3.4, x0: 1500, x1: -300, t0: -1.5, t1: 8.5, y: 930 },
+        { s: 1.15, a: 0.13, blur: 2.0, x0: 2300, x1: 300, t0: 2.6, t1: 10.5, y: 1060 },
+      ];
+      var ECHOES = 4, DELTA = 0.13;
+      var ghostLayer = $("ghosts");
+      GH.forEach(function (g, gi) {
+        g.els = [];
+        for (var i = ECHOES; i >= 0; i--) {
+          var d = document.createElement("div");
+          d.className = "ghost";
+          d.innerHTML = "<svg viewBox='0 0 200 270'><use href='#bust' fill='" + (i === 0 ? "#5A40C4" : "#A98BFF") + "'/></svg>";
+          d.style.filter = "blur(" + (g.blur + i * 1.6) + "px)";
+          ghostLayer.appendChild(d);
+          g.els[i] = d;
+        }
+        if (g.hero) {
+          var solid = document.createElement("div");
+          solid.className = "ghost";
+          solid.innerHTML = "<svg viewBox='0 0 200 270'><defs><linearGradient id='gs' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#2B2444'/><stop offset='1' stop-color='#14111F'/></linearGradient></defs><use href='#bust' fill='url(#gs)'/><circle cx='100' cy='66' r='60' fill='none' stroke='#FF3D9A' stroke-width='7'/></svg>";
+          solid.style.opacity = "0";
+          ghostLayer.appendChild(solid);
+          g.solid = solid;
+        }
+      });
+      function ghostX(g, t) {
+        var p = (t - g.t0) / (g.t1 - g.t0);
+        p = clamp(p);
+        if (g.ease) p = 1 - Math.pow(1 - p, 2.2);
+        return lerp(g.x0, g.x1, p);
+      }
+
+      // ---------- scrub scene setup ----------
+      var hours = ["8 am", "10", "12 pm", "2", "4", "6", "8 pm"];
+      var tk = $("ticks");
+      for (var hI = 0; hI < 7; hI++) {
+        var xx = 140 + (hI * 120) / 720 * 1640;
+        var bar = document.createElement("div"); bar.className = "tickbar"; bar.style.left = (xx - 1) + "px"; tk.appendChild(bar);
+        var lab = document.createElement("div"); lab.className = "tick"; lab.style.left = (xx + 12) + "px"; lab.textContent = hours[hI]; tk.appendChild(lab);
+      }
+      var MEMS = ["Meera", "Kabir", "Isha", "Rohan", "Zoya", "Dev", "Anika", "Tara"];
+      $("members").innerHTML = MEMS.map(function (n, i) {
+        return "<div class='mem' id='mem" + i + "'><div class='av'><svg viewBox='0 0 92 92'><circle cx='46' cy='46' r='46' fill='#E3DDF7'/><svg x='10' y='14' width='72' height='78' viewBox='0 0 200 270'><use href='#bust' fill='#A98BFF' opacity='0.55'/></svg></svg>" +
+          "<svg viewBox='0 0 92 92' class='solidav' id='memS" + i + "' style='opacity:0'><circle cx='46' cy='46' r='46' fill='#14111F'/><svg x='10' y='14' width='72' height='78' viewBox='0 0 200 270'><use href='#bust' fill='#F8F9FD'/></svg></svg>" +
+          "<div class='ring' id='memR" + i + "' style='opacity:0'></div></div><b>" + n + "</b><span id='memT" + i + "' style='opacity:0'>OFFER · 45 MIN</span></div>";
+      }).join("");
+
+      function clockStr(m) {
+        m = Math.round(m);
+        var h = Math.floor(m / 60), mm = m % 60, ap = h >= 12 ? "pm" : "am";
+        var h12 = ((h + 11) % 12) + 1;
+        return h12 + ":" + (mm < 10 ? "0" : "") + mm + "<small data-layout-allow-overlap>" + ap + "</small>";
+      }
+      function scrubMin(t) { return lerp(8 * 60 + 42, 15 * 60 + 4, eInOut(P(t, 13.45, 14.75))); }
+
+      // ---------- per-frame renderer (pure function of t) ----------
+      var AD = window.AUDIO_DATA;
+      var rng = mulberry32(7);
+      var GRAIN = [];
+      for (var gI = 0; gI < 800; gI++) GRAIN.push([Math.floor(rng() * 40 - 20), Math.floor(rng() * 40 - 20)]);
+      var lastClock = "";
+
+      function draw(t) {
+        var fi = Math.min(AD.totalFrames - 1, Math.max(0, Math.round(t * AD.fps)));
+        var bands = AD.frames[fi].bands;
+        var bass = (bands[0] + bands[1]) * 0.5, air = (bands[5] + bands[6]) * 0.5;
+
+        // grain (stepped, deterministic)
+        var gp = GRAIN[fi % GRAIN.length];
+        $("grain").style.transform = "translate(" + gp[0] + "px," + gp[1] + "px)";
+        $("grain").style.mixBlendMode = (t >= 8.74 && t < 13.11) || (t >= 18.56 && t < 21.28) ? "screen" : "multiply";
+        $("grain").style.opacity = (t >= 8.74 && t < 13.11) || (t >= 18.56 && t < 21.28) ? "0.05" : "0.075";
+
+        // audio-reactive light: ambient glows breathe on the bass, rims lift on the air band
+        var br = 1 + bass * 0.07;
+        ["aG1", "aG2", "aG3", "bG1", "bG2", "cG2", "dG1", "dG2", "fG1", "fG2", "fG3"].forEach(function (id, k) {
+          var el = $(id); var drift = Math.sin(t * 0.35 + k) * 30;
+          el.style.transform = "translate(" + drift + "px," + Math.cos(t * 0.3 + k) * 24 + "px) scale(" + (br + (k % 2) * 0.02) + ")";
+          el.style.opacity = String(0.82 + bass * 0.18);
+        });
+        $("passB").style.boxShadow = "0 0 0 1.5px rgba(248,249,253," + (0.1 + air * 0.12) + ") inset, 0 60px 120px -40px rgba(0,0,0,0.9), 0 0 " + (60 + bass * 50) + "px rgba(169,139,255," + (0.12 + bass * 0.12) + ")";
+
+        // scene A: window light drifts; ghosts walk with onion-skin echoes
+        $("aShades").style.transform = "translateX(" + (-t * 14) + "px) rotate(18deg)";
+        $("steam1").style.transform = "translateY(" + (-((t * 22) % 30)) + "px)";
+        $("steam1").style.opacity = String(0.6 + 0.4 * Math.sin(t * 2.1));
+        $("steam2").style.opacity = String(0.6 + 0.4 * Math.sin(t * 1.7 + 1));
+        GH.forEach(function (g) {
+          var xLead = ghostX(g, t);
+          for (var i = 0; i <= ECHOES; i++) {
+            var ti = t - i * DELTA;
+            var x = ghostX(g, ti);
+            var bob = Math.abs(Math.sin(ti * 6.2 + g.s * 3)) * 9 * g.s;
+            var dist = Math.abs(x - xLead);
+            var a = i === 0 ? g.a : g.a * Math.pow(0.6, i) * clamp(dist / 30);
+            if (g.hero) a *= 1 - P(t, 5.9, 6.5);
+            var el = g.els[i];
+            el.style.transform = "translate(" + x + "px," + (g.y - 270 - bob) + "px) scale(" + g.s + ")";
+            el.style.opacity = String(a);
+          }
+          if (g.hero) {
+            var sx = ghostX(g, t);
+            g.solid.style.transform = "translate(" + sx + "px," + (g.y - 270) + "px) scale(" + g.s + ")";
+            g.solid.style.opacity = String(eOut(P(t, 5.9, 6.5)));
+          }
+        });
+
+        // scene C: scrubbing time moves the knob, the clock (with ghost frames), the sun and the window shadows
+        var m = scrubMin(t);
+        var kx = 140 + (m - 480) / 720 * 1640;
+        $("knob").style.transform = "translate(" + (kx - 66) + "px," + (933 - 66) + "px)";
+        $("railFill").style.transform = "scaleX(" + ((kx - 140) / 1640) + ")";
+        var html0 = clockStr(m);
+        if (html0 !== lastClock) { $("clk0").innerHTML = html0; lastClock = html0; }
+        var moving = P(t, 13.45, 13.6) * (1 - P(t, 14.6, 14.8));
+        for (var e = 1; e <= 3; e++) {
+          var ce = $("clk" + e);
+          ce.innerHTML = clockStr(scrubMin(t - e * 0.05));
+          ce.style.opacity = String(moving * (0.32 / e));
+          ce.style.filter = "blur(" + (e * 3) + "px)";
+          ce.style.transform = "translateX(" + (-e * 26 * moving) + "px)";
+        }
+        $("clk0").style.filter = "blur(" + (moving * 1.5) + "px)";
+        var dayP = (m - 480) / 720;
+        $("sun").style.transform = "translate(" + lerp(-200, 1200, dayP) + "px," + lerp(-260, 60, Math.sin(dayP * Math.PI) * -1 + 1) + "px)";
+        $("cShades").style.transform = "rotate(" + lerp(-28, 34, dayP) + "deg) translateX(" + lerp(-80, 80, dayP) + "px)";
+        $("cSky").style.background = "radial-gradient(140% 120% at " + lerp(10, 80, dayP) + "% 0%, rgba(255,226,196," + (0.15 + dayP * 0.55) + ") 0%, rgba(245,246,250,0) 60%)";
+        var secs = Math.max(0, 2700 - Math.floor(Math.max(0, t - 15.62)));
+        $("liveTxt").textContent = "Offer live · " + Math.floor(secs / 60) + ":" + (secs % 60 < 10 ? "0" : "") + (secs % 60);
+
+        // scene D: tier flips with ghost echoes of each pose
+        function tierPose(tt) {
+          var a1 = eInOut(P(tt, 18.98, 19.22)) * 180, a2 = eInOut(P(tt, 20.07, 20.31)) * 180;
+          var ang = a1 + a2;
+          var face = tt < 19.1 ? 0 : tt < 20.19 ? 1 : 2;
+          var r = ((ang + 90) % 180) - 90;
+          return { r: r, face: face };
+        }
+        [[stackMain, 0], [stackE1, 1], [stackE2, 2], [stackE3, 3]].forEach(function (pair) {
+          var faces = pair[0], i = pair[1];
+          var pose = tierPose(t - i * 0.045);
+          var lead = tierPose(t);
+          var spread = Math.abs(pose.r - lead.r) + (pose.face !== lead.face ? 40 : 0);
+          var baseA = i === 0 ? 1 : (0.34 / i) * clamp(spread / 25);
+          for (var k = 0; k < 3; k++) {
+            faces[k].style.opacity = String(k === pose.face ? baseA : 0);
+            faces[k].style.transform = "rotateY(" + pose.r + "deg) rotateZ(" + (-2 + Math.sin(t * 0.9) * 1.2) + "deg) translateY(" + Math.sin(t * 1.3) * 6 + "px)";
+          }
+        });
+        $("t1").style.opacity = String(t < 19.1 ? 1 : 0.28);
+        $("t2").style.opacity = String(t >= 19.1 && t < 20.19 ? 1 : 0.28);
+        $("t3").style.opacity = String(t >= 20.19 ? 1 : 0.28);
+
+        // spinners
+        $("bSpin").setAttribute("transform", "rotate(" + t * 22 + ")");
+        $("bigSpin").setAttribute("transform", "rotate(" + ((t - 21.28) * 34 + 120 * (1 - eOut(P(t, 21.3, 22.4)))) + ")");
+        // outro lens glides across the wordmark
+        var lp = P(t, 21.75, 24.0);
+        $("lens").style.transform = "translate(" + lerp(-460, 1980, eInOut(lp)) + "px," + (449 + Math.sin(lp * Math.PI) * -22) + "px)";
+      }
+
+      // ---------- the one timeline ----------
+      var tl = gsap.timeline({ paused: true });
+      var driver = { v: 0 };
+      tl.to(driver, { v: 1, duration: 24.5, ease: "none", onUpdate: function () { draw(tl.time()); } }, 0);
+
+      // ===== A: hook — every café has regulars =====
+      tl.fromTo("#aEyebrow", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.6, ease: "power2.out" }, 0.25);
+      tl.fromTo("#aHead .w", { opacity: 0, y: 70, rotation: 3 }, { opacity: 1, y: 0, rotation: 0, duration: 0.7, ease: "expo.out", stagger: 0.09 }, 0.4);
+      tl.fromTo("#cup", { opacity: 0, y: 120, rotation: 4 }, { opacity: 1, y: 0, rotation: 0, duration: 1.1, ease: "power3.out" }, 0.2);
+      tl.fromTo("#qMark", { clipPath: "inset(0% 100% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.45, ease: "power1.inOut" }, 1.0);
+      tl.fromTo("#aHand", { clipPath: "inset(-20% 100% -20% 0%)", opacity: 1 }, { clipPath: "inset(-20% 0% -20% 0%)", duration: 1.1, ease: "power1.inOut" }, 1.95);
+
+      // ===== A→ beat 4.39: the nudge (liquid glass) =====
+      tl.to(["#aHead", "#aEyebrow", "#aHand"], { opacity: 0, filter: "blur(14px)", y: -24, duration: 0.4, ease: "power2.in" }, 4.2);
+      tl.fromTo("#notif", { y: -260, scale: 0.92, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.85, ease: "back.out(1.4)" }, 4.39);
+      tl.fromTo("#bEyebrow", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.5, ease: "power2.out" }, 4.85);
+      tl.fromTo("#bHead .w", { opacity: 0, y: 60, filter: "blur(10px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.6, ease: "power3.out", stagger: 0.07 }, 4.95);
+      tl.fromTo("#aaravChip", { opacity: 0, y: 30, scale: 0.85 }, { opacity: 1, y: 0, scale: 1, duration: 0.55, ease: "back.out(1.8)" }, 6.25);
+      tl.to("#strikePath", { strokeDashoffset: 0, duration: 0.28, ease: "power2.out" }, 6.45);
+      tl.to("#qMark", { opacity: 0.45, duration: 0.3, ease: "power1.out" }, 6.7);
+      tl.fromTo("#cupName", { clipPath: "inset(-30% 100% -30% 0%)", rotation: -5 }, { clipPath: "inset(-30% 0% -30% 0%)", rotation: -5, duration: 0.75, ease: "power1.inOut" }, 6.62);
+
+      // ===== match cut into the black card — beat-locked: 8.74s =====
+      tl.set("#blackout", { opacity: 1 }, 8.3);
+      tl.to("#blackout", { clipPath: "inset(0px 0px 0px 0px round 0px)", duration: 0.44, ease: "expo.in" }, 8.3);
+      tl.set("#sB", { opacity: 1 }, 8.74); // beat-locked: 8.74s
+      tl.set("#sA", { opacity: 0 }, 8.74);
+      tl.to("#blackout", { opacity: 0, duration: 0.5, ease: "power1.out" }, 8.74);
+
+      // ===== B: the black card =====
+      tl.fromTo("#bLock", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.6, ease: "power3.out" }, 8.85);
+      tl.fromTo("#cHead .w", { opacity: 0, y: 80, rotationX: -60 }, { opacity: 1, y: 0, rotationX: 0, duration: 0.75, ease: "expo.out", stagger: 0.08 }, 8.95);
+      tl.fromTo("#cSub", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.7, ease: "sine.out" }, 9.85);
+      tl.fromTo("#cTilt", { y: 420, rotationX: 38, rotationY: -34, opacity: 0 }, { y: 0, rotationX: 6, rotationY: -14, opacity: 1, duration: 1.3, ease: "power4.out" }, 8.82);
+      tl.to("#cTilt", { rotationX: 2, rotationY: -6, duration: 2.55, ease: "sine.inOut" }, 10.15);
+      tl.fromTo("#cReflect", { opacity: 0 }, { opacity: 0.18, duration: 0.8, ease: "power1.out" }, 9.6);
+      tl.fromTo("#passB .sheen", { x: 0 }, { x: 1400, duration: 1.1, ease: "power2.inOut" }, 10.3);
+
+      // ===== B→C whip into daylight — beat-locked: 13.11s =====
+      tl.to("#sB", { x: -520, filter: "blur(26px)", duration: 0.32, ease: "power3.in" }, 12.79);
+      tl.set("#sB", { opacity: 0 }, 13.11);
+      tl.fromTo("#sC", { opacity: 0, x: 560, filter: "blur(26px)" }, { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.5, ease: "power3.out" }, 13.11); // beat-locked: 13.11s
+
+      // ===== C: scrubbing the day =====
+      tl.fromTo("#dEyebrow", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 13.3);
+      tl.fromTo("#roomchip", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "back.out(1.6)" }, 14.7);
+      tl.fromTo("#fillBtn", { opacity: 0, scale: 0.86, y: -30 }, { opacity: 1, scale: 1, y: 0, duration: 0.7, ease: "elastic.out(1, 0.6)" }, 13.35);
+      tl.fromTo("#members .mem", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", stagger: { each: 0.05, from: "start" } }, 13.5);
+      tl.fromTo(["#rail", "#ticks"], { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.out" }, 13.2);
+      tl.fromTo("#knob", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power1.out" }, 13.25);
+      tl.fromTo("#dEyebrow2", { opacity: 0, x: -24 }, { opacity: 1, x: 0, duration: 0.4, ease: "power2.out" }, 14.9);
+      tl.fromTo("#dCap .w", { opacity: 0, y: 46 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out", stagger: 0.06 }, 15.0);
+      // the thumb taps Fill My Tables — beat-grid 15.29s
+      tl.fromTo("#tapRing", { opacity: 0, scale: 1.6, x: 60, y: 120 }, { opacity: 1, scale: 1, x: 0, y: 0, duration: 0.24, ease: "power2.out" }, 14.99);
+      tl.to("#tapRing", { scale: 0.82, duration: 0.1, ease: "power2.in" }, 15.25);
+      tl.to("#tapRing", { opacity: 0, scale: 2.4, duration: 0.45, ease: "power2.out" }, 15.35);
+      tl.to("#fillBtn", { scale: 0.96, duration: 0.1, ease: "power2.in" }, 15.25);
+      tl.to("#fillBtn", { scale: 1, duration: 0.35, ease: "back.out(3)" }, 15.35);
+      tl.to("#btnLive", { opacity: 1, duration: 0.3, ease: "power1.out" }, 15.36);
+      tl.to("#btnIdle", { opacity: 0, duration: 0.2, ease: "power1.in" }, 15.4);
+      tl.to("#roomTxt", { opacity: 0, duration: 0.15 }, 15.4);
+      tl.to("#roomTxt2", { opacity: 1, duration: 0.2 }, 15.45);
+      tl.to("#roomDot", { backgroundColor: "#FF3D9A", duration: 0.2 }, 15.4);
+      // eight ghosts become members — beat-grid: 15.57, 15.84, 16.11, 16.38, 16.65, 16.93, 17.20, 17.47
+      var grid = [15.57, 15.84, 16.11, 16.38, 16.65, 16.93, 17.2, 17.47];
+      grid.forEach(function (bt, i) {
+        tl.to("#memS" + i, { opacity: 1, duration: 0.25, ease: "power2.out" }, bt);
+        tl.fromTo("#memR" + i, { opacity: 0, scale: 1.5 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2.2)" }, bt);
+        tl.to("#memT" + i, { opacity: 1, duration: 0.25, ease: "power1.out" }, bt + 0.05);
+        tl.fromTo("#mem" + i + " .av", { scale: 1 }, { scale: 1.12, duration: 0.16, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, bt);
+      });
+
+      // ===== C→D 3D flip into the night — beat-locked: 18.56s =====
+      tl.to("#sC", { rotationY: 90, transformPerspective: 2400, filter: "brightness(0.7)", duration: 0.3, ease: "power3.in" }, 18.26);
+      tl.set("#sC", { opacity: 0 }, 18.56);
+      tl.set("#sD", { opacity: 1 }, 18.56);
+      tl.fromTo("#sD", { rotationY: -90, transformPerspective: 2400 }, { rotationY: 0, duration: 0.42, ease: "power3.out", immediateRender: false }, 18.56); // beat-locked: 18.56s
+      tl.fromTo("#eEyebrow", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 18.7);
+      tl.fromTo(["#t1", "#t2", "#t3"], { x: -80, filter: "blur(12px)" }, { x: 0, filter: "blur(0px)", duration: 0.5, ease: "expo.out", stagger: 0.08 }, 18.62);
+      tl.fromTo("#eStage", { y: 160, scale: 0.9 }, { y: 0, scale: 1, duration: 0.7, ease: "power4.out" }, 18.6);
+
+      // ===== D→E overexposure bloom into the morning — 21.28s =====
+      tl.to("#sD", { filter: "brightness(2.4) saturate(0.6)", scale: 1.06, duration: 0.3, ease: "power2.in" }, 20.98);
+      tl.fromTo("#flash", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.in" }, 20.98);
+      tl.set("#sD", { opacity: 0 }, 21.28);
+      tl.set("#sE", { opacity: 1 }, 21.28);
+      tl.to("#flash", { opacity: 0, duration: 0.7, ease: "power2.out" }, 21.28);
+
+      // ===== E: outro =====
+      tl.fromTo("#bigmark", { scale: 0.4, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.9, ease: "back.out(1.5)" }, 21.35);
+      tl.fromTo("#wordmark", { opacity: 0, y: 40, scale: 1.08, filter: "blur(16px)" }, { opacity: 1, y: 0, scale: 1, filter: "blur(0px)", duration: 0.9, ease: "expo.out" }, 21.6); // lands on 21.84 beat
+      tl.fromTo("#tagline .w", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out", stagger: 0.06 }, 22.37); // beat-locked: 22.37s
+      tl.fromTo("#fromW", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "sine.out" }, 22.95);
+      tl.fromTo("#lens", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power1.out" }, 21.7);
+
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>
