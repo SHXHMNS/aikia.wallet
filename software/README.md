@@ -1,6 +1,6 @@
 # AIKIA.WALLET software
 
-Production-oriented wallet service workspace. The active wallet integration is Google Wallet loyalty cards. Apple Wallet is intentionally not implemented yet; the provider contract is designed to accept it later.
+Development workspace for the AIKIA.WALLET venue platform. Google Wallet loyalty cards are the active integration; Apple Wallet is intentionally reserved for a later provider implementation. This first software slice is not yet a production launch.
 
 ## Stack
 
@@ -56,6 +56,7 @@ Open `http://localhost:3000`. The home screen and health endpoint describe which
 - Real pass issuance requires the Issuer account, service account access, program logo, app origin and authorized Google test account.
 - Demo-mode Google passes are not available to all customers until publishing access is granted.
 - Guest OTP/SMS, public join links, message delivery, venue billing, POS integration, Apple Wallet and production deployment are not included in this first software slice.
+- Production operations still need public onboarding, rate limiting, background retry for failed Wallet syncs, monitored backups, alerting, and a security/privacy review.
 - A Google Wallet object update can fail after the canonical ledger write. The ledger remains authoritative; the application must report/retry provider synchronization rather than silently changing the ledger.
 
 ## Workspace map

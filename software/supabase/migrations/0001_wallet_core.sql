@@ -198,6 +198,7 @@ begin
     if v_existing.member_id <> p_member_id or v_existing.event_type <> 'redemption' then raise exception 'This idempotency key has already been used'; end if;
     return jsonb_build_object('member_id', m.id, 'rewards_available', m.rewards_available, 'duplicate', true);
   end if;
+  if m.status <> 'active' then raise exception 'Member is not active'; end if;
   if m.rewards_available < 1 then raise exception 'No reward is available to redeem'; end if;
   insert into public.ledger_transactions(venue_id, member_id, actor_user_id, event_type, action_units, stamp_delta, rewards_delta, idempotency_key)
   values (m.venue_id, m.id, auth.uid(), 'redemption', 0, 0, -1, p_idempotency_key);
