@@ -16,8 +16,10 @@ Copy `.env.example` to `.env.local` and set the values through the secret manage
 Required before the app can read/write persistent data:
 
 - `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- `SUPABASE_SERVICE_ROLE_KEY` (server only)
+- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+- `SUPABASE_SECRET_KEY` (server only; never send it to the browser or commit it)
+
+The legacy `NEXT_PUBLIC_SUPABASE_ANON_KEY` and `SUPABASE_SERVICE_ROLE_KEY` names remain accepted for existing local projects, but new Supabase projects should use publishable and secret keys.
 
 Required before Google Wallet API calls can succeed:
 

@@ -29,7 +29,7 @@ export async function proxy(request: NextRequest) {
     return response;
   };
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!url || !key) return harden(NextResponse.next({ request: { headers: requestHeaders } }));
   let response = NextResponse.next({ request: { headers: requestHeaders } });
   const supabase = createServerClient(url, key, {

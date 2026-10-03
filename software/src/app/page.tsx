@@ -11,7 +11,7 @@ function SetupGate({ title, detail }: { title: string; detail: string }) {
 }
 
 export default async function HomePage() {
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !(process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)) {
     return <SetupGate title="A wallet experience that fits every venue." detail="The live operator dashboard is ready for its database and Google Wallet issuer. You can still run the complete fictional buyer demo now."/>;
   }
   let supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>;
