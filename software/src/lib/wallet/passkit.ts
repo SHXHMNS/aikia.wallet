@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { createHmac } from 'node:crypto';
+import { passKitSaveLinks, passKitTierId, passUrlBaseFor, signPassKitToken } from './passkit-core';
 import type { IssuedPass, MemberWalletData, PassReference, SaveLinks, VenueWalletConfig, WalletProvider } from './types';
 
 // Endpoints follow PassKit's Members & Loyalty API (docs.passkit.io/protocols/member, member.swagger.json).
@@ -13,9 +13,6 @@ function settings() {
   if (!apiKey || !apiSecret) throw new Error('PassKit is not configured. Set PASSKIT_API_KEY and PASSKIT_API_SECRET.');
   const apiBase = new URL(process.env.PASSKIT_API_BASE_URL?.trim() || DEFAULT_API_BASE);
   if (apiBase.protocol !== 'https:') throw new Error('PASSKIT_API_BASE_URL must use HTTPS.');
-  // api.pub1.passkit.io (EU) serves passes from pub1.pskt.io; api.pub2 (USA) from pub2.pskt.io.
-  const region = apiBase.hostname.match(/^api\.(pub\d+)\./)?.[1] || 'pub1';
-  const passBase = new URL(process.env.PASSKIT_PASS_URL_BASE?.trim() || `https://${region}.pskt.io/`);
   let tierIds: Record<string, string> = {};
   if (process.env.PASSKIT_TIER_IDS) {
     try { tierIds = JSON.parse(process.env.PASSKIT_TIER_IDS) as Record<string, string>; }
@@ -24,25 +21,10 @@ function settings() {
   return {
     apiKey, apiSecret, tierIds,
     apiBase: apiBase.origin,
-    passBase: passBase.toString().endsWith('/') ? passBase.toString() : `${passBase}/`,
+    passBase: passUrlBaseFor(apiBase.origin, process.env.PASSKIT_PASS_URL_BASE),
     defaultProgramId: process.env.PASSKIT_PROGRAM_ID?.trim() || null,
     appleEnabled: process.env.PASSKIT_APPLE_ENABLED === 'true',
   };
-}
-
-function base64url(value: string | Buffer) {
-  return Buffer.from(value).toString('base64url');
-}
-
-/** Short-lived HS256 JWT: `uid` is the API key, signed with the API secret. */
-function signToken(apiKey: string, apiSecret: string) {
-  const now = Math.floor(Date.now() / 1000);
-  const unsigned = `${base64url(JSON.stringify({ alg: 'HS256', typ: 'JWT' }))}.${base64url(JSON.stringify({ uid: apiKey, iat: now, exp: now + 60 }))}`;
-  return `${unsigned}.${createHmac('sha256', apiSecret).update(unsigned).digest('base64url')}`;
-}
-
-function slug(value: string) {
-  return value.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
 export class PassKitProvider implements WalletProvider {
@@ -54,7 +36,7 @@ export class PassKitProvider implements WalletProvider {
     const response = await fetch(`${this.config.apiBase}/${path}`, {
       ...init,
       cache: 'no-store',
-      headers: { authorization: signToken(this.config.apiKey, this.config.apiSecret), 'content-type': 'application/json', ...init?.headers },
+      headers: { authorization: signPassKitToken(this.config.apiKey, this.config.apiSecret), 'content-type': 'application/json', ...init?.headers },
     });
     if (!response.ok) {
       const body = await response.text();
@@ -72,12 +54,11 @@ export class PassKitProvider implements WalletProvider {
 
   /** PassKit tier IDs default to the slug of our tier name ("Ink" → "ink"); PASSKIT_TIER_IDS can override. */
   tierId(tierName: string) {
-    return this.config.tierIds[tierName] || slug(tierName);
+    return passKitTierId(tierName, this.config.tierIds);
   }
 
   saveLinks(passId: string): SaveLinks {
-    const url = `${this.config.passBase}${encodeURIComponent(passId)}`;
-    return this.config.appleEnabled ? { google: `${url}.gpay`, apple: `${url}.pkpass` } : { google: `${url}.gpay` };
+    return passKitSaveLinks(this.config.passBase, passId, this.config.appleEnabled);
   }
 
   /** Confirms the venue's program exists. Card design and tiers are managed in the PassKit portal. */
