@@ -1,6 +1,6 @@
 # AIKIA.WALLET software
 
-Development workspace for the AIKIA.WALLET venue platform. Google Wallet loyalty cards are the active integration; Apple Wallet is intentionally reserved for a later provider implementation. This first software slice is not yet a production launch.
+Development workspace for the AIKIA.WALLET venue platform. Google Wallet loyalty cards are the active integration; Apple Wallet is reserved for a later provider implementation. The app now contains a complete controlled-pilot workflow, but it still needs the owner's service accounts, a deployment, live Wallet approval and operational launch checks.
 
 ## Stack
 
@@ -21,12 +21,15 @@ Required before the app can read/write persistent data:
 
 The legacy `NEXT_PUBLIC_SUPABASE_ANON_KEY` and `SUPABASE_SERVICE_ROLE_KEY` names remain accepted for existing local projects, but new Supabase projects should use publishable and secret keys.
 
+The built-in AIKIA Wallet mark for a first Google Wallet class is `public/brand/aikia-wallet-program-logo.png`. Once the app has a public HTTPS Vercel URL, the logo URL is `<app-origin>/brand/aikia-wallet-program-logo.png`. Replace it with the venue's approved artwork before customer launch.
+
 Required before Google Wallet API calls can succeed:
 
 - `GOOGLE_WALLET_ISSUER_ID`
 - `GOOGLE_WALLET_SERVICE_ACCOUNT_JSON` (the complete service-account JSON as one environment value)
 - `GOOGLE_WALLET_PROGRAM_LOGO_URL` (a public HTTPS logo URL)
 - `NEXT_PUBLIC_APP_URL` (the canonical HTTPS app origin used in Save-to-Wallet JWT claims)
+- `JOIN_RATE_LIMIT_SECRET` (random server-only secret used to create short-lived HMAC fingerprints for public customer sign-up limits)
 
 ## Google Wallet issuer setup
 
@@ -42,7 +45,7 @@ Google's current onboarding, service-account and publishing requirements are lin
 
 ## Database
 
-Apply `supabase/migrations/0001_wallet_core.sql` to a new Supabase project. It creates tenant-scoped venue/team/member records, an append-only reward ledger, provider bindings and RLS policies. Apply migrations to a development project first and inspect them before production.
+Apply every file in `supabase/migrations/` to a new Supabase project in number order. `0001` creates tenant-scoped venue/team/member records, reward tiers, an append-only ledger, provider bindings and RLS policies. `0002` adds recorded customer consent and the public sign-up flow's database rate limit. If the database already has `0001`, apply `0002` only.
 
 ## Run
 
@@ -57,8 +60,10 @@ Open `http://localhost:3000`. The home screen and health endpoint describe which
 
 - Real pass issuance requires the Issuer account, service account access, program logo, app origin and authorized Google test account.
 - Demo-mode Google passes are not available to all customers until publishing access is granted.
-- Guest OTP/SMS, public join links, message delivery, venue billing, POS integration, Apple Wallet and production deployment are not included in this first software slice.
-- Production operations still need public onboarding, rate limiting, background retry for failed Wallet syncs, monitored backups, alerting, and a security/privacy review.
+- Customers can join from `/join/<venue-slug>` and receive a Google Wallet save link when issuance is configured. The owner dashboard shows the venue sign-up link. The form collects only a name and loyalty-program consent; it does not collect phone numbers or payment details.
+- The public join flow requires the private `JOIN_RATE_LIMIT_SECRET`. It rate-limits sign-ups per venue and hashed visitor address, and removes old rate-limit rows as new customers join. Add a hosted abuse-control service before a wide public launch.
+- The privacy page is starter copy. Replace it with each venue's approved legal name, contact information, retention period and privacy terms before inviting customers.
+- Guest OTP/SMS, member self-service, message delivery, venue billing, POS integration and Apple Wallet are not included. Production still needs queued retry for failed Wallet syncs, monitored backups, alerts and an independent security/privacy review.
 - A Google Wallet object update can fail after the canonical ledger write. The ledger remains authoritative; the application must report/retry provider synchronization rather than silently changing the ledger.
 
 ## Workspace map

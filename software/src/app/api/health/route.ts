@@ -14,6 +14,7 @@ export async function GET() {
     walletProvider: process.env.WALLET_PROVIDER || 'google',
     googleWalletConfigured: googleWalletConfigured(),
     databaseConfigured,
+    customerJoinRateLimitConfigured: Boolean(process.env.JOIN_RATE_LIMIT_SECRET),
     appleWallet: 'not_implemented',
   });
 }

@@ -21,11 +21,11 @@ This software targets Google **Loyalty Classes and Loyalty Objects**. Classes ho
 ## Pass lifecycle in this codebase
 
 1. An authenticated venue owner creates a deterministic `LoyaltyClass` for that venue.
-2. A staff member requests a member's pass. The server creates/updates that member's `LoyaltyObject` with an opaque barcode token and current ledger balance.
-3. The server signs a Save-to-Wallet JWT and returns the Google URL to the authenticated operator. The member must open it while signed in to a Google identity.
+2. An owner/staff member can create a member, or the customer can join at `/join/<venue-slug>`. When the issuer is configured, the server creates/updates that member's `LoyaltyObject` with an opaque barcode token and current ledger balance.
+3. The server signs a Save-to-Wallet JWT and returns the Google URL to the owner or customer. The customer must open it while signed in to a Google identity. A new issuer still limits passes to authorized users until publishing access is granted.
 4. A stamp action writes to the AIKIA append-only ledger first. The Google object balance is then patched from that ledger-derived balance.
 
-The AIKIA ledger remains the record of truth. Google Wallet displays the current balance but does not authorize a stamp or redemption by itself.
+The AIKIA ledger remains the record of truth. Google Wallet displays the current balance but does not authorize a stamp or redemption by itself. Public join additionally needs migration `0002_public_customer_join.sql` and the server-only `JOIN_RATE_LIMIT_SECRET`.
 
 ## Test and go-live sequence
 

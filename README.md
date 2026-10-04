@@ -34,11 +34,11 @@ npm install
 npm run dev
 ```
 
-Apply `software/supabase/migrations/0001_wallet_core.sql` to a development Supabase project before using the live dashboard. Keep all real keys in `.env.local` or the deployment secret manager. Never commit credentials or real customer data.
+Apply every SQL migration in `software/supabase/migrations/` to a development Supabase project in number order before using the live dashboard. The app includes owner and staff workspaces, member QR scanning, repeat-action rewards, venue-defined tiers, customer sign-up links and Google Wallet pass issuance when credentials are configured. Keep all real keys in `.env.local` or the deployment secret manager. Never commit credentials or real customer data.
 
 ## Development status
 
-The buyer demo is ready for venue presentations using sample data. The authenticated Google-first software and database/API foundation are under active development and still need connection to the owner's Supabase and Google Wallet accounts, venue onboarding, operational hardening and a live deployment before customer use. Google demo issuers are limited to authorized test users until publishing access is granted.
+The browser buyer demo can be used for presentations with fictional sample data. The real operator app and customer sign-up flow still need Supabase, Vercel and Google Wallet setup, public-pass approval, venue-approved privacy terms and operational hardening before general customer use. A new Google Wallet issuer starts in demo mode and only authorized test users can save its passes until publishing access is granted.
 
 The database and loyalty rules use generic qualifying actions, balances, rewards and tiers. A café uses coffee purchases as its first preset; retail, hospitality, fitness, salons and other eligible venues can set their own qualifying action, balance label, reward rule, brand theme and tier benefits.
 

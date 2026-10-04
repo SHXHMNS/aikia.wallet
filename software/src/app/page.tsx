@@ -20,7 +20,7 @@ export default async function HomePage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return <SetupGate title="Your venue loyalty program, in one wallet." detail="Owners tune the brand and rewards. Staff scan members and record visits from a focused counter screen."/>;
   const { data: venues, error: venueError } = await supabase.from('venues').select('*').order('created_at').limit(1);
-  if (venueError) return <SetupGate title="Apply the wallet database schema." detail="The app is connected to Supabase. Apply supabase/migrations/0001_wallet_core.sql, then reload this workspace."/>;
+  if (venueError) return <SetupGate title="Apply the wallet database schema." detail="The app is connected to Supabase. Apply each SQL migration in supabase/migrations in number order, then reload this workspace."/>;
   const venue = (venues?.[0] || null) as Venue | null;
   if (!venue) return <DashboardClient userEmail={user.email || ''} role="owner" venue={null} tiers={[]} members={[]} activity={[]} team={[]}/>;
   const { data: team } = await supabase.from('venue_team_members').select('role').eq('venue_id', venue.id).eq('user_id', user.id).single();

@@ -15,7 +15,7 @@ This is the software workspace. The sibling `../demo-service/` is a browser-only
 
 ## Current stage
 
-The first software slice includes an authenticated Supabase operator app, owner and staff experiences, venue-scoped schema/RLS, generic reward and tier rules, an append-only activity ledger and a Google Wallet class/object adapter. This is a development foundation, not a hosted, launch-ready service. It has not been verified against a configured Supabase project or Google Wallet issuer. Keep secrets in `.env.local` for local work and the deployment provider's secret manager in hosted environments.
+The current software slice includes an authenticated Supabase operator app, owner and staff experiences, public customer enrollment with consent, venue-scoped schema/RLS, generic reward and tier rules, an append-only activity ledger and a Google Wallet class/object adapter. This is a controlled-pilot foundation, not a public launch. It has not been verified against a configured Supabase project or Google Wallet issuer. Keep secrets in `.env.local` for local work and the deployment provider's secret manager in hosted environments.
 
 ## Working agreements
 

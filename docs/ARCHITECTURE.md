@@ -13,6 +13,10 @@
 - **Owner/admin:** program settings, brand and theme, tiers and benefits, team invitations, member book and reporting.
 - **Staff/manager:** venue-scoped member lookup, QR scan, qualifying-action recording and reward redemption.
 
+### Customer enrollment
+
+Each venue can share `/join/<venue-slug>`. The public page collects a member name and consent, creates a venue-scoped member record, and returns a Google Wallet save link when the issuer is configured. A server-only HMAC fingerprint and Supabase function impose a small per-venue signup limit. The privacy and program-terms pages are starter copy and must be replaced with venue-approved information before live enrollment.
+
 ## Domain model
 
 - A **venue** owns business type, theme, qualifying-action label, wallet balance label, reward target, reward name, member records and tier rules.
@@ -33,6 +37,7 @@ Google's class controls the shared venue card design. Per-member points, tier na
 - Route handlers verify the authenticated Supabase user and venue role. Sensitive provider calls and service-role database operations stay server-side.
 - Supabase RLS scopes venue data. Staff cannot directly edit member balances or the ledger; authorized route handlers call restricted database functions.
 - Scan tokens are random and contain no phone number or other member PII. Member lookup is restricted to an authenticated venue team member.
+- Public enrollment records the consent time and notice version. Its rate limit stores a short-lived HMAC of the network address rather than the address itself; it is an initial pilot control, not a substitute for managed bot protection.
 - Purchase writes and reward redemptions are transactional, audited and idempotent. Google Wallet synchronization happens after the canonical ledger update and failures are recorded.
 - The buyer demo is fictional, local-only sample data. Never enter real customer details into it.
 
