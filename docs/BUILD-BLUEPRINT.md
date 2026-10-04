@@ -14,6 +14,28 @@ This is the active, step-by-step plan for taking `software/` from code on a lapt
 
 ---
 
+## ⭐ Only your part is left: credentials (updated 5 Oct 2026)
+
+Everything else is built, deployed and connected. **Live app: https://aikia-wallet.vercel.app.** Its home page lists, with ✓ / •, every setting that is still missing.
+
+Paste each value in **two places**: Vercel → project **aikia-wallet** → Settings → **Environment Variables** → **Add Environment Variable** (type **Secret**), and your Mac's `software/.env.local` (open it with `open -e ~/Desktop/aikia.wallet/software/.env.local`).
+
+| Name | Where you get it |
+|---|---|
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Supabase → project → Project Settings → **API Keys** → Publishable key |
+| `SUPABASE_SECRET_KEY` | Same page → **Secret key** (create one if none) |
+| `JOIN_RATE_LIMIT_SECRET` | Already in your `.env.local`. Copy the same value into Vercel. |
+| `CRON_SECRET` | Already in your `.env.local`. Copy the same value into Vercel. |
+| `PLATFORM_ADMIN_EMAILS` | The email you sign in with, to open `/platform` |
+| `PASSKIT_API_KEY`, `PASSKIT_API_SECRET` | After you create the PassKit account: Developer Tools → REST credentials |
+| `PASSKIT_PROGRAM_ID` | PassKit → your program's settings |
+
+After adding them in Vercel: **Deployments → ⋯ → Redeploy**. Then open the live app, sign in with your email and create your first venue.
+
+Already done for you: Supabase migrations 0001–0003; Supabase login Site URL and redirect URLs; Vercel project (root `software`) with `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_APP_URL`, `WALLET_ENGINE` and `PASSKIT_API_BASE_URL`; auto-deploy on every push; GitHub CI (type check, tests, build).
+
+---
+
 ## Where you are now (5 Oct 2026)
 
 | Step | Status |
@@ -22,12 +44,12 @@ This is the active, step-by-step plan for taking `software/` from code on a lapt
 | GitHub repo `SHXHMNS/aikia.wallet` | ✅ exists, local `main` matches GitHub |
 | Google Wallet issuer account | ✅ you did this (used later for the own-engine switch, Phase 11) |
 | PassKit account (45-day free trial) | ⬜ Phase 5 |
-| `software/.env.local` with real keys | ⬜ Phase 2 |
+| `software/.env.local` | ✅ created (Supabase URL + random secrets); your keys still to paste |
 | App running on your Mac against Supabase | ⬜ Phase 3 |
-| App live on Vercel (public HTTPS URL) | ⬜ Phase 4 |
+| App live on Vercel | ✅ https://aikia-wallet.vercel.app, deploys on every push |
 | PassKit adapter in the app | ✅ built (Phase 7.0), waiting for PassKit keys |
 | First real card saved on an Android phone | ⬜ Phase 6 |
-| Re-brandable base + engine switch | ✅ platform config + engine switch built; venue presets still to do |
+| Re-brandable base + engine switch | ✅ platform config, engine switch and business presets built |
 | Apple Wallet (through PassKit) | ⬜ Phase 9, after the Apple Developer account |
 | Public launch | ⬜ Phase 10 |
 | Optional: move to our own engine | ⬜ Phase 11, around 25+ venues |
@@ -231,7 +253,7 @@ These are code changes in `software/`. Each one is a separate commit you can rev
 - Replace every hard-coded `AIKIA.WALLET` / colour in the dashboard, login, join, privacy and terms pages with that config.
 - **Result:** a new white-label deployment means a new Vercel project plus different env values. No code edits.
 
-### 7.2 Venue presets (re-purpose for any business)
+### 7.2 Venue presets ✅ built (`src/config/presets.ts`)
 - Add `src/config/presets.ts` with café, restaurant, salon, fitness, retail, hotel and entertainment presets. Each sets the action label, balance label, reward target, reward name, tier names/thresholds/benefits and colours.
 - The "Set up your first venue" screen gets a **Business type** picker that applies a preset. Owners can still edit everything afterwards in **Brand & tiers**.
 - The demo base becomes "the café preset plus demo sample data", switchable to any other preset.
@@ -244,16 +266,16 @@ These are code changes in `software/`. Each one is a separate commit you can rev
 - `/api/health` reports the engine and each wallet's status.
 - **Switching engines later** = issue new cards on the new engine (members re-add once; a one-off migration script plus a "re-add your card" link), then turn the old engine off. Our member records and ledger stay the same throughout.
 
-### 7.4 Reliability
-- A retry job (Vercel Cron, every 10 minutes) re-syncs passes where `sync_error` is set.
+### 7.4 Reliability ✅ built
+- A retry job (Vercel Cron, **daily** on the free Hobby plan) re-syncs passes where `sync_error` is set. It needs `CRON_SECRET`.
 - ✅ Done: `proxy.ts` moved to `src/proxy.ts`, so the security headers and session refresh are now active. Confirm The app uses `src/`, so it may need to move to `src/proxy.ts`. Check that the `Content-Security-Policy` response header is present on the live site.
 
-### 7.5 Dashboard gaps
+### 7.5 Dashboard gaps ✅ built (admin/staff invites, remove member, `/platform` console via `PLATFORM_ADMIN_EMAILS`)
 - Invite as **admin** or **staff** (today invites always create staff).
 - Remove a team member; owner-only actions (transfer ownership, delete venue).
-- **AIKIA super-admin console:** a separate `/platform` area for your own team to see all venues, their status, member counts and sync errors. Access is based on a `platform_admins` table, not on venue roles.
+- **AIKIA super-admin console:** `/platform` shows all venues, member counts and sync errors to emails listed in `PLATFORM_ADMIN_EMAILS`. This is separate from venue roles.
 
-### 7.6 Quality gates
+### 7.6 Quality gates ✅ built (`.github/workflows/ci.yml`, `npm test`)
 - A GitHub Action on every push: `npm ci`, a type check and `npm run build`. Vercel only deploys green builds.
 - Basic tests for the ledger rules (stamp, reward unlock, redeem, idempotency) and the role checks.
 
