@@ -2,7 +2,8 @@ import 'server-only';
 
 import { GoogleAuth } from 'google-auth-library';
 import { createSign } from 'node:crypto';
-import type { IssuedPass, MemberWalletData, VenueWalletConfig, WalletProvider } from './types';
+import { platform } from '@/config/platform';
+import type { IssuedPass, MemberWalletData, PassReference, VenueWalletConfig, WalletProvider } from './types';
 
 const API_ROOT = 'https://walletobjects.googleapis.com/walletobjects/v1';
 const WALLET_SCOPE = 'https://www.googleapis.com/auth/wallet_object.issuer';
@@ -71,14 +72,14 @@ export class GoogleWalletProvider implements WalletProvider {
     if (new URL(logoUrl).protocol !== 'https:') throw new Error('Google Wallet program logo URL must use HTTPS.');
     const body: JsonRecord = {
       id,
-      issuerName: 'AIKIA.WALLET',
+      issuerName: platform.name,
       programName: venue.name,
       programLogo: {
         sourceUri: { uri: logoUrl },
         contentDescription: localized('en-US', `${venue.name} logo`),
       },
       hexBackgroundColor: venue.brandColor,
-      localizedIssuerName: localized('en-US', 'AIKIA.WALLET'),
+      localizedIssuerName: localized('en-US', platform.name),
       localizedProgramName: localized('en-US', venue.name),
       accountNameLabel: 'MEMBER',
       accountIdLabel: 'MEMBER ID',
@@ -163,7 +164,7 @@ export class GoogleWalletProvider implements WalletProvider {
     const providerClassId = await this.ensureVenueClass(venue);
     const providerObjectId = await this.ensureObject(providerClassId, member);
     const jwt = this.signSaveJwt(providerObjectId);
-    return { provider: this.id, providerClassId, providerObjectId, saveUrl: `https://pay.google.com/gp/v/save/${jwt}` };
+    return { provider: this.id, providerClassId, providerObjectId, saveLinks: { google: `https://pay.google.com/gp/v/save/${jwt}` } };
   }
 
   private memberModules(member: MemberWalletData) {
@@ -176,9 +177,9 @@ export class GoogleWalletProvider implements WalletProvider {
     ];
   }
 
-  async updateMember(member: MemberWalletData, providerObjectId: string): Promise<void> {
+  async updateMember(member: MemberWalletData, pass: PassReference): Promise<void> {
     if (!Number.isInteger(member.stampBalance) || member.stampBalance < 0) throw new Error('Wallet stamp balance must be a non-negative integer.');
-    await this.request(`loyaltyObject/${encodeURIComponent(providerObjectId)}`, {
+    await this.request(`loyaltyObject/${encodeURIComponent(pass.objectId)}`, {
       method: 'PATCH',
       body: JSON.stringify({
         loyaltyPoints: { label: member.balanceLabel.slice(0, 9), balance: { int: member.stampBalance } },

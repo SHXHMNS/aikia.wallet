@@ -8,6 +8,7 @@ AIKIA.WALLET is a configurable digital loyalty platform for cafés and other ven
 - [`demo-service/`](demo-service/README.md) — self-contained, fictional buyer demo with owner and staff workspaces, editable branding and tiers, guest join, member lookup, purchase/reward flow, and browser-local sample data.
 - [`docs/sales/`](docs/sales/) — buyer pitch and sales playbook in HTML and PDF.
 - [`docs/strategy/archive/`](docs/strategy/archive/) — earlier product, PassKit, and launch blueprints retained as history. The current implementation is Google Wallet first; do not follow old PassKit steps as the active integration plan.
+- [`docs/BUILD-BLUEPRINT.md`](docs/BUILD-BLUEPRINT.md) — **active** step-by-step build and launch plan (accounts, deploy, Google Wallet, re-brandable base, Apple later).
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — current domain model, roles, provider seam and security approach.
 - [`marketing/`](marketing/) — launch film, source composition, and prior campaign files.
 

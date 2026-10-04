@@ -1,18 +1,19 @@
 import Link from 'next/link';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import DashboardClient from './dashboard-client';
+import { platform } from '@/config/platform';
 
 export const dynamic = 'force-dynamic';
 
-type Venue = { id: string; name: string; slug: string; business_type: string; action_label: string; balance_label: string; reward_target: number; reward_name: string; brand_color: string; background_color: string | null; program_logo_url: string | null; hero_image_url: string | null };
+type Venue = { id: string; name: string; slug: string; business_type: string; action_label: string; balance_label: string; reward_target: number; reward_name: string; brand_color: string; background_color: string | null; program_logo_url: string | null; hero_image_url: string | null; wallet_program_id: string | null };
 
 function SetupGate({ title, detail }: { title: string; detail: string }) {
-  return <main className="readiness-shell"><div className="brand"><span className="brand-mark">a</span><span>AIKIA.WALLET</span></div><section className="readiness-card"><span className="eyebrow">OPERATOR PLATFORM · GOOGLE WALLET FIRST</span><h1>{title}</h1><p>{detail}</p><div className="readiness-actions"><Link className="button primary" href="/demo/index.html">Open the interactive buyer demo ↗</Link><Link className="button secondary" href="/login">Sign in to a live venue ↗</Link></div><div className="readiness-note"><b>Launch sequence</b><span>Use the fictional venue to demo owner controls, staff scanning, member records, coffee actions, tier unlocks, and rewards. Connect a Supabase project and Google Wallet issuer to move from demo to live venue data.</span></div></section><footer className="readiness-footer">DEMO WORKSPACE · NO LIVE CUSTOMER DATA</footer></main>;
+  return <main className="readiness-shell"><div className="brand"><span className="brand-mark">{platform.mark}</span><span>{platform.name}</span></div><section className="readiness-card"><span className="eyebrow">OPERATOR PLATFORM · GOOGLE WALLET READY</span><h1>{title}</h1><p>{detail}</p><div className="readiness-actions"><Link className="button primary" href="/demo/index.html">Open the interactive buyer demo ↗</Link><Link className="button secondary" href="/login">Sign in to a live venue ↗</Link></div><div className="readiness-note"><b>Launch sequence</b><span>Use the fictional venue to demo owner controls, staff scanning, member records, coffee actions, tier unlocks, and rewards. Connect a Supabase project and the wallet engine to move from demo to live venue data.</span></div></section><footer className="readiness-footer">DEMO WORKSPACE · NO LIVE CUSTOMER DATA</footer></main>;
 }
 
 export default async function HomePage() {
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !(process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)) {
-    return <SetupGate title="A wallet experience that fits every venue." detail="The live operator dashboard is ready for its database and Google Wallet issuer. You can still run the complete fictional buyer demo now."/>;
+    return <SetupGate title="A wallet experience that fits every venue." detail="The live operator dashboard is ready for its database and wallet engine. You can still run the complete fictional buyer demo now."/>;
   }
   let supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>;
   try { supabase = await createSupabaseServerClient(); }

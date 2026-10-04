@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { googleWalletConfigured } from '@/lib/wallet/google';
+import { walletStatus } from '@/lib/wallet/provider';
 
 export const dynamic = 'force-dynamic';
 
@@ -11,10 +11,8 @@ export async function GET() {
   );
   return NextResponse.json({
     app: 'aikia.wallet',
-    walletProvider: process.env.WALLET_PROVIDER || 'google',
-    googleWalletConfigured: googleWalletConfigured(),
+    wallet: walletStatus(),
     databaseConfigured,
     customerJoinRateLimitConfigured: Boolean(process.env.JOIN_RATE_LIMIT_SECRET),
-    appleWallet: 'not_implemented',
   });
 }

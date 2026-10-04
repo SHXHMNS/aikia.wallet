@@ -11,8 +11,14 @@ export async function GET(request: Request, { params }: Context) {
   const code = new URL(request.url).searchParams.get('code')?.trim();
   if (!code || code.length > 100 || !/^[A-Za-z0-9._-]+$/.test(code)) return NextResponse.json({ error: 'Enter a valid member code or pass QR value.' }, { status: 400 });
   const admin = createSupabaseAdminClient();
-  const { data: member, error } = await admin.from('members').select('id,venue_id,full_name,public_code,scan_token,stamp_balance,rewards_available,lifetime_actions,current_tier_id,status')
+  const columns = 'id,venue_id,full_name,public_code,scan_token,stamp_balance,rewards_available,lifetime_actions,current_tier_id,status';
+  let { data: member, error } = await admin.from('members').select(columns)
     .eq('venue_id', venueId).or(`public_code.eq.${code},scan_token.eq.${code}`).maybeSingle();
+  if (!error && !member) {
+    // PassKit cards carry PassKit's member ID in the QR code by default.
+    const { data: pass } = await admin.from('wallet_passes').select('member_id').eq('venue_id', venueId).eq('provider_object_id', code).maybeSingle();
+    if (pass) ({ data: member, error } = await admin.from('members').select(columns).eq('venue_id', venueId).eq('id', pass.member_id).maybeSingle());
+  }
   if (error || !member) return NextResponse.json({ error: 'No member found for that code.' }, { status: 404 });
   const [{ data: tier }, { data: venue }] = await Promise.all([
     admin.from('venue_tiers').select('name,benefits,min_lifetime_actions').eq('id', member.current_tier_id).single(),

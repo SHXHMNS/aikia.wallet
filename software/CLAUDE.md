@@ -4,7 +4,7 @@ This is the software workspace. The sibling `../demo-service/` is a browser-only
 
 ## Product and provider rules
 
-- Google Wallet loyalty cards are the active provider. Use Google's **Loyalty Class/Object** API, not Generic passes.
+- The active wallet engine is **PassKit** (`WALLET_ENGINE=passkit`), issuing Google Wallet cards now and Apple later. The direct engine (`google.ts`, future `apple.ts`) stays as the swap target; when it is used, Google passes use the **Loyalty Class/Object** API, not Generic passes.
 - Keep provider-specific work behind `src/lib/wallet/WalletProvider`. Future Apple Wallet support belongs in a separate adapter and must not leak Apple-specific assumptions into the ledger or venue/member model.
 - Never put Google service-account JSON, private keys, Supabase service-role keys or other secrets in browser code, committed files, screenshots or chat. Only `.env.example` is safe to commit.
 - Google demo Issuers can only issue to authorized test users until Google grants publishing access. Treat live public issuance as a separate launch gate.
@@ -23,3 +23,13 @@ The current software slice includes an authenticated Supabase operator app, owne
 - Use the App Router and TypeScript. Provider integrations are server-only.
 - Do not claim a route is operational until it has been exercised against a configured test Issuer and database.
 - Run package scripts only when the user asks for verification or when a workflow explicitly requires them. Record configuration blockers clearly.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
