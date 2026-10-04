@@ -2,13 +2,20 @@ import Link from 'next/link';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import DashboardClient from './dashboard-client';
 import { platform } from '@/config/platform';
+import { setupStatus } from '@/lib/server/setup-status';
 
 export const dynamic = 'force-dynamic';
 
 type Venue = { id: string; name: string; slug: string; business_type: string; action_label: string; balance_label: string; reward_target: number; reward_name: string; brand_color: string; background_color: string | null; program_logo_url: string | null; hero_image_url: string | null; wallet_program_id: string | null };
 
+function SetupChecklist() {
+  const items = setupStatus();
+  if (items.every(item => item.ready || !item.required)) return null;
+  return <div className="setup-checklist"><b>Settings still needed</b>{items.map(item => <div key={item.key} className={item.ready ? 'ready' : ''}><span>{item.ready ? '✓' : item.required ? '•' : '○'}</span><code>{item.key}</code><small>{item.ready ? 'set' : item.where}{!item.ready && !item.required ? ' (optional)' : ''}</small></div>)}</div>;
+}
+
 function SetupGate({ title, detail }: { title: string; detail: string }) {
-  return <main className="readiness-shell"><div className="brand"><span className="brand-mark">{platform.mark}</span><span>{platform.name}</span></div><section className="readiness-card"><span className="eyebrow">OPERATOR PLATFORM · GOOGLE WALLET READY</span><h1>{title}</h1><p>{detail}</p><div className="readiness-actions"><Link className="button primary" href="/demo/index.html">Open the interactive buyer demo ↗</Link><Link className="button secondary" href="/login">Sign in to a live venue ↗</Link></div><div className="readiness-note"><b>Launch sequence</b><span>Use the fictional venue to demo owner controls, staff scanning, member records, coffee actions, tier unlocks, and rewards. Connect a Supabase project and the wallet engine to move from demo to live venue data.</span></div></section><footer className="readiness-footer">DEMO WORKSPACE · NO LIVE CUSTOMER DATA</footer></main>;
+  return <main className="readiness-shell"><div className="brand"><span className="brand-mark">{platform.mark}</span><span>{platform.name}</span></div><section className="readiness-card"><span className="eyebrow">OPERATOR PLATFORM · GOOGLE WALLET READY</span><h1>{title}</h1><p>{detail}</p><div className="readiness-actions"><Link className="button primary" href="/demo/index.html">Open the interactive buyer demo ↗</Link><Link className="button secondary" href="/login">Sign in to a live venue ↗</Link></div><SetupChecklist/><div className="readiness-note"><b>Launch sequence</b><span>Use the fictional venue to demo owner controls, staff scanning, member records, coffee actions, tier unlocks, and rewards. Connect a Supabase project and the wallet engine to move from demo to live venue data.</span></div></section><footer className="readiness-footer">DEMO WORKSPACE · NO LIVE CUSTOMER DATA</footer></main>;
 }
 
 export default async function HomePage() {
