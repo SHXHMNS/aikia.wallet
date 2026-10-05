@@ -1,0 +1,23 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Hanken+Grotesk:wght@600;700&display=block" rel="stylesheet">
+<style>
+html,body{margin:0;width:1032px;height:336px;overflow:hidden}
+.c{position:relative;width:1032px;height:336px;background:var(--bg);overflow:hidden;font-family:'Hanken Grotesk',sans-serif;color:var(--fg)}
+.g1{position:absolute;width:620px;height:620px;right:-140px;top:-260px;border-radius:50%;background:radial-gradient(circle,var(--glow1) 0%,transparent 62%)}
+.g2{position:absolute;width:520px;height:520px;left:-180px;bottom:-330px;border-radius:50%;background:radial-gradient(circle,var(--glow2) 0%,transparent 65%)}
+.ring{position:absolute;right:70px;top:50%;transform:translateY(-50%);width:236px;height:236px;border-radius:50%;border:2px solid var(--line)}
+.ring:after{content:"";position:absolute;inset:34px;border-radius:50%;border:2px solid var(--line)}
+.dot{position:absolute;right:166px;top:50%;width:44px;height:44px;margin-top:-22px;border-radius:50%;background:var(--dot)}
+.word{position:absolute;left:64px;top:92px;font-family:'Dela Gothic One',sans-serif;font-size:62px;letter-spacing:-1px;line-height:1}
+.word span{color:var(--acc)}
+.tag{position:absolute;left:68px;top:186px;font-size:17px;letter-spacing:.32em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.tier{position:absolute;left:68px;bottom:56px;padding:9px 16px;border-radius:99px;border:1.5px solid var(--line);font-size:14px;letter-spacing:.24em;font-weight:700}
+</style></head><body><div class="c" id="c"><div class="g1"></div><div class="g2"></div><div class="ring"></div><div class="dot"></div>
+<div class="word">aikia<span>.</span>wallet</div><div class="tag">Members club</div><div class="tier" id="t"></div></div>
+<script>
+const p=new URLSearchParams(location.search).get('tier')||'ink';
+const v={ink:{bg:'#14111F',fg:'#ECEEF5',acc:'#FF3D9A',muted:'rgba(236,238,245,.65)',glow1:'rgba(255,61,154,.38)',glow2:'rgba(169,139,255,.32)',line:'rgba(236,238,245,.16)',dot:'#FF3D9A',t:'INK MEMBER'},
+chrome:{bg:'#252038',fg:'#ECEEF5',acc:'#A98BFF',muted:'rgba(236,238,245,.7)',glow1:'rgba(169,139,255,.5)',glow2:'rgba(127,231,242,.28)',line:'rgba(169,139,255,.45)',dot:'#A98BFF',t:'CHROME MEMBER'},
+pink:{bg:'#FF3D9A',fg:'#14111F',acc:'#ECEEF5',muted:'rgba(20,17,31,.72)',glow1:'rgba(255,255,255,.35)',glow2:'rgba(169,139,255,.55)',line:'rgba(20,17,31,.28)',dot:'#14111F',t:'PINK MEMBER'}}[p];
+const s=document.getElementById('c').style;for(const k of ['bg','fg','acc','muted','glow1','glow2','line','dot'])s.setProperty('--'+k,v[k]);document.getElementById('t').textContent=v.t;
+</script></body></html>

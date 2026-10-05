@@ -29,3 +29,11 @@ export function passKitSaveLinks(passBase: string, passId: string, appleEnabled:
 export function passKitTierId(tierName: string, overrides: Record<string, string> = {}) {
   return overrides[tierName] || tierName.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
+
+/** PassKit cards show first and last name separately; a single-word name becomes the first name only. */
+export function passKitPerson(fullName: string) {
+  const parts = fullName.trim().split(/\s+/).filter(Boolean);
+  const forename = (parts.shift() || fullName.trim()).slice(0, 60);
+  const surname = parts.join(' ').slice(0, 60);
+  return surname ? { forename, surname, displayName: fullName.trim().slice(0, 120) } : { forename, displayName: fullName.trim().slice(0, 120) };
+}

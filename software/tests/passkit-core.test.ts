@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { createHmac } from 'node:crypto';
 import { test } from 'node:test';
-import { passKitSaveLinks, passKitTierId, passUrlBaseFor, signPassKitToken } from '../src/lib/wallet/passkit-core.ts';
+import { passKitPerson, passKitSaveLinks, passKitTierId, passUrlBaseFor, signPassKitToken } from '../src/lib/wallet/passkit-core.ts';
 
 test('PassKit JWT carries the API key as uid, expires in 60s and verifies with the secret', () => {
   const token = signPassKitToken('key-123', 'secret-xyz', 1_000);
@@ -26,4 +26,10 @@ test('tier IDs default to the lowercase tier name and accept overrides', () => {
   assert.equal(passKitTierId('Ink'), 'ink');
   assert.equal(passKitTierId('Rose Gold'), 'rose-gold');
   assert.equal(passKitTierId('Ink', { Ink: 'base' }), 'base');
+});
+
+test('member names split into first and last name for the card', () => {
+  assert.deepEqual(passKitPerson('Aarav Shah'), { forename: 'Aarav', surname: 'Shah', displayName: 'Aarav Shah' });
+  assert.deepEqual(passKitPerson('  Mira  '), { forename: 'Mira', displayName: 'Mira' });
+  assert.deepEqual(passKitPerson('Ana de la Cruz'), { forename: 'Ana', surname: 'de la Cruz', displayName: 'Ana de la Cruz' });
 });

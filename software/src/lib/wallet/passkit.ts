@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { passKitSaveLinks, passKitTierId, passUrlBaseFor, signPassKitToken } from './passkit-core';
+import { passKitPerson, passKitSaveLinks, passKitTierId, passUrlBaseFor, signPassKitToken } from './passkit-core';
 import type { IssuedPass, MemberWalletData, PassReference, SaveLinks, VenueWalletConfig, WalletProvider } from './types';
 
 // Endpoints follow PassKit's Members & Loyalty API (docs.passkit.io/protocols/member, member.swagger.json).
@@ -103,7 +103,7 @@ export class PassKitProvider implements WalletProvider {
           tierId: this.tierId(member.tierName),
           externalId: member.id,
           points: member.stampBalance,
-          person: { displayName: member.fullName.slice(0, 120) },
+          person: passKitPerson(member.fullName),
           metaData: this.metaData(member),
         }),
       });
