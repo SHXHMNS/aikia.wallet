@@ -1,0 +1,53 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Hanken+Grotesk:wght@500;600;700;800&display=block" rel="stylesheet">
+<style>
+html,body{margin:0;overflow:hidden;background:#000}
+.c{position:relative;overflow:hidden;font-family:'Hanken Grotesk',sans-serif;background:var(--base)}
+.blob{position:absolute;border-radius:50%;filter:blur(var(--blur));opacity:.95;mix-blend-mode:screen}
+.ribbon{position:absolute;height:var(--rh);width:160%;left:-30%;filter:blur(26px);opacity:.85;mix-blend-mode:screen;border-radius:50%}
+.deep{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55;mix-blend-mode:multiply}
+.grain{position:absolute;inset:0;opacity:.08;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E")}
+.glass{position:absolute;border-radius:36px;background:linear-gradient(135deg,rgba(255,255,255,.42),rgba(255,255,255,.10) 45%,rgba(255,255,255,.22));backdrop-filter:blur(18px) saturate(170%);-webkit-backdrop-filter:blur(18px) saturate(170%);border:1.5px solid rgba(255,255,255,.55);box-shadow:inset 0 1px 0 rgba(255,255,255,.9),inset 0 -14px 30px rgba(255,255,255,.12),0 20px 50px rgba(40,10,70,.25)}
+.glass:before{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(115deg,rgba(255,255,255,.55) 0%,rgba(255,255,255,0) 28%);mix-blend-mode:overlay}
+.orb{position:absolute;border-radius:50%;background:radial-gradient(circle at 32% 28%,rgba(255,255,255,.95),rgba(255,255,255,.35) 22%,rgba(255,255,255,.08) 55%,rgba(255,255,255,.25));border:1.5px solid rgba(255,255,255,.7);backdrop-filter:blur(10px) saturate(180%);box-shadow:inset 0 0 40px rgba(255,255,255,.35),0 25px 60px rgba(60,10,90,.35)}
+.mk{position:absolute;filter:drop-shadow(0 8px 18px rgba(20,17,31,.35))}
+.word{position:absolute;font-family:'Dela Gothic One',sans-serif;color:#fff;letter-spacing:-1px;line-height:1;text-shadow:0 2px 18px rgba(40,10,70,.35)}
+.word span{color:#14111F}
+.tag{position:absolute;color:rgba(255,255,255,.92);font-weight:700;letter-spacing:.34em;text-transform:uppercase;text-shadow:0 1px 10px rgba(40,10,70,.3)}
+.pill{position:absolute;padding:10px 18px;border-radius:99px;background:rgba(255,255,255,.28);border:1.5px solid rgba(255,255,255,.7);backdrop-filter:blur(10px);color:#fff;font-weight:800;letter-spacing:.24em;font-size:15px;box-shadow:inset 0 1px 0 rgba(255,255,255,.9)}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute"><defs><linearGradient id="chr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#9aa3bb"/><stop offset=".5" stop-color="#3c4158"/><stop offset=".58" stop-color="#d4d9e7"/><stop offset="1" stop-color="#ffffff"/></linearGradient><symbol id="mark" viewBox="-50 -50 100 100"><g stroke="#14111F" stroke-width="3" fill="url(#chr)"><ellipse cx="0" cy="-30" rx="11" ry="15"/><ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(45)"/><ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(90)"/><ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(135)"/><ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(180)"/><ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(225)"/><ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(270)"/><ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(315)"/></g><circle r="9" fill="#FF3D9A" stroke="#14111F" stroke-width="3"/></symbol></defs></svg>
+<div class="c" id="c"></div>
+<script>
+const q=new URLSearchParams(location.search), tier=q.get('tier')||'ink', kind=q.get('kind')||'hero';
+const W=1032, H=kind==='rich'?812:kind==='logo'?660:336; const w=kind==='logo'?660:W;
+const P={ // AIKIA palette: Hyper Pink #FF3D9A, Lilac #A98BFF, Ice #7FE7F2, Frost #ECEEF5, Ink #14111F
+ ink:{base:'#A98BFF',blobs:['#FF3D9A','#7FE7F2','#A98BFF','#FF7EC1','#C7B4FF'],label:'INK MEMBER'},
+ chrome:{base:'#7FE7F2',blobs:['#A98BFF','#ECEEF5','#7FE7F2','#FF3D9A','#B9F4FA'],label:'CHROME MEMBER'},
+ pink:{base:'#FF3D9A',blobs:['#A98BFF','#FFB3D6','#FF3D9A','#7FE7F2','#FF6FB4'],label:'PINK MEMBER'}}[tier];
+const c=document.getElementById('c'); c.style.width=w+'px'; c.style.height=H+'px'; c.style.setProperty('--base',P.base); c.style.setProperty('--blur',(kind==='hero'?60:90)+'px');
+const pos=kind==='rich'?[[-180,-160,620],[520,-220,640],[620,380,620],[-200,420,560],[260,180,420]]:kind==='logo'?[[-160,-140,520],[300,-120,480],[260,320,520],[-180,300,460],[120,120,300]]:[[-160,-200,460],[560,-220,520],[700,120,420],[-140,140,380],[300,40,300]];
+P.blobs.forEach((col,i)=>{const [x,y,s]=pos[i];const b=document.createElement('div');b.className='blob';Object.assign(b.style,{left:x+'px',top:y+'px',width:s+'px',height:s+'px',background:`radial-gradient(circle,${col} 0%,${col}cc 40%,transparent 70%)`});c.appendChild(b)});
+const add=(cls,st,html='')=>{const e=document.createElement('div');e.className=cls;Object.assign(e.style,st);e.innerHTML=html;c.appendChild(e);return e};
+const R=kind==='rich'?[[120,-12,170],[330,8,140],[560,-6,120]]:kind==='logo'?[[120,-14,120],[330,10,110],[480,-8,90]]:[[40,-8,90],[150,6,80],[250,-5,70]];
+const ribbonCols={ink:['#7FE7F2','#FF3D9A','#ECEEF5'],chrome:['#A98BFF','#FF3D9A','#ffffff'],pink:['#7FE7F2','#A98BFF','#FFE0EF']}[tier];
+R.forEach(([y,rot,h],i)=>add('ribbon',{top:y+'px',transform:`rotate(${rot}deg)`,background:`linear-gradient(90deg,transparent 0%,${ribbonCols[i]}00 10%,${ribbonCols[i]} 35%,${ribbonCols[i]}aa 55%,${ribbonCols[i]} 72%,transparent 92%)`,'--rh':h+'px'}));
+const deep={ink:'#6B4FD6',chrome:'#3E8FB0',pink:'#C2126A'}[tier];
+add('deep',{left:(kind==='hero'?380:300)+'px',top:(kind==='hero'?160:kind==='rich'?380:300)+'px',width:'520px',height:'420px',background:deep});
+add('grain',{});
+const mark=(x,y,s)=>{c.insertAdjacentHTML('beforeend',`<svg class="mk" style="left:${x}px;top:${y}px;width:${s}px;height:${s}px" viewBox="0 0 100 100"><use href="#mark" width="100" height="100"/></svg>`)};
+if(kind==='logo'){ add('orb',{left:'90px',top:'90px',width:'480px',height:'480px'}); mark(150,150,360); }
+else if(kind==='hero'){
+  add('glass',{left:'40px',top:'44px',width:'560px',height:'248px'});
+  add('word',{left:'78px',top:'92px',fontSize:'64px'},'aikia<span>.</span>wallet');
+  add('tag',{left:'82px',top:'184px',fontSize:'16px'},'Members club');
+  add('pill',{left:'80px',top:'222px'},P.label);
+  add('orb',{left:'712px',top:'28px',width:'280px',height:'280px'}); mark(752,68,200);
+} else {
+  add('glass',{left:'56px',top:'470px',width:'920px',height:'280px',borderRadius:'44px'});
+  add('orb',{left:'336px',top:'60px',width:'360px',height:'360px'}); mark(386,110,260);
+  add('word',{left:'110px',top:'530px',fontSize:'84px'},'aikia<span>.</span>wallet');
+  add('tag',{left:'116px',top:'650px',fontSize:'20px'},'Members club');
+  add('pill',{left:'690px',top:'636px',fontSize:'16px'},P.label);
+}
+</script></body></html>

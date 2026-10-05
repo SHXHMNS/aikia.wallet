@@ -14,11 +14,13 @@ const cardName = 'Members Club';
 const organizationName = 'AIKIA';
 // Tier ID → AIKIA brand palette (tokens.json) and its hero banner in public/brand.
 const tiers = {
-  ink: { backgroundColor: '#14111F', labelColor: '#FF3D9A', textColor: '#ECEEF5', hero: 'card-hero-ink.png' },
-  chrome: { backgroundColor: '#252038', labelColor: '#A98BFF', textColor: '#ECEEF5', hero: 'card-hero-chrome.png' },
-  pink: { backgroundColor: '#FF3D9A', labelColor: '#14111F', textColor: '#14111F', hero: 'card-hero-pink.png' },
-  membership: { backgroundColor: '#14111F', labelColor: '#FF3D9A', textColor: '#ECEEF5', hero: 'card-hero-ink.png' },
+  ink: { backgroundColor: '#A98BFF', labelColor: '#FF3D9A', textColor: '#14111F', hero: 'card-hero-ink.png', richHero: 'card-rich-ink.png' },
+  chrome: { backgroundColor: '#7FE7F2', labelColor: '#A98BFF', textColor: '#14111F', hero: 'card-hero-chrome.png', richHero: 'card-rich-chrome.png' },
+  pink: { backgroundColor: '#FF3D9A', labelColor: '#14111F', textColor: '#14111F', hero: 'card-hero-pink.png', richHero: 'card-rich-pink.png' },
+  membership: { backgroundColor: '#A98BFF', labelColor: '#FF3D9A', textColor: '#14111F', hero: 'card-hero-ink.png', richHero: 'card-rich-ink.png' },
 };
+// Template fields that loyalty cards don't use (they showed as "missing: universal.expiryDate" / "empty value").
+const removedFields = new Set(['universal.expiryDate', 'meta.notification']);
 
 // Card copy, replacing the template's sample text. Keyed by PassKit data field uniqueName.
 const fieldCopy = {
@@ -27,11 +29,26 @@ const fieldCopy = {
   'custom.latest': { label: 'MEMBER NEWS', defaultValue: 'Welcome to the club. Show this card at the counter on every visit.' },
   'universal.info': { label: 'HOW TO USE', defaultValue: 'Show the QR code at the counter on every visit. Each qualifying visit adds a stamp; collect enough to unlock your reward and move up from Ink to Chrome to Pink.', apple: 'AIKIA Members Club update: %@' },
 };
+// Extra Google Wallet text fields our app fills in from the member's metaData (see src/lib/wallet/passkit.ts).
+const addedFields = [
+  { uniqueName: 'meta.rewardsAvailable', label: 'REWARDS READY', dataType: 'TEXT', defaultValue: '0', priority: 2 },
+  { uniqueName: 'meta.tierBenefits', label: 'YOUR BENEFITS', dataType: 'TEXT_LONG', defaultValue: 'Collect stamps to unlock member benefits.', priority: 3 },
+];
+const textModule = name => ({ firstValue: { fields: [{ fieldPath: `object.textModulesData['${name.replace('.', '-')}']` }] } });
+// Google card layout: name + stamps, tier + rewards ready on the front; member ID, how to use and benefits on the back.
+const googleLayout = {
+  detailsTemplateOverride: { detailsItemInfos: [{ item: { firstValue: { fields: [{ fieldPath: 'object.accountId' }] } } }, { item: textModule('universal.info') }, { item: textModule('meta.tierBenefits') }] },
+  cardTemplateOverride: { cardRowTemplateInfos: [
+    { threeItems: { startItem: textModule('person.forename'), middleItem: textModule('person.surname'), endItem: { firstValue: { fields: [{ fieldPath: 'object.loyaltyPoints.balance' }] } } } },
+    { twoItems: { startItem: { firstValue: { fields: [{ fieldPath: 'class.localizedRewardsTier' }] } }, endItem: textModule('meta.rewardsAvailable') } },
+  ] },
+};
+
 const enrolmentDescription = 'Enter your name to get your AIKIA membership card. Save it to your wallet and show it on every visit.';
 
 function applyCopy(data) {
   if (!data) return data;
-  const dataFields = (data.dataFields || []).map(field => {
+  const dataFields = (data.dataFields || []).filter(field => !removedFields.has(field.uniqueName)).map(field => {
     const copy = fieldCopy[field.uniqueName];
     if (!copy) return field;
     const next = { ...field };
@@ -40,6 +57,11 @@ function applyCopy(data) {
     if (copy.apple && next.appleWalletFieldRenderOptions) next.appleWalletFieldRenderOptions = { ...next.appleWalletFieldRenderOptions, changeMessage: copy.apple };
     return next;
   });
+  const base = data.dataFields?.find(field => field.uniqueName === 'universal.info');
+  for (const added of addedFields) {
+    if (!base || dataFields.some(field => field.uniqueName === added.uniqueName)) continue;
+    dataFields.push({ ...base, uniqueName: added.uniqueName, fieldType: 'META', label: added.label, dataType: added.dataType, defaultValue: added.defaultValue, userCanSetValue: false, usage: ['USAGE_GOOGLE_PAY'], googlePayFieldRenderOptions: { googlePayPosition: 'GOOGLE_PAY_TEXT_MODULE', textModulePriority: added.priority } });
+  }
   const dataCollectionPageSettings = data.dataCollectionPageSettings ? { ...data.dataCollectionPageSettings, description: enrolmentDescription } : data.dataCollectionPageSettings;
   return { ...data, dataFields, dataCollectionPageSettings };
 }
@@ -72,7 +94,7 @@ for (const [tierId, look] of Object.entries(tiers)) {
   const { template } = await pk(`template/data/${tier.passTemplateId}`);
   console.log(`Tier ${tierId}: template ${tier.passTemplateId}, background ${template.colors?.backgroundColor} → ${look.backgroundColor}`);
   if (dryRun) continue;
-  const uploaded = await pk('images', { method: 'POST', body: JSON.stringify({ name: `aikia-${tierId}`, imageData: { logo, hero: image(look.hero) } }) });
+  const uploaded = await pk('images', { method: 'POST', body: JSON.stringify({ name: `aikia-${tierId}`, imageData: { logo, hero: image(look.hero), richHero: image(look.richHero) } }) });
   await pk('template', {
     method: 'PUT',
     body: JSON.stringify({
@@ -80,10 +102,11 @@ for (const [tierId, look] of Object.entries(tiers)) {
       name: cardName,
       organizationName,
       data: applyCopy(template.data),
+      googlePaySettings: { ...template.googlePaySettings, classTemplateInfo: JSON.stringify(googleLayout) },
       colors: { ...template.colors, backgroundColor: look.backgroundColor, labelColor: look.labelColor, textColor: look.textColor },
-      imageIds: { ...template.imageIds, logo: uploaded.logo || template.imageIds.logo, hero: uploaded.hero || template.imageIds.hero },
+      imageIds: { ...template.imageIds, logo: uploaded.logo || template.imageIds.logo, hero: uploaded.hero || template.imageIds.hero, richHero: uploaded.richHero || template.imageIds.richHero },
     }),
   });
-  console.log(`  updated (logo ${uploaded.logo}, hero ${uploaded.hero})`);
+  console.log(`  updated (logo ${uploaded.logo}, hero ${uploaded.hero}, richHero ${uploaded.richHero})`);
 }
 console.log(dryRun ? 'Dry run only, nothing changed.' : 'Done.');
