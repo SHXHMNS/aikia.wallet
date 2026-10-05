@@ -123,7 +123,7 @@ export class PassKitProvider implements WalletProvider {
     });
     await this.request('members/member', {
       method: 'PUT',
-      body: JSON.stringify({ id: pass.objectId, programId: pass.classId, tierId, operation: 'OPERATION_PATCH', metaData: this.metaData(member) }),
+      body: JSON.stringify({ id: pass.objectId, programId: pass.classId, tierId, operation: 'OPERATION_PATCH', person: passKitPerson(member.fullName), metaData: this.metaData(member) }),
     });
   }
 }

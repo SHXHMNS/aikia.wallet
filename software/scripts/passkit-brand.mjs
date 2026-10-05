@@ -35,9 +35,10 @@ async function pk(path, init = {}) {
 const image = file => readFileSync(new URL(`../public/brand/${file}`, import.meta.url)).toString('base64');
 
 const program = await pk(`members/program/${programId}`);
-if (program.name !== programName) {
-  console.log(`Program: "${program.name}" → "${programName}"`);
-  if (!dryRun) await pk('members/program', { method: 'PUT', body: JSON.stringify({ ...program, name: programName }) });
+// Loyalty members join with just a name, so the program must not demand a profile photo.
+if (program.name !== programName || program.profileImageSettings !== 'PROFILE_IMAGE_NONE') {
+  console.log(`Program: "${program.name}" → "${programName}", profile image ${program.profileImageSettings} → PROFILE_IMAGE_NONE`);
+  if (!dryRun) await pk('members/program', { method: 'PUT', body: JSON.stringify({ ...program, name: programName, profileImageSettings: 'PROFILE_IMAGE_NONE' }) });
 }
 
 const logo = image('aikia-wallet-program-logo.png');
