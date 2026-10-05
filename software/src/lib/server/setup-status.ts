@@ -25,7 +25,7 @@ export function setupStatus(): SetupItem[] {
     items.push(
       { key: 'GOOGLE_WALLET_ISSUER_ID', ready: has('GOOGLE_WALLET_ISSUER_ID'), where: 'Google Pay & Wallet Console → Google Wallet API', required: true },
       { key: 'GOOGLE_WALLET_SERVICE_ACCOUNT_JSON', ready: has('GOOGLE_WALLET_SERVICE_ACCOUNT_JSON'), where: 'Google Cloud → service account → JSON key (one line)', required: true },
-      { key: 'GOOGLE_WALLET_PROGRAM_LOGO_URL', ready: has('GOOGLE_WALLET_PROGRAM_LOGO_URL'), where: '<app address>/brand/aikia-wallet-program-logo.png', required: true },
+      { key: 'GOOGLE_WALLET_PROGRAM_LOGO_URL', ready: has('GOOGLE_WALLET_PROGRAM_LOGO_URL'), where: 'Optional: defaults to this app\'s AIKIA logo', required: false },
     );
   }
   return items;

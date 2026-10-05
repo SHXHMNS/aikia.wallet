@@ -4,6 +4,7 @@ import { platform } from '@/config/platform';
 import { getPlatformAdmin } from '@/lib/server/platform-access';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { walletStatus } from '@/lib/wallet/provider';
+import MigrateButton from './migrate-button';
 
 export const dynamic = 'force-dynamic';
 export const metadata = { title: `Platform | ${platform.name}` };
@@ -44,6 +45,7 @@ export default async function PlatformPage() {
         {!rows.length && <p>No venues yet.</p>}
       </div>
     </section>
+    <section className="console-panel platform-table"><span className="eyebrow">WALLET ENGINE</span><h2>Issue cards on the active engine</h2><p>Creates a card on the current engine for every member who does not have one yet, and lists their save links.</p><MigrateButton/></section>
     <footer className="console-footer"><span>Signed in as {operator.email}</span><Link href="/">Back to venue console</Link></footer>
   </main>;
 }
