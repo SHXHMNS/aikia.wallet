@@ -20,6 +20,30 @@ const tiers = {
   membership: { backgroundColor: '#14111F', labelColor: '#FF3D9A', textColor: '#ECEEF5', hero: 'card-hero-ink.png' },
 };
 
+// Card copy, replacing the template's sample text. Keyed by PassKit data field uniqueName.
+const fieldCopy = {
+  'members.member.points': { label: 'Stamps', apple: 'You now have %@ stamps.' },
+  'members.program.name': { defaultValue: programName },
+  'custom.latest': { label: 'MEMBER NEWS', defaultValue: 'Welcome to the club. Show this card at the counter on every visit.' },
+  'universal.info': { label: 'HOW TO USE', defaultValue: 'Show the QR code at the counter on every visit. Each qualifying visit adds a stamp; collect enough to unlock your reward and move up from Ink to Chrome to Pink.', apple: 'AIKIA Members Club update: %@' },
+};
+const enrolmentDescription = 'Enter your name to get your AIKIA membership card. Save it to your wallet and show it on every visit.';
+
+function applyCopy(data) {
+  if (!data) return data;
+  const dataFields = (data.dataFields || []).map(field => {
+    const copy = fieldCopy[field.uniqueName];
+    if (!copy) return field;
+    const next = { ...field };
+    if (copy.label) next.label = copy.label;
+    if (copy.defaultValue !== undefined) next.defaultValue = copy.defaultValue;
+    if (copy.apple && next.appleWalletFieldRenderOptions) next.appleWalletFieldRenderOptions = { ...next.appleWalletFieldRenderOptions, changeMessage: copy.apple };
+    return next;
+  });
+  const dataCollectionPageSettings = data.dataCollectionPageSettings ? { ...data.dataCollectionPageSettings, description: enrolmentDescription } : data.dataCollectionPageSettings;
+  return { ...data, dataFields, dataCollectionPageSettings };
+}
+
 const b64url = value => Buffer.from(value).toString('base64url');
 function token() {
   const now = Math.floor(Date.now() / 1000);
@@ -55,6 +79,7 @@ for (const [tierId, look] of Object.entries(tiers)) {
       ...template,
       name: cardName,
       organizationName,
+      data: applyCopy(template.data),
       colors: { ...template.colors, backgroundColor: look.backgroundColor, labelColor: look.labelColor, textColor: look.textColor },
       imageIds: { ...template.imageIds, logo: uploaded.logo || template.imageIds.logo, hero: uploaded.hero || template.imageIds.hero },
     }),
