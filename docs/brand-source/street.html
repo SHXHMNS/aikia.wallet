@@ -1,0 +1,69 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Hanken+Grotesk:wght@600;700;800;900&family=Martian+Mono:wght@500;700&display=block" rel="stylesheet">
+<style>
+html,body{margin:0;overflow:hidden;background:#000}
+.c{position:relative;overflow:hidden;font-family:'Hanken Grotesk',sans-serif;isolation:isolate}
+.aur{position:absolute;inset:-20%;filter:blur(46px) saturate(150%)}
+.blob{position:absolute;border-radius:50%}
+.ribbon{position:absolute;left:-20%;width:140%;border-radius:50%;filter:blur(20px);mix-blend-mode:screen;opacity:.9}
+.grain{position:absolute;inset:0;opacity:.16;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E")}
+.half{position:absolute;opacity:.22;background-image:radial-gradient(#fff 1.4px,transparent 1.6px);background-size:12px 12px;-webkit-mask-image:linear-gradient(135deg,#000,transparent 60%)}
+.glass{position:absolute;background:linear-gradient(140deg,rgba(255,255,255,.5),rgba(255,255,255,.08) 40%,rgba(255,255,255,.18) 70%,rgba(255,255,255,.4));backdrop-filter:blur(16px) saturate(190%);border:2px solid rgba(255,255,255,.7);box-shadow:inset 0 2px 0 rgba(255,255,255,.95),inset 0 -20px 40px rgba(255,255,255,.15),0 30px 60px rgba(30,6,60,.3)}
+.glass:after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.55) 42%,transparent 50%);mix-blend-mode:overlay}
+.mega{position:absolute;font-family:'Dela Gothic One',sans-serif;line-height:.8;letter-spacing:-4px;color:transparent;-webkit-text-stroke:3px rgba(255,255,255,.85);opacity:.9}
+.word{position:absolute;font-family:'Dela Gothic One',sans-serif;color:#fff;letter-spacing:-1.5px;line-height:.9;text-shadow:0 3px 0 rgba(20,17,31,.9),0 0 40px rgba(255,255,255,.35)}
+.word span{color:#FF3D9A;text-shadow:0 3px 0 #14111F}
+.sticker{position:absolute;font-weight:900;text-transform:uppercase;letter-spacing:.08em;border:3px solid #14111F;box-shadow:5px 5px 0 #14111F;padding:8px 14px;border-radius:10px;white-space:nowrap}
+.mono{position:absolute;font-family:'Martian Mono',monospace;font-weight:700;letter-spacing:.18em;text-transform:uppercase}
+.tape{position:absolute;background:repeating-linear-gradient(45deg,#14111F 0 16px,#ECEEF5 16px 32px);opacity:.92;box-shadow:0 6px 14px rgba(0,0,0,.25)}
+.star{position:absolute}
+.orb{position:absolute;border-radius:50%;background:radial-gradient(circle at 30% 26%,rgba(255,255,255,.95),rgba(255,255,255,.4) 20%,rgba(255,255,255,.06) 55%,rgba(255,255,255,.3));border:2px solid rgba(255,255,255,.8);backdrop-filter:blur(10px) saturate(200%);box-shadow:inset 0 0 50px rgba(255,255,255,.4),0 30px 70px rgba(30,6,60,.4)}
+.mk{position:absolute;filter:drop-shadow(0 10px 18px rgba(20,17,31,.45))}
+.code{position:absolute;height:44px;background:repeating-linear-gradient(90deg,#14111F 0 3px,transparent 3px 6px,#14111F 6px 10px,transparent 10px 13px,#14111F 13px 14px,transparent 14px 19px)}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute"><defs><linearGradient id="chr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#9aa3bb"/><stop offset=".5" stop-color="#3c4158"/><stop offset=".58" stop-color="#d4d9e7"/><stop offset="1" stop-color="#ffffff"/></linearGradient><symbol id="mark" viewBox="-50 -50 100 100"><g stroke="#14111F" stroke-width="3" fill="url(#chr)"><ellipse cx="0" cy="-30" rx="11" ry="15"/><ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(45)"/><ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(90)"/><ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(135)"/><ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(180)"/><ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(225)"/><ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(270)"/><ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(315)"/></g><circle r="9" fill="#FF3D9A" stroke="#14111F" stroke-width="3"/></symbol>
+<symbol id="star" viewBox="-50 -50 100 100"><path d="M0,-48 C6,-12 12,-6 48,0 C12,6 6,12 0,48 C-6,12 -12,6 -48,0 C-12,-6 -6,-12 0,-48Z" fill="url(#chr)" stroke="#14111F" stroke-width="3"/></symbol></defs></svg>
+<div class="c" id="c"></div>
+<script>
+const q=new URLSearchParams(location.search), tier=q.get('tier')||'ink', kind=q.get('kind')||'hero';
+const H=kind==='rich'?812:kind==='logo'?660:336, W=kind==='logo'?660:1032;
+const T={ // AIKIA palette only: Hyper Pink #FF3D9A, Lilac #A98BFF, Ice #7FE7F2, Frost #ECEEF5, Ink #14111F (+ palette text tones #6B4FD6 #C2126A #0B7F8A)
+ ink:{base:'#8E6BFF',cols:['#FF3D9A','#7FE7F2','#6B4FD6','#A98BFF','#FF6FB4','#ECEEF5'],rib:['#7FE7F2','#FF3D9A','#ECEEF5'],label:'INK',sticker:'#7FE7F2',sticker2:'#FF3D9A'},
+ chrome:{base:'#5FD6E6',cols:['#A98BFF','#ECEEF5','#0B7F8A','#7FE7F2','#FF6FB4','#B9F4FA'],rib:['#ECEEF5','#A98BFF','#FF3D9A'],label:'CHROME',sticker:'#A98BFF',sticker2:'#ECEEF5'},
+ pink:{base:'#FF3D9A',cols:['#A98BFF','#FFB3D6','#C2126A','#FF6FB4','#7FE7F2','#FF3D9A'],rib:['#7FE7F2','#ECEEF5','#A98BFF'],label:'PINK',sticker:'#7FE7F2',sticker2:'#ECEEF5'}}[tier];
+const c=document.getElementById('c'); Object.assign(c.style,{width:W+'px',height:H+'px',background:T.base});
+const el=(cls,st,html='',parent=c)=>{const e=document.createElement('div');e.className=cls;Object.assign(e.style,st);e.innerHTML=html;parent.appendChild(e);return e};
+const aur=el('aur',{});
+const S=W/1032, k=H/812;
+[[-100,-120,560],[560,-160,600],[700,420,560],[-140,480,520],[300,260,460],[820,40,300]].forEach(([x,y,s],i)=>el('blob',{left:x*S+'px',top:y*k+'px',width:s*Math.max(S,k)+'px',height:s*Math.max(S,k)+'px',background:`radial-gradient(circle,${T.cols[i]} 0%,${T.cols[i]} 35%,transparent 70%)`},'',aur));
+[[0.18,-10,0.2],[0.42,7,0.16],[0.66,-5,0.14]].forEach(([y,r,h],i)=>el('ribbon',{top:y*H+'px',height:h*H+'px',transform:`rotate(${r}deg)`,background:`linear-gradient(90deg,transparent,${T.rib[i]} 30%,${T.rib[i]}55 50%,${T.rib[i]} 70%,transparent)`},'',aur));
+el('half',{left:'0',top:'0',width:W*0.6+'px',height:H*0.7+'px'});
+const mark=(x,y,s)=>c.insertAdjacentHTML('beforeend',`<svg class="mk" style="left:${x}px;top:${y}px;width:${s}px;height:${s}px" viewBox="0 0 100 100"><use href="#mark" width="100" height="100"/></svg>`);
+const star=(x,y,s,r=0)=>c.insertAdjacentHTML('beforeend',`<svg class="star" style="left:${x}px;top:${y}px;width:${s}px;height:${s}px;transform:rotate(${r}deg)" viewBox="0 0 100 100"><use href="#star" width="100" height="100"/></svg>`);
+if(kind==='logo'){
+  el('orb',{left:'80px',top:'80px',width:'500px',height:'500px'}); mark(140,140,380); star(470,70,110,12); star(80,470,70,-8);
+} else if(kind==='rich'){
+  el('mega',{left:'-30px',top:'-40px',fontSize:'330px'},'aikia');
+  el('glass',{left:'60px',top:'430px',width:'912px',height:'330px',borderRadius:'48px'});
+  el('orb',{left:'640px',top:'120px',width:'300px',height:'300px'}); mark(682,162,216);
+  star(560,90,90,10); star(930,390,70,-14); star(90,350,56,20);
+  el('word',{left:'110px',top:'490px',fontSize:'96px'},'aikia<span>.</span>wallet');
+  el('mono',{left:'116px',top:'612px',fontSize:'20px',color:'#fff'},'members club · est. 2026');
+  el('code',{left:'116px',top:'660px',width:'260px'});
+  el('sticker',{left:'640px',top:'640px',fontSize:'26px',background:T.sticker,color:'#14111F',transform:'rotate(-6deg)'},T.label+' member');
+  el('sticker',{left:'90px',top:'250px',fontSize:'20px',background:T.sticker2,color:'#14111F',transform:'rotate(-9deg)'},'no faces. one world.');
+  el('tape',{left:'760px',top:'448px',width:'200px',height:'34px',transform:'rotate(24deg)'});
+  el('mono',{left:'1006px',top:'60px',fontSize:'16px',color:'#14111F',transform:'rotate(90deg)',transformOrigin:'left top'},'aikia.wrld ★ members only');
+} else {
+  el('mega',{left:'-20px',top:'-34px',fontSize:'210px'},'aikia');
+  el('glass',{left:'36px',top:'56px',width:'600px',height:'226px',borderRadius:'36px'});
+  el('word',{left:'70px',top:'92px',fontSize:'70px'},'aikia<span>.</span>wallet');
+  el('mono',{left:'74px',top:'182px',fontSize:'15px',color:'#fff'},'members club · est. 2026');
+  el('code',{left:'74px',top:'216px',width:'190px',height:'34px'});
+  el('sticker',{left:'300px',top:'214px',fontSize:'20px',background:T.sticker,color:'#14111F',transform:'rotate(-5deg)'},T.label+' member');
+  el('orb',{left:'730px',top:'26px',width:'270px',height:'270px'}); mark(767,63,196);
+  star(680,30,70,12); star(960,240,56,-14);
+  el('tape',{left:'640px',top:'250px',width:'150px',height:'26px',transform:'rotate(-18deg)'});
+}
+el('grain',{});
+</script></body></html>
