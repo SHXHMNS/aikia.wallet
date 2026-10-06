@@ -5,6 +5,7 @@ import { getPlatformAdmin } from '@/lib/server/platform-access';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { walletStatus } from '@/lib/wallet/provider';
 import MigrateButton from './migrate-button';
+import NewVenueForm from './new-venue-form';
 
 export const dynamic = 'force-dynamic';
 export const metadata = { title: `Platform | ${platform.name}` };
@@ -37,7 +38,7 @@ export default async function PlatformPage() {
       <div className="member-table">
         <div className="member-line header"><span>VENUE</span><span>TYPE</span><span>MEMBERS · TEAM</span><span>WALLET</span></div>
         {rows.map(venue => <div className="member-line" key={venue.id}>
-          <span><b>{venue.name}</b><small><Link href={`/join/${venue.slug}`}>/join/{venue.slug}</Link> · since {new Date(venue.created_at).toLocaleDateString('en-IN')}</small></span>
+          <span><b>{venue.name}</b><small><Link href={`/join/${venue.slug}`}>/join/{venue.slug}</Link> · <Link href={`/join/${venue.slug}/poster`}>poster</Link> · since {new Date(venue.created_at).toLocaleDateString('en-IN')}</small></span>
           <code>{venue.business_type}</code>
           <span>{count(members, venue.id)} members · {count(team, venue.id)} team</span>
           <span>{venue.wallet_program_id || 'default program'}{failing(venue.id) ? <small>{failing(venue.id)} card(s) failing sync</small> : <small>all cards in sync</small>}</span>
@@ -45,6 +46,7 @@ export default async function PlatformPage() {
         {!rows.length && <p>No venues yet.</p>}
       </div>
     </section>
+    <section className="console-panel platform-table"><span className="eyebrow">NEW VENUE</span><h2>Set up a venue in one step</h2><p>Creates the venue, its reward rule and Ink / Chrome / Pink tiers, invites the owner, and gives you the join link and QR poster.</p><NewVenueForm/></section>
     <section className="console-panel platform-table"><span className="eyebrow">WALLET ENGINE</span><h2>Issue cards on the active engine</h2><p>Creates a card on the current engine for every member who does not have one yet, and lists their save links.</p><MigrateButton/></section>
     <footer className="console-footer"><span>Signed in as {operator.email}</span><Link href="/">Back to venue console</Link></footer>
   </main>;
