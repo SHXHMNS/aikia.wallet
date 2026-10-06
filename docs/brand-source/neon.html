@@ -1,0 +1,51 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Hanken+Grotesk:wght@500;600;700;800&family=Martian+Mono:wght@500;600&display=block" rel="stylesheet">
+<style>
+html,body{margin:0;overflow:hidden;background:#000}
+.c{position:relative;overflow:hidden;font-family:'Hanken Grotesk',sans-serif;background:var(--bg)}
+.sheen{position:absolute;inset:0;background:radial-gradient(120% 90% at 85% -10%,rgba(255,255,255,.45),transparent 45%),radial-gradient(90% 80% at 0% 110%,var(--glow),transparent 55%)}
+.glass{position:absolute;border-radius:var(--r);background:linear-gradient(160deg,rgba(255,255,255,.55) 0%,rgba(255,255,255,.14) 38%,rgba(255,255,255,.06) 62%,rgba(255,255,255,.28) 100%);backdrop-filter:blur(22px) saturate(180%);border:1.5px solid rgba(255,255,255,.75);box-shadow:inset 0 1.5px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(255,255,255,.35),inset 0 0 30px rgba(255,255,255,.18),0 24px 50px rgba(40,0,30,.22)}
+.glass:after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(100deg,transparent 22%,rgba(255,255,255,.5) 34%,transparent 44%);mix-blend-mode:overlay}
+.chrome{background:linear-gradient(180deg,#ffffff 0%,#c9cedb 42%,#5a6075 50%,#e4e7ef 58%,#ffffff 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.word{color:#14111F;position:absolute;font-family:'Dela Gothic One',sans-serif;letter-spacing:-1px;line-height:1;filter:drop-shadow(0 2px 0 rgba(20,17,31,.35))}
+.tag{position:absolute;font-weight:800;letter-spacing:.32em;text-transform:uppercase;color:var(--ink)}
+.guil{position:absolute;inset:0;opacity:.13;background:repeating-radial-gradient(circle at 78% 18%,rgba(255,255,255,.9) 0 1px,transparent 1px 9px),repeating-radial-gradient(circle at 12% 92%,rgba(255,255,255,.7) 0 1px,transparent 1px 11px);mix-blend-mode:overlay}
+.frame{position:absolute;border-radius:var(--r);border:1px solid rgba(255,255,255,.85);box-shadow:inset 0 0 0 1px rgba(20,17,31,.06)}
+.mono{position:absolute;font-family:'Martian Mono',monospace;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--ink);opacity:.82}
+.chip{position:absolute;padding:9px 16px;border-radius:99px;font-family:'Martian Mono',monospace;font-weight:600;letter-spacing:.22em;color:#14111F;background:linear-gradient(180deg,#ffffff,#d4d9e7 45%,#9aa3bb 55%,#f1f3f8);box-shadow:inset 0 1px 0 #fff,0 6px 14px rgba(20,17,31,.18)}
+.mk{position:absolute;filter:drop-shadow(0 10px 18px rgba(20,17,31,.3))}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute"><defs><linearGradient id="chr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#9aa3bb"/><stop offset=".5" stop-color="#3c4158"/><stop offset=".58" stop-color="#d4d9e7"/><stop offset="1" stop-color="#ffffff"/></linearGradient><symbol id="mark" viewBox="-50 -50 100 100"><g stroke="#14111F" stroke-width="3" fill="url(#chr)"><ellipse cx="0" cy="-30" rx="11" ry="15"/><ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(45)"/><ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(90)"/><ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(135)"/><ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(180)"/><ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(225)"/><ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(270)"/><ellipse cx="0" cy="-30" rx="11" ry="15" transform="rotate(315)"/></g><circle r="9" fill="#FF3D9A" stroke="#14111F" stroke-width="3"/></symbol></defs></svg>
+<div class="c" id="c"></div>
+<script>
+const q=new URLSearchParams(location.search), tier=q.get('tier')||'ink', kind=q.get('kind')||'hero';
+const H=kind==='rich'?812:kind==='logo'?660:336, W=kind==='logo'?660:1032;
+// Minimal neon: Ink = Hyper Pink, Chrome = chrome silver, Pink = Hyper Pink with chrome VIP rim.
+const T={ink:{bg:'#FF3D9A',glow:'rgba(255,255,255,.18)',ink:'#14111F',label:'INK'},
+ chrome:{bg:'linear-gradient(160deg,#F4F5F9 0%,#C9CEDB 45%,#9AA3BB 55%,#E7EAF1 100%)',glow:'rgba(255,61,154,.28)',ink:'#14111F',label:'CHROME'},
+ pink:{bg:'#FF3D9A',glow:'rgba(20,17,31,.25)',ink:'#14111F',label:'PINK',rim:true}}[tier];
+const c=document.getElementById('c'); Object.assign(c.style,{width:W+'px',height:H+'px'}); c.style.setProperty('--bg',T.bg); c.style.setProperty('--glow',T.glow); c.style.setProperty('--ink',T.ink);
+const el=(cls,st,html='')=>{const e=document.createElement('div');e.className=cls;for(const [k,v] of Object.entries(st)){k.startsWith('--')?e.style.setProperty(k,v):(e.style[k]=v)}e.innerHTML=html;c.appendChild(e);return e};
+const mark=(x,y,s)=>c.insertAdjacentHTML('beforeend',`<svg class="mk" style="left:${x}px;top:${y}px;width:${s}px;height:${s}px" viewBox="0 0 100 100"><use href="#mark" width="100" height="100"/></svg>`);
+el('sheen',{});
+if(kind==='logo'){ el('guil',{}); el('glass',{left:'110px',top:'110px',width:'440px',height:'440px','--r':'50%'}); mark(170,170,320); }
+else if(kind==='hero'){
+  el('guil',{});
+  el('glass',{left:'40px',top:'44px',width:'952px',height:'248px','--r':'34px'});
+  el('frame',{left:'56px',top:'60px',width:'920px',height:'216px','--r':'26px'});
+  mark(92,98,140);
+  el(tier==='chrome'?'word':'word chrome',{left:'262px',top:'112px',fontSize:'62px'},'aikia.wallet');
+  el('mono',{left:'266px',top:'198px',fontSize:'14px'},'members club · est. 2026');
+  el('chip',{right:'92px',top:'124px',fontSize:'15px'},T.label);
+} else {
+  el('guil',{});
+  el('glass',{left:'56px',top:'56px',width:'920px',height:'700px','--r':'56px'});
+  el('frame',{left:'80px',top:'80px',width:'872px',height:'652px','--r':'40px'});
+  el('mono',{left:'124px',top:'124px',fontSize:'15px'},'aikia');
+  el('chip',{right:'124px',top:'110px',fontSize:'16px'},T.label);
+  mark(406,214,220);
+  el(tier==='chrome'?'word':'word chrome',{left:'0',width:'1032px',textAlign:'center',top:'480px',fontSize:'84px'},'aikia.wallet');
+  el('mono',{left:'0',width:'1032px',textAlign:'center',top:'600px',fontSize:'15px'},'members club · est. 2026');
+  el('mono',{left:'0',width:'1032px',textAlign:'center',top:'668px',fontSize:'12px',opacity:'.6'},'no faces. one world.');
+}
+</script></body></html>

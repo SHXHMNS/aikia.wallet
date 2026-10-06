@@ -39,7 +39,7 @@ export default function NewVenueForm() {
     <label>Tiers unlock by<select value={basis} onChange={e => setBasis(e.target.value as 'actions' | 'spend')}><option value="spend">Total money spent (₹)</option><option value="actions">Number of visits</option></select></label>
     <label>Chrome tier starts at {basis === 'spend' ? '(₹)' : '(visits)'}<input name="chromeAt" type="number" min={1} required defaultValue={basis === 'spend' ? p.tiers[1].minLifetimeSpend : p.tiers[1].minLifetimeActions}/></label>
     <label>Pink tier starts at {basis === 'spend' ? '(₹)' : '(visits)'}<input name="pinkAt" type="number" min={2} required defaultValue={basis === 'spend' ? p.tiers[2].minLifetimeSpend : p.tiers[2].minLifetimeActions}/></label>
-    <label>Card colour<input name="brandColor" type="color" defaultValue="#A98BFF"/></label>
+    <label>Card colour<input name="brandColor" type="color" defaultValue="#FF3D9A"/></label>
     <label>Logo link (https, optional)<input name="logoUrl" type="url" placeholder="https://…/logo.png"/></label>
     <label>Venue photo link (https, optional)<input name="heroUrl" type="url" placeholder="https://…/photo.jpg"/></label>
     <button className="button primary" disabled={busy}>{busy ? 'Creating…' : 'Create venue'}</button>

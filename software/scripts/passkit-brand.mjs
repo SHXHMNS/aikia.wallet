@@ -14,10 +14,10 @@ const cardName = 'Members Club';
 const organizationName = 'AIKIA';
 // Tier ID → AIKIA brand palette (tokens.json) and its hero banner in public/brand.
 const tiers = {
-  ink: { backgroundColor: '#A98BFF', labelColor: '#FF3D9A', textColor: '#14111F', hero: 'card-hero-ink.png', richHero: 'card-rich-ink.png' },
-  chrome: { backgroundColor: '#7FE7F2', labelColor: '#A98BFF', textColor: '#14111F', hero: 'card-hero-chrome.png', richHero: 'card-rich-chrome.png' },
+  ink: { backgroundColor: '#FF3D9A', labelColor: '#14111F', textColor: '#14111F', hero: 'card-hero-ink.png', richHero: 'card-rich-ink.png' },
+  chrome: { backgroundColor: '#C9CEDB', labelColor: '#14111F', textColor: '#14111F', hero: 'card-hero-chrome.png', richHero: 'card-rich-chrome.png' },
   pink: { backgroundColor: '#FF3D9A', labelColor: '#14111F', textColor: '#14111F', hero: 'card-hero-pink.png', richHero: 'card-rich-pink.png' },
-  membership: { backgroundColor: '#A98BFF', labelColor: '#FF3D9A', textColor: '#14111F', hero: 'card-hero-ink.png', richHero: 'card-rich-ink.png' },
+  membership: { backgroundColor: '#FF3D9A', labelColor: '#14111F', textColor: '#14111F', hero: 'card-hero-ink.png', richHero: 'card-rich-ink.png' },
 };
 // Template fields that loyalty cards don't use (they showed as "missing: universal.expiryDate" / "empty value").
 const removedFields = new Set(['universal.expiryDate', 'meta.notification']);

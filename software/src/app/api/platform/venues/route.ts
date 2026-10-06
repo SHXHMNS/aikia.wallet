@@ -27,7 +27,7 @@ export async function POST(request: Request) {
   if (!(chromeAt > 0 && pinkAt > chromeAt)) return NextResponse.json({ error: 'Pink must start higher than Chrome, and both above zero.' }, { status: 400 });
   let logo: string | null, hero: string | null;
   try { logo = https(b.logoUrl); hero = https(b.heroUrl); } catch (e) { return NextResponse.json({ error: (e as Error).message }, { status: 400 }); }
-  const brandColor = typeof b.brandColor === 'string' && hex.test(b.brandColor) ? b.brandColor : '#A98BFF';
+  const brandColor = typeof b.brandColor === 'string' && hex.test(b.brandColor) ? b.brandColor : '#FF3D9A';
 
   const admin = createSupabaseAdminClient();
   const { data: venue, error } = await admin.from('venues').insert({
