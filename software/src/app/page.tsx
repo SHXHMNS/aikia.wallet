@@ -36,7 +36,7 @@ export default async function HomePage() {
   const role = team.role as 'owner' | 'admin' | 'staff';
   const [{ data: tiers }, { data: members }, { data: activity }, { data: teamRows }] = await Promise.all([
     supabase.from('venue_tiers').select('*').eq('venue_id', venue.id).order('rank'),
-    role === 'staff' ? Promise.resolve({ data: [] }) : supabase.from('members').select('id,full_name,public_code,stamp_balance,rewards_available,lifetime_actions,status,current_tier_id').eq('venue_id', venue.id).order('created_at', { ascending: false }).limit(200),
+    role === 'staff' ? Promise.resolve({ data: [] }) : supabase.from('members').select('id,full_name,public_code,stamp_balance,rewards_available,lifetime_actions,lifetime_spend_paise,status,current_tier_id').eq('venue_id', venue.id).order('created_at', { ascending: false }).limit(200),
     role === 'staff' ? Promise.resolve({ data: [] }) : supabase.from('ledger_transactions').select('id,event_type,action_units,rewards_delta,created_at,members(full_name)').eq('venue_id', venue.id).order('created_at', { ascending: false }).limit(10),
     role === 'staff' ? Promise.resolve({ data: [] }) : supabase.from('venue_team_members').select('user_id,role').eq('venue_id', venue.id),
   ]);

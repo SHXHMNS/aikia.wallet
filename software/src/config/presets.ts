@@ -11,13 +11,14 @@ export type VenuePreset = {
   rewardTarget: number;
   rewardName: string;
   brandColor: string;
-  tiers: { name: string; minLifetimeActions: number; benefits: string[]; accentColor: string }[];
+  tiers: { name: string; minLifetimeActions: number; minLifetimeSpend: number; benefits: string[]; accentColor: string }[];
 };
 
-const ladder = (entry: string[], mid: string[], top: string[], midAt: number, topAt: number) => [
-  { name: 'Ink', minLifetimeActions: 0, benefits: entry, accentColor: '#171421' },
-  { name: 'Chrome', minLifetimeActions: midAt, benefits: mid, accentColor: '#A98BFF' },
-  { name: 'Pink', minLifetimeActions: topAt, benefits: top, accentColor: '#FF3D9A' },
+// Spend thresholds (₹) apply when a venue chooses spend-based tiers; default ₹20,000 → Chrome, ₹1,00,000 → Pink.
+const ladder = (entry: string[], mid: string[], top: string[], midAt: number, topAt: number, midSpend = 20000, topSpend = 100000) => [
+  { name: 'Ink', minLifetimeActions: 0, minLifetimeSpend: 0, benefits: entry, accentColor: '#171421' },
+  { name: 'Chrome', minLifetimeActions: midAt, minLifetimeSpend: midSpend, benefits: mid, accentColor: '#A98BFF' },
+  { name: 'Pink', minLifetimeActions: topAt, minLifetimeSpend: topSpend, benefits: top, accentColor: '#FF3D9A' },
 ];
 
 export const venuePresets: Record<BusinessType, VenuePreset> = {

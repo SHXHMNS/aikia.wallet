@@ -27,7 +27,7 @@ export async function POST(request: Request) {
     }).eq('id', venueId);
     const { error: tierError } = await supabase.rpc('replace_venue_tiers', {
       p_venue_id: venueId,
-      p_tiers: preset.tiers.map((tier, rank) => ({ rank, name: tier.name, min_lifetime_actions: tier.minLifetimeActions, benefits: tier.benefits, accent_color: tier.accentColor })),
+      p_tiers: preset.tiers.map((tier, rank) => ({ rank, name: tier.name, min_lifetime_actions: tier.minLifetimeActions, min_lifetime_spend_paise: tier.minLifetimeSpend * 100, benefits: tier.benefits, accent_color: tier.accentColor })),
     });
     if (venueError || tierError) return NextResponse.json({ venueId, warning: 'Venue created with the café starter program; the business preset could not be applied. Adjust it in Brand & tiers.' }, { status: 201 });
   }

@@ -18,10 +18,14 @@ export async function PUT(request: Request, { params }: Context) {
       rank,
       name: typeof tier.name === 'string' ? tier.name.trim() : '',
       min_lifetime_actions: Number(tier.minLifetimeActions),
+      min_lifetime_spend_paise: Math.round(Number(tier.minLifetimeSpend ?? 0) * 100),
       benefits: Array.isArray(tier.benefits) ? tier.benefits.filter((benefit): benefit is string => typeof benefit === 'string').map(s => s.trim()).filter(Boolean).slice(0, 10) : [],
       accent_color: typeof tier.accentColor === 'string' ? tier.accentColor : '#171421',
     };
   });
+  if (tiers.some(t => !Number.isFinite(t.min_lifetime_spend_paise) || t.min_lifetime_spend_paise < 0 || t.min_lifetime_spend_paise > 100000000000)) return NextResponse.json({ error: 'Spend thresholds must be between ₹0 and ₹1,00,00,00,000.' }, { status: 400 });
+  if (tiers[0] && tiers[0].min_lifetime_spend_paise !== 0) tiers[0].min_lifetime_spend_paise = 0;
+  if (tiers.some((t, i) => i > 0 && t.min_lifetime_spend_paise > 0 && t.min_lifetime_spend_paise <= tiers[i - 1].min_lifetime_spend_paise)) return NextResponse.json({ error: 'Spend thresholds must increase at every tier.' }, { status: 400 });
   if (tiers.some(t => !t.name || t.name.length > 32 || !Number.isInteger(t.min_lifetime_actions) || t.min_lifetime_actions < 0 || !color.test(t.accent_color))) return NextResponse.json({ error: 'Each tier needs a name, a non-negative whole action threshold, and a valid color.' }, { status: 400 });
   if (tiers[0].min_lifetime_actions !== 0 || tiers.some((t, i) => i > 0 && t.min_lifetime_actions <= tiers[i - 1].min_lifetime_actions)) return NextResponse.json({ error: 'Start the first tier at zero and increase thresholds at every level.' }, { status: 400 });
   const { error } = await access.supabase.rpc('replace_venue_tiers', { p_venue_id: venueId, p_tiers: tiers });

@@ -40,9 +40,13 @@ export async function PATCH(request: Request, { params }: Context) {
     program_logo_url: logoUrl, hero_image_url: heroUrl, business_type: businessType,
     action_label: actionLabel, balance_label: balanceLabel, reward_target: rewardTarget, reward_name: rewardName,
     wallet_program_id: walletProgramId,
+    tier_basis: body.tierBasis === 'spend' ? 'spend' : 'actions',
   };
-  const { data: venue, error } = await access.supabase.from('venues').update(values).eq('id', venueId).select('id,name,slug,business_type,action_label,balance_label,reward_target,reward_name,brand_color,background_color,program_logo_url,hero_image_url,wallet_program_id').single();
+  const { data: venue, error } = await access.supabase.from('venues').update(values).eq('id', venueId).select('id,name,slug,business_type,action_label,balance_label,reward_target,reward_name,brand_color,background_color,program_logo_url,hero_image_url,wallet_program_id,tier_basis').single();
   if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+  // Tier basis may have changed: re-evaluate every member's tier.
+  const { error: recomputeError } = await access.supabase.rpc('recompute_member_tiers', { p_venue_id: venueId });
+  if (recomputeError) return NextResponse.json({ error: recomputeError.message }, { status: 400 });
   const providers = activeProviderIds();
   let walletSynced = providers.length > 0; let walletSyncMessage: string | undefined;
   for (const id of providers) {

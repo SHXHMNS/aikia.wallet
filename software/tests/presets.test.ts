@@ -18,6 +18,8 @@ for (const [type, preset] of Object.entries(venuePresets)) {
       assert.match(tier.accentColor, /^#[0-9a-fA-F]{6}$/);
       assert.ok(tier.benefits.length <= 10);
       if (index > 0) assert.ok(tier.minLifetimeActions > preset.tiers[index - 1].minLifetimeActions);
+      if (index > 0) assert.ok(tier.minLifetimeSpend > preset.tiers[index - 1].minLifetimeSpend);
+      if (index === 0) assert.equal(tier.minLifetimeSpend, 0);
     });
   });
 }
