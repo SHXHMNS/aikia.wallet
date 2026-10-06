@@ -102,7 +102,8 @@ export class GoogleWalletProvider implements WalletProvider {
     const body = this.classBody(venue);
     try {
       await this.request(`loyaltyClass/${encodeURIComponent(id)}`);
-      await this.request(`loyaltyClass/${encodeURIComponent(id)}`, { method: 'PATCH', body: JSON.stringify(body) });
+      // Google requires class updates to be re-submitted for review.
+      await this.request(`loyaltyClass/${encodeURIComponent(id)}`, { method: 'PATCH', body: JSON.stringify({ ...body, reviewStatus: 'UNDER_REVIEW' }) });
       return id;
     } catch (error) {
       if (!(error instanceof Error) || !error.message.startsWith('Google Wallet API 404:')) throw error;
