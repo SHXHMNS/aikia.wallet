@@ -44,5 +44,7 @@ export function walletStatus() {
   return {
     engine: walletEngine(),
     providers: Object.fromEntries(enabledProviderIds().map(id => [id, providerConfigured(id) ? 'configured' : 'missing_credentials'])),
+    // Engines with credentials that are not switched on yet (ready for WALLET_ENGINE / WALLET_PROVIDERS).
+    standby: (['passkit', 'google', 'apple'] as WalletProviderId[]).filter(id => !enabledProviderIds().includes(id) && providerConfigured(id)),
   };
 }
