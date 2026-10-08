@@ -1,7 +1,7 @@
 import 'server-only';
 
 import { passKitPerson, passKitSaveLinks, passKitTierId, passUrlBaseFor, signPassKitToken } from './passkit-core';
-import type { IssuedPass, MemberWalletData, PassReference, SaveLinks, VenueWalletConfig, WalletProvider } from './types';
+import type { IssuedPass, MemberWalletData, PassReference, SaveLinks, VenueLocation, VenueWalletConfig, WalletMessage, WalletProvider } from './types';
 
 // Endpoints follow PassKit's Members & Loyalty API (docs.passkit.io/protocols/member, member.swagger.json).
 const DEFAULT_API_BASE = 'https://api.pub1.passkit.io';
@@ -111,6 +111,38 @@ export class PassKitProvider implements WalletProvider {
       passId = created.id;
     }
     return { provider: this.id, providerClassId: programId, providerObjectId: passId, saveLinks: this.saveLinks(passId) };
+  }
+
+  /** Applies a change to the pass template of every tier in the venue's program. */
+  private async editTierTemplates(venue: VenueWalletConfig, tierNames: string[], edit: (template: Record<string, unknown>) => Record<string, unknown>) {
+    const programId = this.programId(venue);
+    for (const name of tierNames) {
+      let tier: { passTemplateId?: string };
+      try { tier = await this.request(`members/tier/${encodeURIComponent(programId)}/${encodeURIComponent(this.tierId(name))}`); } catch { continue; }
+      if (!tier.passTemplateId) continue;
+      const { template } = await this.request<{ template: Record<string, unknown> }>(`template/data/${tier.passTemplateId}`);
+      await this.request('template', { method: 'PUT', body: JSON.stringify(edit(template)) });
+    }
+  }
+
+  async syncVenueLocations(venue: VenueWalletConfig, locations: VenueLocation[], tierNames: string[]): Promise<void> {
+    await this.editTierTemplates(venue, tierNames, template => ({
+      ...template,
+      locations: locations.slice(0, 10).map((l, position) => ({ name: l.label, lat: l.lat, lon: l.lng, lockScreenMessage: l.lockScreenMessage || `${venue.name} is nearby. Show your card for your stamp.`, position })),
+    }));
+  }
+
+  /** PassKit: updates the card's "Member news" field for everyone (Apple shows it on the lock screen). */
+  async broadcastMessage(venue: VenueWalletConfig, message: WalletMessage, tierNames: string[]): Promise<void> {
+    await this.editTierTemplates(venue, tierNames, template => {
+      const data = template.data as { dataFields?: { uniqueName: string; defaultValue?: string }[] } | undefined;
+      const dataFields = (data?.dataFields || []).map(f => f.uniqueName === 'custom.latest' ? { ...f, defaultValue: `${message.header}: ${message.body}`.slice(0, 300) } : f);
+      return { ...template, data: { ...data, dataFields } };
+    });
+  }
+
+  async messageMember(): Promise<boolean> {
+    return false;
   }
 
   async updateMember(member: MemberWalletData, pass: PassReference): Promise<void> {

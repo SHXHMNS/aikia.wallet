@@ -4,7 +4,7 @@ import { GoogleAuth } from 'google-auth-library';
 import { createSign } from 'node:crypto';
 import { platform } from '@/config/platform';
 import { googleCardLayout, googleTextModules, tierArtSlug } from './google-card';
-import type { IssuedPass, MemberWalletData, PassReference, VenueWalletConfig, WalletProvider } from './types';
+import type { IssuedPass, MemberWalletData, PassReference, VenueLocation, VenueWalletConfig, WalletMessage, WalletProvider } from './types';
 
 const API_ROOT = 'https://walletobjects.googleapis.com/walletobjects/v1';
 const WALLET_SCOPE = 'https://www.googleapis.com/auth/wallet_object.issuer';
@@ -167,6 +167,26 @@ export class GoogleWalletProvider implements WalletProvider {
     const providerObjectId = await this.ensureObject(venue, providerClassId, member);
     const jwt = this.signSaveJwt(providerObjectId);
     return { provider: this.id, providerClassId, providerObjectId, saveLinks: { google: `https://pay.google.com/gp/v/save/${jwt}` } };
+  }
+
+  async syncVenueLocations(venue: VenueWalletConfig, locations: VenueLocation[]): Promise<void> {
+    const id = await this.ensureVenueClass(venue);
+    // merchantLocations drive Google Wallet's nearby notifications (max 10 per class).
+    await this.request(`loyaltyClass/${encodeURIComponent(id)}`, { method: 'PATCH', body: JSON.stringify({ reviewStatus: 'UNDER_REVIEW', merchantLocations: locations.slice(0, 10).map(l => ({ latitude: l.lat, longitude: l.lng })) }) });
+  }
+
+  private messageBody(message: WalletMessage) {
+    return JSON.stringify({ message: { id: safeSuffix(message.id), header: message.header.slice(0, 60), body: message.body.slice(0, 300), messageType: 'TEXT_AND_NOTIFY' } });
+  }
+
+  async broadcastMessage(venue: VenueWalletConfig, message: WalletMessage): Promise<void> {
+    const id = await this.ensureVenueClass(venue);
+    await this.request(`loyaltyClass/${encodeURIComponent(id)}/addMessage`, { method: 'POST', body: this.messageBody(message) });
+  }
+
+  async messageMember(pass: PassReference, message: WalletMessage): Promise<boolean> {
+    await this.request(`loyaltyObject/${encodeURIComponent(pass.objectId)}/addMessage`, { method: 'POST', body: this.messageBody(message) });
+    return true;
   }
 
   async updateMember(member: MemberWalletData, pass: PassReference): Promise<void> {
