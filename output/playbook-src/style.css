@@ -60,7 +60,7 @@ td.c, th.c { text-align: center; }
 .callout.ok { border-color: var(--green); background: #eaf7ef; }
 .callout b:first-child { color: var(--ink); }
 .cluster { margin-top: 4mm; break-inside: avoid-page; }
-.cluster-h { display: flex; align-items: baseline; gap: 2.4mm; margin: 4mm 0 1mm; }
+.cluster-h { break-after: avoid; page-break-after: avoid; display: flex; align-items: baseline; gap: 2.4mm; margin: 4mm 0 1mm; }
 .cluster-h .no { font-family: "Bahnschrift", sans-serif; background: var(--pink); color: #fff; width: 6.4mm; height: 6.4mm; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 8.6pt; flex: none; }
 .cluster-h h3 { margin: 0; }
 .cluster-h .why { color: var(--mute); font-size: 8pt; }
