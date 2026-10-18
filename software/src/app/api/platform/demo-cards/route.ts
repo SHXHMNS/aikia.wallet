@@ -13,13 +13,14 @@ export async function GET() {
   const admin = createSupabaseAdminClient();
   const [{ data: members }, { data: passes }, { data: venues }] = await Promise.all([
     admin.from('members').select('id,venue_id,full_name,public_code,created_at').order('created_at', { ascending: false }).limit(300),
-    admin.from('wallet_passes').select('member_id,provider'),
+    admin.from('wallet_passes').select('member_id,provider,sync_error'),
     admin.from('venues').select('id,name'),
   ]);
   const venueName = new Map((venues || []).map(v => [v.id as string, v.name as string]));
   return NextResponse.json({ members: (members || []).map(m => ({
     id: m.id, name: m.full_name, code: m.public_code, venue: venueName.get(m.venue_id) || '', createdAt: m.created_at,
     cards: (passes || []).filter(p => p.member_id === m.id).map(p => p.provider),
+    syncError: (passes || []).find(p => p.member_id === m.id && p.sync_error)?.sync_error || null,
   })) });
 }
 
