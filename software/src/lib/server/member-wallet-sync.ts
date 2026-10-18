@@ -3,20 +3,29 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { activeProviderIds, enabledProviderIds, getWalletProvider, providerConfigured } from '@/lib/wallet/provider';
 import type { MemberWalletData, SaveLinks, VenueWalletConfig, WalletProviderId } from '@/lib/wallet/types';
 
-type VenueRow = { id: string; name: string; slug: string; brand_color: string; background_color: string | null; program_logo_url: string | null; hero_image_url: string | null; balance_label: string; action_label: string; wallet_program_id?: string | null };
-type MemberRow = { id: string; venue_id: string; full_name: string; public_code: string; scan_token: string; stamp_balance: number; rewards_available: number; lifetime_actions: number; current_tier_id: string };
+type VenueRow = { id: string; name: string; slug: string; brand_color: string; background_color: string | null; program_logo_url: string | null; hero_image_url: string | null; balance_label: string; action_label: string; wallet_program_id?: string | null; credit_enabled?: boolean };
+type MemberRow = { id: string; venue_id: string; full_name: string; public_code: string; scan_token: string; stamp_balance: number; rewards_available: number; lifetime_actions: number; current_tier_id: string; access_token?: string; credit_paid_paise?: number; credit_bonus_paise?: number };
 type TierRow = { name: string; benefits: string[] | null } | null;
 
 export function venueWalletConfig(v: VenueRow): VenueWalletConfig {
   return { id: v.id, name: v.name, slug: v.slug, brandColor: v.brand_color, backgroundColor: v.background_color, programLogoUrl: v.program_logo_url, heroImageUrl: v.hero_image_url, balanceLabel: v.balance_label, actionLabel: v.action_label, walletProgramId: v.wallet_program_id };
 }
 
-function memberWalletData(member: MemberRow, venue: Pick<VenueRow, 'balance_label'> | null, tier: TierRow): MemberWalletData {
+/** Public URL of the member's private "My card" page. */
+export function myCardUrl(accessToken?: string) {
+  const base = (process.env.NEXT_PUBLIC_APP_URL || 'https://aikia-wallet.vercel.app').replace(/\/$/, '');
+  return accessToken ? `${base}/me/${accessToken}` : base;
+}
+
+function memberWalletData(member: MemberRow, venue: Pick<VenueRow, 'balance_label' | 'credit_enabled'> | null, tier: TierRow): MemberWalletData {
   return {
     id: member.id, venueId: member.venue_id, fullName: member.full_name, publicCode: member.public_code,
     scanToken: member.scan_token, stampBalance: member.stamp_balance, balanceLabel: venue?.balance_label || 'STAMPS',
     rewardsAvailable: member.rewards_available, lifetimeActions: member.lifetime_actions,
     tierName: tier?.name || 'Member', tierBenefits: tier?.benefits || [],
+    creditBalancePaise: (member.credit_paid_paise || 0) + (member.credit_bonus_paise || 0),
+    creditEnabled: Boolean(venue?.credit_enabled),
+    myCardUrl: myCardUrl(member.access_token),
   };
 }
 
@@ -59,7 +68,7 @@ export async function syncMemberWallet(memberId: string) {
   const { data: member, error } = await admin.from('members').select('*').eq('id', memberId).single();
   if (error || !member) return { walletSynced: false, hasWalletPass: true, walletSyncMessage: 'Action saved; member details could not be reloaded for pass sync.' };
   const [{ data: venue }, { data: tier }] = await Promise.all([
-    admin.from('venues').select('balance_label').eq('id', member.venue_id).single(),
+    admin.from('venues').select('balance_label,credit_enabled').eq('id', member.venue_id).single(),
     admin.from('venue_tiers').select('name,benefits').eq('id', member.current_tier_id).single(),
   ]);
   const walletMember = memberWalletData(member, venue, tier);

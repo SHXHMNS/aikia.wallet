@@ -76,6 +76,8 @@ export class PassKitProvider implements WalletProvider {
       rewardsAvailable: String(member.rewardsAvailable),
       lifetimeActions: String(member.lifetimeActions),
       balanceLabel: member.balanceLabel,
+      creditBalance: member.creditEnabled ? `₹${(member.creditBalancePaise / 100).toLocaleString('en-IN', { maximumFractionDigits: 2 })}` : 'Not offered',
+      myCardUrl: member.myCardUrl,
     };
   }
 

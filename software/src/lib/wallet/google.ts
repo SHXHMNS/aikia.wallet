@@ -124,6 +124,7 @@ export class GoogleWalletProvider implements WalletProvider {
       barcode: { type: 'QR_CODE', value: member.scanToken, alternateText: member.publicCode },
       loyaltyPoints: { label: member.balanceLabel.slice(0, 9), balance: { int: member.stampBalance } },
       textModulesData: googleTextModules(member),
+      linksModuleData: { uris: [{ id: 'my-card', uri: member.myCardUrl, description: 'My card: pay, top up, send a gift' }] },
       heroImage: image(this.heroFor(venue, member.tierName), `${member.tierName} member card`),
     };
   }
@@ -191,10 +192,10 @@ export class GoogleWalletProvider implements WalletProvider {
 
   async updateMember(member: MemberWalletData, pass: PassReference): Promise<void> {
     if (!Number.isInteger(member.stampBalance) || member.stampBalance < 0) throw new Error('Wallet stamp balance must be a non-negative integer.');
-    const { heroImage, loyaltyPoints, textModulesData } = this.memberFields(member, null);
+    const { heroImage, loyaltyPoints, textModulesData, linksModuleData } = this.memberFields(member, null);
     await this.request(`loyaltyObject/${encodeURIComponent(pass.objectId)}`, {
       method: 'PATCH',
-      body: JSON.stringify({ loyaltyPoints, textModulesData, heroImage }),
+      body: JSON.stringify({ loyaltyPoints, textModulesData, linksModuleData, heroImage }),
     });
   }
 }

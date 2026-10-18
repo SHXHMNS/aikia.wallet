@@ -1,7 +1,7 @@
 import { createHmac, randomBytes } from 'node:crypto';
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
-import { issueMemberWallets } from '@/lib/server/member-wallet-sync';
+import { issueMemberWallets, myCardUrl } from '@/lib/server/member-wallet-sync';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -25,10 +25,10 @@ export async function POST(request: Request, { params }: Context) {
   const cookieName = `aikia_member_${venue.id.slice(0, 8)}`;
   const remembered = readMemberCookie(request.headers.get('cookie'), cookieName, rateSecret);
   if (remembered) {
-    const { data: existing } = await admin.from('members').select('id,public_code,status').eq('id', remembered).eq('venue_id', venue.id).maybeSingle();
+    const { data: existing } = await admin.from('members').select('id,public_code,status,access_token').eq('id', remembered).eq('venue_id', venue.id).maybeSingle();
     if (existing?.status === 'active') {
       const { saveLinks, walletSyncMessage } = await issueMemberWallets(existing.id);
-      return NextResponse.json({ member: { publicCode: existing.public_code, saveLinks, returning: true, walletSyncMessage: walletSyncMessage && 'Welcome back. Your wallet card is not available right now; please show this code to the venue team.' } }, { status: 200 });
+      return NextResponse.json({ member: { publicCode: existing.public_code, myCardUrl: myCardUrl(existing.access_token), saveLinks, returning: true, walletSyncMessage: walletSyncMessage && 'Welcome back. Your wallet card is not available right now; please show this code to the venue team.' } }, { status: 200 });
     }
   }
   const fingerprint = createHmac('sha256', rateSecret).update(ip).digest('hex');
@@ -48,7 +48,7 @@ export async function POST(request: Request, { params }: Context) {
   if (memberError || !member) return NextResponse.json({ error: 'Your membership could not be created. Please try once more or ask the venue team.' }, { status: 503 });
 
   const { saveLinks, walletSyncMessage } = await issueMemberWallets(member.id);
-  const response = NextResponse.json({ member: { publicCode: member.public_code, saveLinks, walletSyncMessage: walletSyncMessage && 'Your membership is ready. Your wallet card is not available yet; please ask the venue team.' } }, { status: 201 });
+  const response = NextResponse.json({ member: { publicCode: member.public_code, myCardUrl: myCardUrl(member.access_token), saveLinks, walletSyncMessage: walletSyncMessage && 'Your membership is ready. Your wallet card is not available yet; please ask the venue team.' } }, { status: 201 });
   response.cookies.set(cookieName, signMemberCookie(member.id, rateSecret), { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax', path: '/', maxAge: 60 * 60 * 24 * 400 });
   return response;
 }

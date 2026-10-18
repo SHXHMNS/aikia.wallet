@@ -26,5 +26,7 @@ export async function GET(request: Request) {
     const result = await syncMemberWallet(memberId);
     if (result.walletSynced) repaired += 1;
   }
-  return NextResponse.json({ checked: memberIds.length, repaired });
+  // Unused gift vouchers past their date go back to the sender (credit or reward).
+  const { data: expiredGifts } = await admin.rpc('expire_gifts');
+  return NextResponse.json({ checked: memberIds.length, repaired, expiredGifts: expiredGifts ?? 0 });
 }

@@ -4,6 +4,9 @@ import { useEffect, useState, type FormEvent } from 'react';
 
 type Loc = { label: string; lat: number | string; lng: number | string; lock_screen_message?: string | null };
 type Campaign = { id: string; name: string; kind: string; header: string; body: string; weekdays: number[]; winback_days: number; active: boolean; last_sent_at: string | null };
+type Moods = { enabled: boolean; rain: string; hot: string; cold: string; clear: string };
+type MoodCheck = { mood: string; message: string; weather: { rainChance: number; maxTemp: number; minTemp: number; nowTemp: number | null } };
+const MOOD_LABEL: Record<string, string> = { rain: 'Rainy', hot: 'Hot (35°C+)', cold: 'Cool', clear: 'Clear / normal day' };
 type Send = { campaign_id: string | null; trigger: string; audience: number; status: string; detail: string | null; sent_at: string };
 
 const KIND: Record<string, string> = { broadcast: 'Send now only (one-off offer)', daily: 'Every chosen day at 9 am', weather_rain: 'When rain is likely today', weather_hot: 'When it is hotter than 35°C', winback: '“We miss you” after N days away' };
@@ -29,13 +32,15 @@ export default function EngagePanel({ venueId, flash }: { venueId: string; flash
   const [kind, setKind] = useState('weather_rain');
   const [days, setDays] = useState<number[]>([0, 1, 2, 3, 4, 5, 6]);
   const [busy, setBusy] = useState(false);
+  const [moods, setMoods] = useState<Moods | null>(null);
+  const [today, setToday] = useState<MoodCheck | null>(null);
 
   async function api(path: string, method = 'GET', body?: unknown) {
     const r = await fetch(`/api/venues/${venueId}${path}`, { method, headers: body ? { 'content-type': 'application/json' } : undefined, body: body ? JSON.stringify(body) : undefined, cache: 'no-store' });
     const j = await r.json(); if (!r.ok) throw new Error(j.error || 'Request failed.'); return j;
   }
   async function load() {
-    try { const [l, c] = await Promise.all([api('/locations'), api('/campaigns')]); setLocs(l.locations); setCampaigns(c.campaigns); setSends(c.sends); }
+    try { const [l, c, m] = await Promise.all([api('/locations'), api('/campaigns'), api('/moods')]); setLocs(l.locations); setCampaigns(c.campaigns); setSends(c.sends); setMoods(m.moods); }
     catch (e) { flash(e instanceof Error ? e.message : 'Could not load offers.'); }
   }
   useEffect(() => { load(); }, [venueId]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -44,6 +49,17 @@ export default function EngagePanel({ venueId, flash }: { venueId: string; flash
     setBusy(true);
     try { const r = await api('/locations', 'PUT', { locations: locs.map(l => ({ label: l.label, lat: Number(l.lat), lng: Number(l.lng), lockScreenMessage: l.lock_screen_message })) }); flash(r.walletSynced ? `${r.saved} location(s) saved and added to the wallet cards.` : `Saved. Wallet sync: ${r.walletSyncMessage}`); }
     catch (e) { flash(e instanceof Error ? e.message : 'Could not save locations.'); } finally { setBusy(false); }
+  }
+  async function saveMoods() {
+    if (!moods) return; setBusy(true);
+    try { const r = await api('/moods', 'PUT', moods); if (r.mood) setToday(r); flash(r.walletSyncMessage ? `Saved. ${r.walletSyncMessage}` : moods.enabled ? `Saved. Today is "${MOOD_LABEL[r.mood] || r.mood}", so nearby cards now say: ${r.message}` : 'Saved. Weather messages are off.'); }
+    catch (e) { flash(e instanceof Error ? e.message : 'Could not save weather messages.'); } finally { setBusy(false); }
+  }
+  async function moodAction(action: 'check' | 'send') {
+    if (action === 'send' && !window.confirm('Send today\'s weather message to every member card now?')) return;
+    setBusy(true);
+    try { const r = await api('/moods', 'POST', { action }); setToday(r); flash(action === 'send' ? `Sent to all cards: ${r.message}` : `Today: ${MOOD_LABEL[r.mood] || r.mood}.`); await load(); }
+    catch (e) { flash(e instanceof Error ? e.message : 'Weather check failed.'); } finally { setBusy(false); }
   }
   async function create(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); const f = Object.fromEntries(new FormData(event.currentTarget)); setBusy(true);
@@ -77,6 +93,14 @@ export default function EngagePanel({ venueId, flash }: { venueId: string; flash
         {locs.length < 10 && <button type="button" className="secondary-action" onClick={() => setLocs([...locs, { label: '', lat: '', lng: '' }])}>＋ Add location</button>}
         <button className="button primary" disabled={busy} onClick={saveLocations}>Save locations</button>
       </div>
+      {moods && <>
+        <h3 className="send-log-title">Weather mood messages</h3>
+        <p>Each morning the app checks the weather at your first location and changes the nearby message to match. When a member walks past, their phone shows it.</p>
+        <div className="settings-form"><label>Weather messages<select value={moods.enabled ? 'on' : 'off'} onChange={e => setMoods({ ...moods, enabled: e.target.value === 'on' })}><option value="off">Off: use each location’s own message</option><option value="on">On: change the nearby message with the weather</option></select></label></div>
+        <div className="mood-grid">{(['rain', 'hot', 'cold', 'clear'] as const).map(k => <label key={k}>{MOOD_LABEL[k]}<textarea maxLength={120} value={moods[k]} onChange={e => setMoods({ ...moods, [k]: e.target.value })}/></label>)}</div>
+        {today && <div className="mood-today">Today: <b>{MOOD_LABEL[today.mood] || today.mood}</b> · rain chance {today.weather.rainChance}% · {today.weather.nowTemp ?? today.weather.maxTemp}°C now<br/>Nearby message: “{today.message}”</div>}
+        <div className="campaign-actions" style={{ marginTop: 10 }}><button className="button primary" disabled={busy} onClick={saveMoods}>Save weather messages</button><button className="secondary-action" disabled={busy || !locs.length} onClick={() => moodAction('check')}>Check today</button><button className="secondary-action" disabled={busy || !locs.length} onClick={() => moodAction('send')}>Send to all cards now</button></div>
+      </>}
     </section>
 
     <section className="console-panel">

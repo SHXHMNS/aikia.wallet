@@ -30,6 +30,11 @@ export type MemberWalletData = {
   lifetimeActions: number;
   tierName: string;
   tierBenefits: string[];
+  /** Venue credit (paid + bonus), in paise. Shown on the card only when the venue has credit switched on. */
+  creditBalancePaise: number;
+  creditEnabled: boolean;
+  /** The member's private page: live pay code, balances and "Send a gift". Never put in the barcode. */
+  myCardUrl: string;
 };
 
 export type SaveLinks = Partial<Record<WalletApp, string>>;

@@ -2,6 +2,8 @@
 
 This is the active, step-by-step plan for taking `software/` from code on a laptop to a live product. It replaces every file in `docs/strategy/archive/`.
 
+> **Update 18 Oct 2026:** credit, scan-to-pay, gifts, weather moods and metallic cards are built. Next steps: `docs/GO-LIVE-credit-gifts-moods.md`. Overall status: `docs/STATUS-2026-10-18.md`.
+
 **Ground rules**
 
 - **We build on PassKit first.** PassKit (passkit.com) is a rented "pass engine": it creates, signs and updates the wallet cards. Everything a venue, staff member or guest touches stays **ours**: the join page, staff scanner, owner/admin dashboards, tiers and the Supabase ledger (the record of truth).

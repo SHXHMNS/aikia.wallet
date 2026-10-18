@@ -5,6 +5,7 @@ import { getPlatformAdmin } from '@/lib/server/platform-access';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { walletStatus } from '@/lib/wallet/provider';
 import MigrateButton from './migrate-button';
+import CardDesignButton from './card-design-button';
 import NewVenueForm from './new-venue-form';
 
 export const dynamic = 'force-dynamic';
@@ -47,6 +48,7 @@ export default async function PlatformPage() {
       </div>
     </section>
     <section className="console-panel platform-table"><span className="eyebrow">NEW VENUE</span><h2>Set up a venue in one step</h2><p>Creates the venue, its reward rule and Ink / Chrome / Pink tiers, invites the owner, and gives you the join link and QR poster.</p><NewVenueForm/></section>
+    <section className="console-panel platform-table"><span className="eyebrow">CARD DESIGN</span><h2>Metallic Ink, Chrome and Pink cards</h2><p>Sends the card art, colours and fields (credit, My card link) to PassKit, then refreshes every member card. Run it after changing the design files.</p><CardDesignButton/></section>
     <section className="console-panel platform-table"><span className="eyebrow">WALLET ENGINE</span><h2>Issue cards on the active engine</h2><p>Creates a card on the current engine for every member who does not have one yet, and lists their save links.</p><MigrateButton/></section>
     <footer className="console-footer"><span>Signed in as {operator.email}</span><Link href="/">Back to venue console</Link></footer>
   </main>;
