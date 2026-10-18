@@ -14,6 +14,7 @@ export class AppleWalletProvider implements WalletProvider {
   async syncVenueLocations(_venue: VenueWalletConfig, _locations: VenueLocation[], _tiers: string[]): Promise<void> { return this.unavailable(); }
   async broadcastMessage(_venue: VenueWalletConfig, _message: WalletMessage, _tiers: string[]): Promise<void> { return this.unavailable(); }
   async messageMember(_pass: PassReference, _message: WalletMessage): Promise<boolean> { return this.unavailable(); }
+  async removePass(_pass: PassReference): Promise<void> { return this.unavailable(); }
 }
 
 export function appleWalletConfigured() {

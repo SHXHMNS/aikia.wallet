@@ -63,4 +63,6 @@ export interface WalletProvider {
   broadcastMessage(venue: VenueWalletConfig, message: WalletMessage, tierNames: string[]): Promise<void>;
   /** Message to one member's card. Returns false when the engine cannot target one member. */
   messageMember(pass: PassReference, message: WalletMessage): Promise<boolean>;
+  /** Removes the card from the engine (it disappears from the guest's wallet). Missing cards count as removed. */
+  removePass(pass: PassReference): Promise<void>;
 }

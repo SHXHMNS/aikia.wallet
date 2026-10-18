@@ -147,6 +147,15 @@ export class PassKitProvider implements WalletProvider {
     return false;
   }
 
+  /** DELETE /members/member with the PassKit member ID (Members API deleteMember). */
+  async removePass(pass: PassReference): Promise<void> {
+    try {
+      await this.request('members/member', { method: 'DELETE', body: JSON.stringify({ id: pass.objectId }) });
+    } catch (error) {
+      if (!(error instanceof Error) || !error.message.startsWith('PassKit API 404:')) throw error;
+    }
+  }
+
   async updateMember(member: MemberWalletData, pass: PassReference): Promise<void> {
     if (!Number.isInteger(member.stampBalance) || member.stampBalance < 0) throw new Error('Wallet stamp balance must be a non-negative integer.');
     const tierId = this.tierId(member.tierName);

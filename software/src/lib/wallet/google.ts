@@ -190,6 +190,15 @@ export class GoogleWalletProvider implements WalletProvider {
     return true;
   }
 
+  /** Google Wallet objects cannot be deleted through the API; an INACTIVE object moves to "Expired passes" on the phone. */
+  async removePass(pass: PassReference): Promise<void> {
+    try {
+      await this.request(`loyaltyObject/${encodeURIComponent(pass.objectId)}`, { method: 'PATCH', body: JSON.stringify({ state: 'INACTIVE' }) });
+    } catch (error) {
+      if (!(error instanceof Error) || !error.message.startsWith('Google Wallet API 404:')) throw error;
+    }
+  }
+
   async updateMember(member: MemberWalletData, pass: PassReference): Promise<void> {
     if (!Number.isInteger(member.stampBalance) || member.stampBalance < 0) throw new Error('Wallet stamp balance must be a non-negative integer.');
     const { heroImage, loyaltyPoints, textModulesData, linksModuleData } = this.memberFields(member, null);
