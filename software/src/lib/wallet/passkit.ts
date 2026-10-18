@@ -127,11 +127,26 @@ export class PassKitProvider implements WalletProvider {
     }
   }
 
+  /**
+   * PassKit keeps locations as their own records (Templates API: POST /location returns an id) and a pass template
+   * references them by id. We create fresh records, point every tier's template at them, then delete the old ones.
+   */
   async syncVenueLocations(venue: VenueWalletConfig, locations: VenueLocation[], tierNames: string[]): Promise<void> {
-    await this.editTierTemplates(venue, tierNames, template => ({
-      ...template,
-      locations: locations.slice(0, 10).map((l, position) => ({ name: l.label, lat: l.lat, lon: l.lng, lockScreenMessage: l.lockScreenMessage || `${venue.name} is nearby. Show your card for your stamp.`, position })),
-    }));
+    const created: { id: string; position: number }[] = [];
+    for (const [position, l] of locations.slice(0, 10).entries()) {
+      const { id } = await this.request<{ id?: string }>('location', {
+        method: 'POST',
+        body: JSON.stringify({ name: l.label.slice(0, 45), lat: l.lat, lon: l.lng, lockScreenMessage: (l.lockScreenMessage || `${venue.name} is nearby. Show your card for your stamp.`).slice(0, 255), position }),
+      });
+      if (!id) throw new Error('PassKit did not return a location ID.');
+      created.push({ id, position });
+    }
+    const previous = new Set<string>();
+    await this.editTierTemplates(venue, tierNames, template => {
+      for (const old of (template.locations as { id?: string }[] | undefined) || []) if (old.id) previous.add(old.id);
+      return { ...template, locations: created };
+    });
+    for (const id of previous) await this.request(`location/${encodeURIComponent(id)}`, { method: 'DELETE' }).catch(() => null);
   }
 
   /** PassKit: updates the card's "Member news" field for everyone (Apple shows it on the lock screen). */
