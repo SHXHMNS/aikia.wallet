@@ -256,22 +256,32 @@
   $('#previewCampaign').addEventListener('click', () => { $('#notificationVenue').textContent = state.venue.name.toUpperCase(); $('#notificationCopy').textContent = $('#campaignCopy').value; toast('Preview refreshed. No message sent.'); });
   $('#resetDemo').addEventListener('click', () => { state = seed(); localStorage.setItem(STORE_KEY, JSON.stringify(state)); renderAll(); toast('Sample data restored.'); });
   let scannerStream = null; let scannerActive = false;
+  const scanCanvas = document.createElement('canvas'); const scanCtx = scanCanvas.getContext('2d', { willReadFrequently: true });
+  const nativeDetector = window.BarcodeDetector ? new BarcodeDetector({ formats: ['qr_code'] }) : null;
   async function scanLoop() {
     if (!scannerActive) return;
     const video = $('#scanVideo');
     try {
-      if (window.BarcodeDetector) {
-        const detector = new BarcodeDetector({ formats: ['qr_code'] });
-        const hits = await detector.detect(video);
-        if (hits.length) { $('#staffCode').value = hits[0].rawValue.trim(); $('#lookupMember').click(); stopScanner(); toast('QR code scanned.'); return; }
+      let value = null;
+      if (nativeDetector) {
+        const hits = await nativeDetector.detect(video);
+        value = hits[0]?.rawValue || null;
+      } else if (window.jsQR && video.videoWidth) {
+        // iPhone, Windows and Firefox have no built-in QR reader: decode the camera frame ourselves.
+        const scale = Math.min(1, 720 / video.videoWidth);
+        scanCanvas.width = Math.round(video.videoWidth * scale); scanCanvas.height = Math.round(video.videoHeight * scale);
+        scanCtx.drawImage(video, 0, 0, scanCanvas.width, scanCanvas.height);
+        const frame = scanCtx.getImageData(0, 0, scanCanvas.width, scanCanvas.height);
+        value = window.jsQR(frame.data, frame.width, frame.height, { inversionAttempts: 'dontInvert' })?.data || null;
       }
+      if (value) { $('#staffCode').value = value.trim(); $('#lookupMember').click(); stopScanner(); toast('QR code scanned.'); return; }
     } catch (error) { $('#cameraHint').textContent = error instanceof Error ? error.message : 'Unable to read that QR. Try the member code.'; }
-    requestAnimationFrame(scanLoop);
+    setTimeout(scanLoop, 150);
   }
   function stopScanner() { scannerActive = false; scannerStream?.getTracks().forEach(track => track.stop()); scannerStream = null; $('#cameraBox').classList.add('hidden'); }
   $('#startScanner').addEventListener('click', async () => {
-    if (!navigator.mediaDevices?.getUserMedia || !window.BarcodeDetector) { toast('Camera QR scanning needs a modern browser on HTTPS or localhost. Use the member code below.'); return; }
-    try { scannerStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } }, audio: false }); $('#scanVideo').srcObject = scannerStream; await $('#scanVideo').play(); $('#cameraBox').classList.remove('hidden'); $('#cameraHint').textContent = 'Point the camera at the member’s QR code.'; scannerActive = true; scanLoop(); }
+    if (!navigator.mediaDevices?.getUserMedia) { toast('This browser cannot open the camera. Use the member code below.'); return; }
+    try { scannerStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } }, audio: false }); $('#cameraBox').classList.remove('hidden'); $('#scanVideo').srcObject = scannerStream; await $('#scanVideo').play(); $('#cameraHint').textContent = 'Point the camera at the member’s QR code.'; scannerActive = true; scanLoop(); }
     catch { toast('Camera permission was not granted. Enter the member code instead.'); stopScanner(); }
   });
   $('#stopScanner').addEventListener('click', stopScanner);
