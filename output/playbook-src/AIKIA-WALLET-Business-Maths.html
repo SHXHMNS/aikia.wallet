@@ -1,0 +1,133 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>AIKIA.WALLET business maths</title><style>@page { size: A4; margin: 15mm 14mm 16mm 14mm; }
+@page wide { size: A4 landscape; margin: 12mm 12mm 14mm 12mm; }
+:root {
+  --ink: #15131c; --ink2: #3b3846; --mute: #6f6b7a; --line: #e4e1ea; --paper: #ffffff;
+  --soft: #f6f4f9; --pink: #e6007a; --pink2: #ff4fa3; --pinkbg: #fff0f7; --chrome: #b9b6c4;
+  --teal: #0f8b8d; --amber: #b7791f; --red: #c0392b; --green: #1e8449; --blue: #2b5fb3;
+}
+* { box-sizing: border-box; }
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { margin: 0; font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif; color: var(--ink); font-size: 9.1pt; line-height: 1.42; background: #fff; }
+h1, h2, h3, h4 { font-family: "Bahnschrift", "Segoe UI Semibold", "Segoe UI", sans-serif; margin: 0; letter-spacing: -0.01em; color: var(--ink); }
+h1 { font-size: 25pt; line-height: 1.08; }
+h2 { font-size: 17pt; line-height: 1.15; margin: 0 0 3mm; }
+h3 { font-size: 11.5pt; margin: 5mm 0 1.6mm; }
+h4 { font-size: 9.6pt; margin: 3mm 0 1mm; color: var(--pink); text-transform: uppercase; letter-spacing: .06em; }
+p { margin: 0 0 2.4mm; }
+ul, ol { margin: 0 0 2.6mm; padding-left: 4.6mm; }
+li { margin-bottom: 0.9mm; }
+a { color: var(--pink); text-decoration: none; }
+.sec { page-break-before: always; }
+.sec:first-of-type { page-break-before: auto; }
+.wide { page: wide; }
+.kicker { font-size: 7.6pt; letter-spacing: .14em; text-transform: uppercase; color: var(--pink); font-weight: 700; margin-bottom: 1.6mm; }
+.lede { font-size: 10.6pt; color: var(--ink2); max-width: 165mm; margin-bottom: 4mm; }
+.small { font-size: 8pt; color: var(--mute); }
+.tiny { font-size: 7.2pt; color: var(--mute); }
+.cover { height: 262mm; display: flex; flex-direction: column; justify-content: flex-start; gap: 22mm; page-break-after: always; }
+.cover .band { background: var(--ink); color: #fff; padding: 11mm 11mm 9mm; border-radius: 3mm; position: relative; overflow: hidden; }
+.cover .band h1 { color: #fff; font-size: 31pt; }
+.cover .band .kicker { color: var(--pink2); }
+.cover .band p { color: #d8d5e2; font-size: 11pt; max-width: 140mm; }
+.cover .ring { position: absolute; right: -18mm; top: -18mm; width: 80mm; height: 80mm; border-radius: 50%; border: 5mm solid var(--pink); opacity: .85; }
+.cover .ring2 { position: absolute; right: 8mm; top: 8mm; width: 28mm; height: 28mm; border-radius: 50%; border: 2.4mm solid var(--chrome); opacity: .7; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3.4mm; }
+.grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3mm; }
+.card { border: 0.3mm solid var(--line); border-radius: 2mm; padding: 3.2mm 3.6mm; background: #fff; break-inside: avoid; }
+.card.soft { background: var(--soft); border-color: transparent; }
+.card.pink { background: var(--pinkbg); border-color: #ffd0e6; }
+.card.dark { background: var(--ink); color: #fff; border-color: var(--ink); }
+.card.dark h3, .card.dark h4 { color: #fff; }
+.card h3 { margin-top: 0; }
+.stat { font-family: "Bahnschrift", "Segoe UI Semibold", sans-serif; font-size: 19pt; line-height: 1; color: var(--pink); }
+.stat small { display: block; font-family: "Segoe UI", sans-serif; font-size: 7.4pt; color: var(--mute); margin-top: 1.4mm; line-height: 1.3; }
+table { width: 100%; border-collapse: collapse; margin: 1.5mm 0 3mm; font-size: 8pt; }
+th { text-align: left; background: var(--ink); color: #fff; font-weight: 600; padding: 1.7mm 2mm; font-size: 7.8pt; letter-spacing: .02em; }
+td { padding: 1.25mm 2mm; border-bottom: 0.25mm solid var(--line); vertical-align: top; }
+tr { break-inside: avoid; }
+tbody tr:nth-child(even) td { background: #fbfafd; }
+td.n, th.n { text-align: right; white-space: nowrap; }
+td.c, th.c { text-align: center; }
+.tag { display: inline-block; font-size: 6.8pt; font-weight: 700; padding: 0.3mm 1.6mm; border-radius: 2mm; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; }
+.t1 { background: #e1f5ea; color: var(--green); }
+.t2 { background: #fff1d6; color: var(--amber); }
+.t3 { background: #e7ecf7; color: var(--blue); }
+.tR { background: #fde4e1; color: var(--red); }
+.callout { border-left: 1.1mm solid var(--pink); background: var(--pinkbg); padding: 2.6mm 3.4mm; margin: 2.6mm 0 3.2mm; border-radius: 0 1.6mm 1.6mm 0; break-inside: avoid; }
+.callout.warn { border-color: var(--amber); background: #fff7e6; }
+.callout.red { border-color: var(--red); background: #fdeeed; }
+.callout.ok { border-color: var(--green); background: #eaf7ef; }
+.callout b:first-child { color: var(--ink); }
+.cluster { margin-top: 4mm; break-inside: avoid-page; }
+.cluster-h { break-after: avoid; page-break-after: avoid; display: flex; align-items: baseline; gap: 2.4mm; margin: 4mm 0 1mm; }
+.cluster-h .no { font-family: "Bahnschrift", sans-serif; background: var(--pink); color: #fff; width: 6.4mm; height: 6.4mm; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 8.6pt; flex: none; }
+.cluster-h h3 { margin: 0; }
+.cluster-h .why { color: var(--mute); font-size: 8pt; }
+.dot { display: inline-block; width: 2.3mm; height: 2.3mm; vertical-align: middle; border-radius: 50%; }
+.dot.full { background: var(--pink); }
+.dot.half { background: linear-gradient(90deg, var(--pink) 50%, #fff 50%); border: 0.3mm solid var(--pink); }
+.matrix td, .matrix th { padding: 0.55mm 0.6mm; font-size: 6.9pt; line-height: 1.2; text-align: center; }
+.matrix td:first-child, .matrix th:first-child { text-align: left; padding-left: 1.6mm; white-space: nowrap; }
+.matrix th { vertical-align: bottom; height: 27mm; }
+.matrix th span { display: inline-block; writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; font-size: 7pt; }
+.matrix td.grp { background: var(--soft); font-weight: 700; color: var(--pink); text-align: left; font-size: 7pt; letter-spacing: .06em; text-transform: uppercase; }
+.chart { width: 100%; height: auto; display: block; }
+.chart text { font-family: "Segoe UI", sans-serif; }
+.foot { font-size: 7pt; color: var(--mute); border-top: 0.25mm solid var(--line); padding-top: 1.6mm; margin-top: 4mm; }
+.srclist { font-size: 7.4pt; color: var(--ink2); columns: 2; column-gap: 6mm; }
+.srclist li { break-inside: avoid; margin-bottom: 1.2mm; word-break: break-word; }
+.toc { columns: 2; column-gap: 8mm; font-size: 9.4pt; }
+.toc div { display: flex; gap: 2mm; padding: 1.1mm 0; border-bottom: 0.25mm dotted var(--chrome); break-inside: avoid; }
+.toc b { color: var(--pink); width: 6mm; flex: none; }
+.pill { display: inline-block; background: var(--soft); border-radius: 2mm; padding: 0.4mm 2mm; font-size: 7.6pt; margin: 0 0.8mm 0.8mm 0; }
+.kv { display: grid; grid-template-columns: 38mm 1fr; gap: 1mm 3mm; font-size: 8.6pt; }
+.kv dt { font-weight: 700; color: var(--ink2); }
+.kv dd { margin: 0; }
+.nb { white-space: nowrap; }
+.pn { page-break-inside: avoid; }
+</style></head><body><section class="cover"><div class="band"><div class="ring"></div><div class="ring2"></div>
+<div class="kicker">AIKIA.WALLET &nbsp;/&nbsp; THE MATHS, MADE SIMPLE</div>
+<h1 style="max-width:70%">Three numbers<br>run this business.</h1>
+<p style="max-width:62%">We build everything ourselves and already own the phones and laptops. So the only real cost is the online software. This page shows why we can't go bankrupt, how many cafes we need, and when the money becomes good. Price: Rs 1,500 a month + GST per cafe.</p></div>
+<div><div class="grid3" style="margin-bottom:5mm">
+<div class="card pink"><div class="stat">Rs 8,664<small>NUMBER 1: OUR MONTHLY BILL. All the software, system and security. The same for 1 cafe or 150.</small></div></div>
+<div class="card pink"><div class="stat">Rs 1,485<small>NUMBER 2: WHAT WE KEEP FROM EACH CAFE a month (Rs 1,500 minus about 1% payment fee; the GST goes to the government).</small></div></div>
+<div class="card pink"><div class="stat">6 cafes<small>NUMBER 3: BREAK-EVEN. Bill divided by what each cafe pays us. From cafe 6, every cafe is profit.</small></div></div>
+</div>
+<div class="callout ok"><b>The whole business in one line.</b> Profit a month = (number of cafes x Rs 1,485) minus Rs 8,664. That's it.</div>
+<div class="callout"><b>Why we can't go bankrupt.</b> Our worst case is zero cafes for a whole year. That costs Rs 1,03,968 a year: the software bill. Keep that amount aside and nothing else can sink us. There is no rent, no salary bill and no loan in this model.</div>
+</div></section><section class="sec"><div class="kicker">1 &nbsp;/&nbsp; NUMBER 1: THE BILL</div><h2>Everything we pay every month</h2>
+<table><tr><th>Software</th><th>What it does</th><th class="n">A month</th><th class="n">A year</th></tr><tr><td><b>Vercel Pro</b></td><td>Runs the website, dashboards, staff scanner, guest pages</td><td class="n">Rs 1,920</td><td class="n">Rs 23,040</td></tr><tr><td><b>Supabase Pro</b></td><td>Database, ledger, logins, daily backups</td><td class="n">Rs 2,400</td><td class="n">Rs 28,800</td></tr><tr><td><b>Apple Developer</b></td><td>Apple Wallet cards (US$99 a year)</td><td class="n">Rs 792</td><td class="n">Rs 9,504</td></tr><tr><td><b>Open-Meteo commercial</b></td><td>Weather data for weather-mood messages</td><td class="n">Rs 2,784</td><td class="n">Rs 33,408</td></tr><tr><td><b>GitHub Team (2 users)</b></td><td>Keeps our code private and protected</td><td class="n">Rs 768</td><td class="n">Rs 9,216</td></tr>
+<tr><td colspan="2"><b>Total bill</b></td><td class="n"><b>Rs 8,664</b></td><td class="n"><b>Rs 1,03,968</b></td></tr></table>
+<p><b>Free, and enough for us:</b> Google Wallet API, Apple push updates, Email (Resend free), Automation and backups (GitHub Actions, Cloudflare R2), Security shield and DNS (Cloudflare), Password manager (Bitwarden, 2 users).</p>
+<div class="callout"><b>Customers cost nothing.</b> Google and Apple charge nothing per wallet card. A cafe with 100 customers and a cafe with 500 cost us the same. More cafes don't raise the bill until about 150 cafes, when the database needs an upgrade (about Rs 6,000 more a month).</div>
+<div class="callout warn"><b>Left out, as you asked:</b> development (we build it), phones and laptops (we own them), lawyer and CA fees, travel and physical work. GST on the software is left out too, because as a GST-registered business we claim it back.</div>
+<h3>Even cheaper while we have no paying cafe</h3>
+<p>Until the first cafe pays, we can demo on the free Vercel and Supabase plans and pay only Apple (about Rs 792 a month). Switch to the paid plans the day the first cafe pays.</p>
+</section><section class="sec"><div class="kicker">2 &nbsp;/&nbsp; THE MATHS</div><h2>How many cafes, how much money</h2>
+<p class="lede">Every row uses the same sum: cafes x Rs 1,485, minus the bill.</p>
+<table><tr><th class="n">Cafes</th><th class="n">Money in a month</th><th class="n">Software bill</th><th class="n">Profit a month</th><th class="n">Profit a year</th><th class="n">Each founder a month</th></tr><tr><td class="n">1</td><td class="n">Rs 1,485</td><td class="n">Rs 8,664</td><td class="n"><b>-Rs 7,179</b></td><td class="n">-Rs 86,148</td><td class="n">Rs 0</td></tr><tr><td class="n">3</td><td class="n">Rs 4,455</td><td class="n">Rs 8,664</td><td class="n"><b>-Rs 4,209</b></td><td class="n">-Rs 50,508</td><td class="n">Rs 0</td></tr><tr style="background:#fff0f7"><td class="n">6</td><td class="n">Rs 8,910</td><td class="n">Rs 8,664</td><td class="n"><b>Rs 246</b></td><td class="n">Rs 2,952</td><td class="n">Rs 123</td></tr><tr><td class="n">10</td><td class="n">Rs 14,850</td><td class="n">Rs 8,664</td><td class="n"><b>Rs 6,186</b></td><td class="n">Rs 74,232</td><td class="n">Rs 3,093</td></tr><tr><td class="n">25</td><td class="n">Rs 37,125</td><td class="n">Rs 8,664</td><td class="n"><b>Rs 28,461</b></td><td class="n">Rs 3,41,532</td><td class="n">Rs 14,230</td></tr><tr><td class="n">50</td><td class="n">Rs 74,250</td><td class="n">Rs 8,664</td><td class="n"><b>Rs 65,586</b></td><td class="n">Rs 7,87,032</td><td class="n">Rs 32,793</td></tr><tr style="background:#fff0f7"><td class="n">74</td><td class="n">Rs 1,09,890</td><td class="n">Rs 8,664</td><td class="n"><b>Rs 1,01,226</b></td><td class="n">Rs 12,14,712</td><td class="n">Rs 50,613</td></tr><tr><td class="n">100</td><td class="n">Rs 1,48,500</td><td class="n">Rs 8,664</td><td class="n"><b>Rs 1,39,836</b></td><td class="n">Rs 16,78,032</td><td class="n">Rs 69,918</td></tr><tr><td class="n">150</td><td class="n">Rs 2,22,750</td><td class="n">Rs 8,664</td><td class="n"><b>Rs 2,14,086</b></td><td class="n">Rs 25,69,032</td><td class="n">Rs 1,07,043</td></tr><tr><td class="n">200</td><td class="n">Rs 2,97,000</td><td class="n">Rs 14,664</td><td class="n"><b>Rs 2,82,336</b></td><td class="n">Rs 33,88,032</td><td class="n">Rs 1,41,168</td></tr></table>
+<h3>Read it like this</h3>
+<ul><li><b>Cafes 1 to 6</b> pay the software bill.</li>
+<li><b>Every cafe after that</b> puts about Rs 1,485 a month in our pocket, and about Rs 17,820 a year.</li>
+<li><b>74 cafes</b> = about Rs 1 lakh a month profit (Rs 50,000 each for two founders).</li>
+<li><b>100 cafes</b> = about Rs 1,39,836 a month. <b>200 cafes</b> = about Rs 2,82,336 a month.</li></ul>
+<div class="callout warn"><b>Before tax.</b> If the founders take this as salary, it is a company cost and the company pays little or no tax on it; personal tax at Rs 6 lakh a year each is likely nil under the new regime. Confirm with your CA.</div>
+</section><section class="sec"><div class="kicker">3 &nbsp;/&nbsp; AFTER LAUNCH</div><h2>When the money becomes good</h2>
+<p class="lede">If we sign 2 cafes a week (8 a month) and 3 in every 100 cafes leave each month:</p>
+<svg class="chart" viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg"><text x="10" y="18" font-size="13" font-weight="700" fill="#15131c">Profit each month after the software bill (8 new cafes a month)</text><rect x="64.0" y="255.7" width="37.6" height="4.3" rx="2" fill="#2b5fb3"/><text x="82.8" y="278" font-size="9" text-anchor="middle" fill="#6f6b7a">M1</text><text x="82.8" y="251.7" font-size="8.5" text-anchor="middle" fill="#15131c">3k</text><rect x="109.6" y="240.5" width="37.6" height="19.5" rx="2" fill="#2b5fb3"/><text x="128.3" y="278" font-size="9" text-anchor="middle" fill="#6f6b7a">M2</text><rect x="155.1" y="225.7" width="37.6" height="34.3" rx="2" fill="#2b5fb3"/><text x="173.9" y="278" font-size="9" text-anchor="middle" fill="#6f6b7a">M3</text><text x="173.9" y="221.7" font-size="8.5" text-anchor="middle" fill="#15131c">26k</text><rect x="200.7" y="211.3" width="37.6" height="48.7" rx="2" fill="#2b5fb3"/><text x="219.4" y="278" font-size="9" text-anchor="middle" fill="#6f6b7a">M4</text><rect x="246.2" y="197.3" width="37.6" height="62.7" rx="2" fill="#2b5fb3"/><text x="265.0" y="278" font-size="9" text-anchor="middle" fill="#6f6b7a">M5</text><rect x="291.8" y="183.8" width="37.6" height="76.2" rx="2" fill="#2b5fb3"/><text x="310.6" y="278" font-size="9" text-anchor="middle" fill="#6f6b7a">M6</text><text x="310.6" y="179.8" font-size="8.5" text-anchor="middle" fill="#15131c">57k</text><rect x="337.3" y="170.7" width="37.6" height="89.3" rx="2" fill="#2b5fb3"/><text x="356.1" y="278" font-size="9" text-anchor="middle" fill="#6f6b7a">M7</text><rect x="382.9" y="158.0" width="37.6" height="102.0" rx="2" fill="#2b5fb3"/><text x="401.7" y="278" font-size="9" text-anchor="middle" fill="#6f6b7a">M8</text><rect x="428.4" y="145.7" width="37.6" height="114.3" rx="2" fill="#2b5fb3"/><text x="447.2" y="278" font-size="9" text-anchor="middle" fill="#6f6b7a">M9</text><text x="447.2" y="141.7" font-size="8.5" text-anchor="middle" fill="#15131c">86k</text><rect x="474.0" y="133.7" width="37.6" height="126.3" rx="2" fill="#2b5fb3"/><text x="492.8" y="278" font-size="9" text-anchor="middle" fill="#6f6b7a">M10</text><rect x="519.6" y="122.1" width="37.6" height="137.9" rx="2" fill="#e6007a"/><text x="538.3" y="278" font-size="9" text-anchor="middle" fill="#6f6b7a">M11</text><rect x="565.1" y="110.8" width="37.6" height="149.2" rx="2" fill="#e6007a"/><text x="583.9" y="278" font-size="9" text-anchor="middle" fill="#6f6b7a">M12</text><text x="583.9" y="106.8" font-size="8.5" text-anchor="middle" fill="#15131c">113k</text><rect x="610.7" y="99.9" width="37.6" height="160.1" rx="2" fill="#e6007a"/><text x="629.4" y="278" font-size="9" text-anchor="middle" fill="#6f6b7a">M13</text><rect x="656.2" y="89.3" width="37.6" height="170.7" rx="2" fill="#e6007a"/><text x="675.0" y="278" font-size="9" text-anchor="middle" fill="#6f6b7a">M14</text><rect x="701.8" y="79.0" width="37.6" height="181.0" rx="2" fill="#e6007a"/><text x="720.6" y="278" font-size="9" text-anchor="middle" fill="#6f6b7a">M15</text><rect x="747.3" y="69.1" width="37.6" height="190.9" rx="2" fill="#e6007a"/><text x="766.1" y="278" font-size="9" text-anchor="middle" fill="#6f6b7a">M16</text><rect x="792.9" y="59.4" width="37.6" height="200.6" rx="2" fill="#e6007a"/><text x="811.7" y="278" font-size="9" text-anchor="middle" fill="#6f6b7a">M17</text><rect x="838.4" y="50.0" width="37.6" height="210.0" rx="2" fill="#e6007a"/><text x="857.2" y="278" font-size="9" text-anchor="middle" fill="#6f6b7a">M18</text><text x="857.2" y="46.0" font-size="8.5" text-anchor="middle" fill="#15131c">158k</text><line x1="60" y1="260" x2="890" y2="260" stroke="#9b97a8"/><line x1="60" y1="127.5" x2="890" y2="127.5" stroke="#e6007a" stroke-dasharray="4 3"/><text x="62" y="123.5" font-size="9" fill="#e6007a">Rs 1 lakh a month</text></svg>
+<table><tr><th>Month</th><th class="n">Cafes</th><th class="n">Money in</th><th class="n">Software bill</th><th class="n">Profit</th></tr><tr><td>Month 1</td><td class="n">8</td><td class="n">Rs 11,880</td><td class="n">Rs 8,664</td><td class="n"><b>Rs 3,216</b></td></tr><tr><td>Month 2</td><td class="n">16</td><td class="n">Rs 23,404</td><td class="n">Rs 8,664</td><td class="n"><b>Rs 14,740</b></td></tr><tr><td>Month 3</td><td class="n">23</td><td class="n">Rs 34,581</td><td class="n">Rs 8,664</td><td class="n"><b>Rs 25,917</b></td></tr><tr><td>Month 4</td><td class="n">31</td><td class="n">Rs 45,424</td><td class="n">Rs 8,664</td><td class="n"><b>Rs 36,760</b></td></tr><tr><td>Month 6</td><td class="n">45</td><td class="n">Rs 66,143</td><td class="n">Rs 8,664</td><td class="n"><b>Rs 57,479</b></td></tr><tr><td>Month 9</td><td class="n">64</td><td class="n">Rs 94,949</td><td class="n">Rs 8,664</td><td class="n"><b>Rs 86,285</b></td></tr><tr><td>Month 11</td><td class="n">76</td><td class="n">Rs 1,12,741</td><td class="n">Rs 8,664</td><td class="n"><b>Rs 1,04,077</b></td></tr><tr><td>Month 12</td><td class="n">82</td><td class="n">Rs 1,21,238</td><td class="n">Rs 8,664</td><td class="n"><b>Rs 1,12,574</b></td></tr><tr><td>Month 18</td><td class="n">113</td><td class="n">Rs 1,67,131</td><td class="n">Rs 8,664</td><td class="n"><b>Rs 1,58,467</b></td></tr><tr><td>Month 24</td><td class="n">138</td><td class="n">Rs 2,05,359</td><td class="n">Rs 8,664</td><td class="n"><b>Rs 1,96,695</b></td></tr></table>
+<ul><li><b>Month 1:</b> already above the bill with 8 cafes.</li>
+<li><b>Month 11:</b> profit passes Rs 1 lakh a month.</li>
+<li><b>First 12 months together:</b> about Rs 7,27,990 profit.</li></ul>
+<div class="callout ok"><b>The only job: sell 2 cafes a week and keep them happy.</b> Faster selling moves every date earlier; at 1 cafe a week the Rs 1 lakh month comes later (about month 27), but we still never lose money after cafe 6.</div>
+</section><section class="sec"><div class="kicker">4 &nbsp;/&nbsp; THE RULES</div><h2>Five rules so we never go into loss</h2>
+<ol><li><b>Keep Rs 1,03,968 in the bank</b> before launch: one full year of the software bill. With it, even zero sales can't hurt us.</li>
+<li><b>Get 6 paying cafes first.</b> Until then, stay on free plans for demos.</li>
+<li><b>One price, no discounts:</b> Rs 1,500 + GST a month, or Rs 18,000 + GST a year.</li>
+<li><b>Ask for yearly payment first.</b> One yearly cafe pays the software bill for about 2 months.</li>
+<li><b>Watch one number every month: cafes.</b> If it goes up, profit goes up. If cafes leave, find out why that same week.</li></ol>
+<div class="callout"><b>Check the bill every 6 months.</b> Prices are in US dollars; if the rupee weakens by Rs 5, the bill rises by about Rs 451 a month. Still tiny next to what 74 cafes bring in.</div>
+<p class="small">Sources: Vercel Pro US$20, Supabase Pro US$25, Apple US$99 a year, Open-Meteo US$29, GitHub Team about US$4 a user: AIKIA.WALLET Launch Costing (sources listed there), checked 19 Oct 2026. Selling speed and leaving rate are planning estimates.</p>
+</section></body></html>
