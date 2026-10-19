@@ -198,18 +198,35 @@ export default function DashboardClient({ userEmail, role, venue: initialVenue, 
   async function startCamera(mode: 'lookup' | 'charge' = 'lookup') {
     if (mode === 'charge' && !(Number(chargeAmount) >= 1)) { flash('Type the bill amount first, then scan.'); return; }
     const browser = window as WindowWithScanner;
-    if (!navigator.mediaDevices?.getUserMedia || !browser.BarcodeDetector) { flash('This browser cannot scan QR codes. Enter the member code instead.'); return; }
+    if (!navigator.mediaDevices?.getUserMedia) { flash('This browser cannot open the camera. Open the site over https in Chrome or Safari, or type the member code.'); return; }
     try {
       streamRef.current = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } }, audio: false });
       if (!videoRef.current) { stopCamera(); return; }
-      videoRef.current.srcObject = streamRef.current; await videoRef.current.play(); setCameraOn(true);
-      const detector = new browser.BarcodeDetector({ formats: ['qr_code'] });
+      // Show the video before playing: iPhones don't decode frames for a hidden video.
+      setCameraOn(true);
+      videoRef.current.srcObject = streamRef.current; await videoRef.current.play();
+      // Chrome on Android and Macs have a built-in QR reader; everywhere else (iPhone, Windows, Firefox) we decode frames with jsQR.
+      const native = browser.BarcodeDetector ? new browser.BarcodeDetector({ formats: ['qr_code'] }) : null;
+      const jsQR = native ? null : (await import('jsqr')).default;
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
       while (streamRef.current && videoRef.current) {
-        const results = await detector.detect(videoRef.current);
-        if (results[0]?.rawValue) { const value = results[0].rawValue; stopCamera(); if (mode === 'charge') await chargeByScan(value); else { setLookupCode(value); await lookup(value); } break; }
-        await new Promise(resolve => window.setTimeout(resolve, 180));
+        let value: string | null = null;
+        const video = videoRef.current;
+        if (native) {
+          const results = await native.detect(video).catch(() => []);
+          value = results[0]?.rawValue || null;
+        } else if (jsQR && ctx && video.videoWidth) {
+          const scale = Math.min(1, 720 / video.videoWidth);
+          canvas.width = Math.round(video.videoWidth * scale); canvas.height = Math.round(video.videoHeight * scale);
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          const frame = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          value = jsQR(frame.data, frame.width, frame.height, { inversionAttempts: 'dontInvert' })?.data || null;
+        }
+        if (value) { stopCamera(); if (mode === 'charge') await chargeByScan(value); else { setLookupCode(value); await lookup(value); } break; }
+        await new Promise(resolve => window.setTimeout(resolve, 150));
       }
-    } catch { stopCamera(); flash('Camera access was blocked. Enter the member code instead.'); }
+    } catch { stopCamera(); flash('Camera access was blocked. Allow the camera for this site in the browser settings, or type the member code.'); }
   }
   function stopCamera() { streamRef.current?.getTracks().forEach(t => t.stop()); streamRef.current = null; setCameraOn(false); }
   function navigate(nextView: string) { if (nextView !== 'staff') stopCamera(); setView(nextView); }
