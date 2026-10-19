@@ -1,0 +1,210 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>AIKIA.WALLET launch costing</title><style>@page { size: A4; margin: 15mm 14mm 16mm 14mm; }
+@page wide { size: A4 landscape; margin: 12mm 12mm 14mm 12mm; }
+:root {
+  --ink: #15131c; --ink2: #3b3846; --mute: #6f6b7a; --line: #e4e1ea; --paper: #ffffff;
+  --soft: #f6f4f9; --pink: #e6007a; --pink2: #ff4fa3; --pinkbg: #fff0f7; --chrome: #b9b6c4;
+  --teal: #0f8b8d; --amber: #b7791f; --red: #c0392b; --green: #1e8449; --blue: #2b5fb3;
+}
+* { box-sizing: border-box; }
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { margin: 0; font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif; color: var(--ink); font-size: 9.1pt; line-height: 1.42; background: #fff; }
+h1, h2, h3, h4 { font-family: "Bahnschrift", "Segoe UI Semibold", "Segoe UI", sans-serif; margin: 0; letter-spacing: -0.01em; color: var(--ink); }
+h1 { font-size: 25pt; line-height: 1.08; }
+h2 { font-size: 17pt; line-height: 1.15; margin: 0 0 3mm; }
+h3 { font-size: 11.5pt; margin: 5mm 0 1.6mm; }
+h4 { font-size: 9.6pt; margin: 3mm 0 1mm; color: var(--pink); text-transform: uppercase; letter-spacing: .06em; }
+p { margin: 0 0 2.4mm; }
+ul, ol { margin: 0 0 2.6mm; padding-left: 4.6mm; }
+li { margin-bottom: 0.9mm; }
+a { color: var(--pink); text-decoration: none; }
+.sec { page-break-before: always; }
+.sec:first-of-type { page-break-before: auto; }
+.wide { page: wide; }
+.kicker { font-size: 7.6pt; letter-spacing: .14em; text-transform: uppercase; color: var(--pink); font-weight: 700; margin-bottom: 1.6mm; }
+.lede { font-size: 10.6pt; color: var(--ink2); max-width: 165mm; margin-bottom: 4mm; }
+.small { font-size: 8pt; color: var(--mute); }
+.tiny { font-size: 7.2pt; color: var(--mute); }
+.cover { height: 262mm; display: flex; flex-direction: column; justify-content: flex-start; gap: 22mm; page-break-after: always; }
+.cover .band { background: var(--ink); color: #fff; padding: 11mm 11mm 9mm; border-radius: 3mm; position: relative; overflow: hidden; }
+.cover .band h1 { color: #fff; font-size: 31pt; }
+.cover .band .kicker { color: var(--pink2); }
+.cover .band p { color: #d8d5e2; font-size: 11pt; max-width: 140mm; }
+.cover .ring { position: absolute; right: -18mm; top: -18mm; width: 80mm; height: 80mm; border-radius: 50%; border: 5mm solid var(--pink); opacity: .85; }
+.cover .ring2 { position: absolute; right: 8mm; top: 8mm; width: 28mm; height: 28mm; border-radius: 50%; border: 2.4mm solid var(--chrome); opacity: .7; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3.4mm; }
+.grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3mm; }
+.card { border: 0.3mm solid var(--line); border-radius: 2mm; padding: 3.2mm 3.6mm; background: #fff; break-inside: avoid; }
+.card.soft { background: var(--soft); border-color: transparent; }
+.card.pink { background: var(--pinkbg); border-color: #ffd0e6; }
+.card.dark { background: var(--ink); color: #fff; border-color: var(--ink); }
+.card.dark h3, .card.dark h4 { color: #fff; }
+.card h3 { margin-top: 0; }
+.stat { font-family: "Bahnschrift", "Segoe UI Semibold", sans-serif; font-size: 19pt; line-height: 1; color: var(--pink); }
+.stat small { display: block; font-family: "Segoe UI", sans-serif; font-size: 7.4pt; color: var(--mute); margin-top: 1.4mm; line-height: 1.3; }
+table { width: 100%; border-collapse: collapse; margin: 1.5mm 0 3mm; font-size: 8pt; }
+th { text-align: left; background: var(--ink); color: #fff; font-weight: 600; padding: 1.7mm 2mm; font-size: 7.8pt; letter-spacing: .02em; }
+td { padding: 1.25mm 2mm; border-bottom: 0.25mm solid var(--line); vertical-align: top; }
+tr { break-inside: avoid; }
+tbody tr:nth-child(even) td { background: #fbfafd; }
+td.n, th.n { text-align: right; white-space: nowrap; }
+td.c, th.c { text-align: center; }
+.tag { display: inline-block; font-size: 6.8pt; font-weight: 700; padding: 0.3mm 1.6mm; border-radius: 2mm; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; }
+.t1 { background: #e1f5ea; color: var(--green); }
+.t2 { background: #fff1d6; color: var(--amber); }
+.t3 { background: #e7ecf7; color: var(--blue); }
+.tR { background: #fde4e1; color: var(--red); }
+.callout { border-left: 1.1mm solid var(--pink); background: var(--pinkbg); padding: 2.6mm 3.4mm; margin: 2.6mm 0 3.2mm; border-radius: 0 1.6mm 1.6mm 0; break-inside: avoid; }
+.callout.warn { border-color: var(--amber); background: #fff7e6; }
+.callout.red { border-color: var(--red); background: #fdeeed; }
+.callout.ok { border-color: var(--green); background: #eaf7ef; }
+.callout b:first-child { color: var(--ink); }
+.cluster { margin-top: 4mm; break-inside: avoid-page; }
+.cluster-h { break-after: avoid; page-break-after: avoid; display: flex; align-items: baseline; gap: 2.4mm; margin: 4mm 0 1mm; }
+.cluster-h .no { font-family: "Bahnschrift", sans-serif; background: var(--pink); color: #fff; width: 6.4mm; height: 6.4mm; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 8.6pt; flex: none; }
+.cluster-h h3 { margin: 0; }
+.cluster-h .why { color: var(--mute); font-size: 8pt; }
+.dot { display: inline-block; width: 2.3mm; height: 2.3mm; vertical-align: middle; border-radius: 50%; }
+.dot.full { background: var(--pink); }
+.dot.half { background: linear-gradient(90deg, var(--pink) 50%, #fff 50%); border: 0.3mm solid var(--pink); }
+.matrix td, .matrix th { padding: 0.55mm 0.6mm; font-size: 6.9pt; line-height: 1.2; text-align: center; }
+.matrix td:first-child, .matrix th:first-child { text-align: left; padding-left: 1.6mm; white-space: nowrap; }
+.matrix th { vertical-align: bottom; height: 27mm; }
+.matrix th span { display: inline-block; writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; font-size: 7pt; }
+.matrix td.grp { background: var(--soft); font-weight: 700; color: var(--pink); text-align: left; font-size: 7pt; letter-spacing: .06em; text-transform: uppercase; }
+.chart { width: 100%; height: auto; display: block; }
+.chart text { font-family: "Segoe UI", sans-serif; }
+.foot { font-size: 7pt; color: var(--mute); border-top: 0.25mm solid var(--line); padding-top: 1.6mm; margin-top: 4mm; }
+.srclist { font-size: 7.4pt; color: var(--ink2); columns: 2; column-gap: 6mm; }
+.srclist li { break-inside: avoid; margin-bottom: 1.2mm; word-break: break-word; }
+.toc { columns: 2; column-gap: 8mm; font-size: 9.4pt; }
+.toc div { display: flex; gap: 2mm; padding: 1.1mm 0; border-bottom: 0.25mm dotted var(--chrome); break-inside: avoid; }
+.toc b { color: var(--pink); width: 6mm; flex: none; }
+.pill { display: inline-block; background: var(--soft); border-radius: 2mm; padding: 0.4mm 2mm; font-size: 7.6pt; margin: 0 0.8mm 0.8mm 0; }
+.kv { display: grid; grid-template-columns: 38mm 1fr; gap: 1mm 3mm; font-size: 8.6pt; }
+.kv dt { font-weight: 700; color: var(--ink2); }
+.kv dd { margin: 0; }
+.nb { white-space: nowrap; }
+.pn { page-break-inside: avoid; }
+</style></head><body><section class="cover"><div class="band"><div class="ring"></div><div class="ring2"></div>
+<div class="kicker">AIKIA.WALLET &nbsp;/&nbsp; LAUNCH COSTING</div>
+<h1>Our own wallet,<br>at break-even.</h1>
+<p style="max-width:62%">Launch on our own Google Wallet and Apple Wallet engines, with no PassKit, and every feature on. What it costs to run, what to charge so 3 to 5 cafes cover it, where the data lives, what runs by itself and how it stays secure. Prices checked 19 October 2026 at Rs 96 to the US dollar.</p></div>
+<div><div class="grid3" style="margin-bottom:5mm">
+<div class="card pink"><div class="stat">Rs 12,724<small>A MONTH to run everything, all features, for 3 or 5 cafes. Rs 1,52,682 a year.</small></div></div>
+<div class="card pink"><div class="stat">Rs 2,606<small>A MONTH per cafe to break even with 5 cafes. With 3 cafes: Rs 4,344.</small></div></div>
+<div class="card pink"><div class="stat">Rs 0<small>PER CUSTOMER. Google and Apple charge nothing per card, so 100 or 200 customers cost the same.</small></div></div>
+</div>
+<div class="callout ok"><b>The answer.</b> Charge <b>Rs 2,999 a month</b> per cafe (or Rs 29,999 a year) plus a one-time <b>Rs 4,999 setup</b>. 5 cafes cover every running cost from the first month. With 3 cafes, charge Rs 4,499 a month or accept a gap of about Rs 3,939 a month until cafe 5 joins.</div>
+<div class="callout warn"><b>How to read this.</b> Planning numbers, not quotes. S = price found in a published source (re-check on the vendor page before paying). E = our estimate. Founder time and salaries are not costed. PassKit is used only for demos until launch and is left out.</div>
+</div></section><section class="sec"><div class="kicker">1 &nbsp;/&nbsp; RUNNING COST</div><h2>Everything we pay every month</h2>
+<p class="lede">Every feature is included: wallet cards, tiers, scan-and-charge, credit, gifts, geofencing, weather-mood and campaign messages, the ledger and backups. None of it grows with the number of customers at this size.</p>
+<table><tr><th>Service and what it does</th><th>Price basis</th><th class="c">Src</th><th class="n">Rs a month</th></tr><tr><td><b>Vercel Pro, 1 seat</b><br><span class="small">Runs the app and the scheduled jobs: join page, staff scanner, owner dashboard, guest pages, Apple pass web service. Hobby (free) is non-commercial only.</span></td><td>US$20 a month, usage credit included</td><td class="c">S</td><td class="n">Rs 1,920</td></tr><tr><td><b>Supabase Pro</b><br><span class="small">The database and ledger, logins, daily backups kept 7 days. Never pauses (the free plan pauses after 7 idle days).</span></td><td>US$25 a month</td><td class="c">S</td><td class="n">Rs 2,400</td></tr><tr><td><b>Apple Developer Program</b><br><span class="small">Our own Apple Wallet pass certificate and push updates to iPhones.</span></td><td>US$99 a year, shown per month</td><td class="c">S</td><td class="n">Rs 792</td></tr><tr><td><b>Weather data, commercial (Open-Meteo Standard)</b><br><span class="small">Weather-mood messages. The free API is for non-commercial use.</span></td><td>US$29 a month per Open-Meteo&#x27;s own announcement; confirm</td><td class="c">S</td><td class="n">Rs 2,784</td></tr><tr><td><b>GitHub Team, 2 users</b><br><span class="small">Protected main branch and required reviews on our private code (not enforced on the free plan for private repositories).</span></td><td>about US$4 a user a month; confirm on github.com/pricing</td><td class="c">S</td><td class="n">Rs 768</td></tr><tr><td colspan="3">GST at 18% on the imported services (US$90.25 a month)</td><td class="n">Rs 1,560</td></tr><tr><td><b>Chartered accountant</b><br><span class="small">GST registration, monthly GST returns, invoices to cafes.</span></td><td>monthly retainer</td><td class="c">E</td><td class="n">Rs 2,500</td></tr>
+<tr><td colspan="3"><b>Total a month</b></td><td class="n"><b>Rs 12,724</b></td></tr>
+<tr><td colspan="3"><b>Total a year</b></td><td class="n"><b>Rs 1,52,682</b></td></tr></table>
+<h3>Free at this size, and safe for business use</h3>
+<table><tr><th>Service</th><th>What it does</th><th>Cost</th></tr><tr><td><b>Google Wallet API and Google Pay &amp; Wallet Console</b></td><td class="small">Issue and update Android cards, messages, nearby alerts.</td><td>Free, no per-card fee found</td></tr><tr><td><b>Apple push notifications (APNs)</b></td><td class="small">Tells iPhones to fetch the updated card.</td><td>Free with the developer account</td></tr><tr><td><b>Login-link and alert email (Resend free)</b></td><td class="small">3,000 emails a month, 100 a day. Enough for 5 cafes&#x27; teams and our alerts.</td><td>Free</td></tr><tr><td><b>GitHub Actions</b></td><td class="small">Tests on every change, nightly backup, health checks every 10 minutes.</td><td>Free minutes cover this</td></tr><tr><td><b>Cloudflare R2 (off-site backup copy)</b></td><td class="small">A second, encrypted copy of the database every night, kept 30 days.</td><td>Free up to 10 GB</td></tr><tr><td><b>Cloudflare DNS and protection</b></td><td class="small">Domain records, DDoS shield, basic firewall in front of the app.</td><td>Free plan</td></tr><tr><td><b>Password manager (Bitwarden, 2 users)</b></td><td class="small">All keys and passwords in one shared vault, never in chat or code.</td><td>Free for 2 users</td></tr><tr><td><b>Domain</b></td><td class="small">wallet.aikia.world, a sub-domain of the agency&#x27;s domain.</td><td>Rs 0 extra</td></tr></table>
+</section><section class="sec"><div class="kicker">2 &nbsp;/&nbsp; PER CAFE</div><h2>Cost per cafe, for 3 to 5 cafes</h2>
+<table><tr><th>Cafes x customers</th><th class="n">Customers</th><th class="n">Running cost a month</th><th class="n">A year</th><th class="n">Per cafe a month</th><th class="n">Per customer a month</th></tr><tr><td>3 x 100</td><td class="n">300</td><td class="n">Rs 12,724</td><td class="n">Rs 1,52,682</td><td class="n"><b>Rs 4,241</b></td><td class="n">Rs 42</td></tr><tr><td>3 x 200</td><td class="n">600</td><td class="n">Rs 12,724</td><td class="n">Rs 1,52,682</td><td class="n"><b>Rs 4,241</b></td><td class="n">Rs 21</td></tr><tr><td>4 x 100</td><td class="n">400</td><td class="n">Rs 12,724</td><td class="n">Rs 1,52,682</td><td class="n"><b>Rs 3,181</b></td><td class="n">Rs 32</td></tr><tr><td>4 x 200</td><td class="n">800</td><td class="n">Rs 12,724</td><td class="n">Rs 1,52,682</td><td class="n"><b>Rs 3,181</b></td><td class="n">Rs 16</td></tr><tr><td>5 x 100</td><td class="n">500</td><td class="n">Rs 12,724</td><td class="n">Rs 1,52,682</td><td class="n"><b>Rs 2,545</b></td><td class="n">Rs 25</td></tr><tr><td>5 x 200</td><td class="n">1000</td><td class="n">Rs 12,724</td><td class="n">Rs 1,52,682</td><td class="n"><b>Rs 2,545</b></td><td class="n">Rs 13</td></tr></table>
+<h3>What each feature costs us</h3>
+<table><tr><th>Feature</th><th>What it runs on</th><th class="n">Extra cost</th></tr>
+<tr><td>Google Wallet cards, updates, tier colours</td><td>Google Wallet API</td><td class="n">Rs 0</td></tr>
+<tr><td>Apple Wallet cards and updates</td><td>Our pass certificate + Apple push</td><td class="n">in the Apple fee</td></tr>
+<tr><td>Geofencing (up to 10 locations a cafe)</td><td>Apple: our text on the lock screen. Google: nearby alert in Google's own words</td><td class="n">Rs 0</td></tr>
+<tr><td>Weather-mood messages</td><td>Daily weather check + card message</td><td class="n">in the weather licence</td></tr>
+<tr><td>Campaigns, offers, win-back messages</td><td>Card messages (Google: up to 3 a card a day)</td><td class="n">Rs 0</td></tr>
+<tr><td>Credit, scan-and-charge, pay codes, gifts</td><td>Our ledger in Supabase</td><td class="n">Rs 0</td></tr>
+<tr><td>Ledger, members, history, backups</td><td>Supabase Pro + nightly off-site copy</td><td class="n">in Supabase</td></tr>
+<tr><td>Optional later: WhatsApp messages</td><td>WhatsApp provider (not part of launch)</td><td class="n">about Rs 0.12 a utility message</td></tr></table>
+<h3>Costs that come per cafe, outside software</h3>
+<table><tr><th>Item</th><th>When</th><th class="n">Cost</th></tr>
+<tr><td>QR standee and counter poster</td><td>Once</td><td class="n">Rs 300 to 500</td></tr>
+<tr><td>Payment fee when a cafe pays us by card (UPI is free)</td><td>Each payment</td><td class="n">about 2.36%</td></tr>
+<tr><td>Onboarding visit and staff training (about 2 hours)</td><td>Once</td><td class="n">founder time</td></tr></table>
+</section><section class="sec"><div class="kicker">3 &nbsp;/&nbsp; BREAK-EVEN PRICE</div><h2>What to charge so we are never in loss</h2>
+<p class="lede">Break-even here means the cafes' fees cover every running cost each month, after the card-payment fee. Founders are unpaid.</p>
+<table><tr><th>Cafes</th><th class="n">Break-even price per cafe a month</th><th class="n">Rounded price</th><th class="n">A year, paid upfront</th></tr>
+<tr><td>3</td><td class="n">Rs 4,344</td><td class="n">Rs 4,499</td><td class="n">Rs 44,999</td></tr>
+<tr><td>4</td><td class="n">Rs 3,258</td><td class="n">Rs 3,499</td><td class="n">Rs 34,999</td></tr>
+<tr><td>5</td><td class="n">Rs 2,606</td><td class="n">Rs 2,999</td><td class="n">Rs 29,999</td></tr></table>
+<table><tr><th>If we charge</th><th class="n">Cafes needed to break even</th><th class="n">Surplus with 5 cafes a month</th></tr><tr><td>Rs 1,999 a month</td><td class="n">7</td><td class="n">-Rs 2,964</td></tr><tr><td>Rs 2,499 a month</td><td class="n">6</td><td class="n">-Rs 523</td></tr><tr><td>Rs 2,999 a month</td><td class="n">5</td><td class="n">Rs 1,918</td></tr><tr><td>Rs 3,999 a month</td><td class="n">4</td><td class="n">Rs 6,800</td></tr><tr><td>Rs 4,499 a month</td><td class="n">3</td><td class="n">Rs 9,241</td></tr></table>
+<h3>Our recommendation</h3>
+<ul><li><b>Rs 2,999 a month per cafe</b> (Rs 29,999 a year upfront, two months free), all features included. That is about Rs 100 a day for the cafe.</li>
+<li><b>Rs 4,999 one-time setup</b> per cafe: card design, tiers, staff training, standee. Every 5 paid setups (Rs 24,995) cover most of the one-time legal and set-up costs.</li>
+<li><b>Founding-cafe offer for the first 3:</b> setup free, Rs 2,999 a month, in return for a case study. The gap of about Rs 3,939 a month closes when cafe 5 joins.</li>
+<li>Above 5 cafes everything is surplus: each new cafe adds about Rs 2,928 a month after fees, because running cost doesn't grow at this size.</li></ul>
+</section><section class="sec"><div class="kicker">4 &nbsp;/&nbsp; DATA</div><h2>Where the data lives and what we keep</h2>
+<table><tr><th>What</th><th>Where</th><th>Why</th></tr>
+<tr><td><b>Members, tiers, ledger, credit, gifts, campaigns, team</b></td><td>Supabase Postgres (choose the Mumbai region)</td><td>One database with row-level security: each cafe sees only its own rows. The ledger is append-only, so every stamp, payment and refund stays on record.</td></tr>
+<tr><td><b>Card artwork and logos</b></td><td>In the app's code (public/brand), served by Vercel</td><td>Fast, versioned, no extra storage cost.</td></tr>
+<tr><td><b>Keys and certificates</b> (Google service account, Apple pass certificate, database keys)</td><td>Vercel encrypted settings (type Secret) and the Bitwarden vault</td><td>Never in code, chat, email or screenshots.</td></tr>
+<tr><td><b>Backups</b></td><td>Supabase daily backup (7 days) + our nightly encrypted copy in Cloudflare R2 (30 days)</td><td>Two places, two companies. A restore is tested once a month.</td></tr>
+<tr><td><b>Code</b></td><td>Private GitHub repository SHXHMNS/aikia.wallet</td><td>Every change reviewed and tested before it goes live.</td></tr></table>
+<h3>What we store about a guest, and what we don't</h3>
+<table><tr><th>Stored</th><th>Never stored</th></tr>
+<tr><td>Name, consent date, member code, visits, stamps, tier, credit balance, gift history</td><td>Phone number in the card or its QR, card or bank details, UPI IDs, location history</td></tr></table>
+<div class="callout"><b>Size.</b> 5 cafes x 200 customers = 1,000 members. A year of visits, payments and gifts is a few MB. Supabase Pro holds this many times over; data is not a cost until thousands of cafes.</div>
+<div class="callout warn"><b>DPDP Act.</b> Guests consent on the join page. On request, a cafe owner or we delete a member and their card. Keep the privacy notice and a deletion log; the lawyer drafts both.</div>
+</section><section class="sec"><div class="kicker">5 &nbsp;/&nbsp; AUTOMATION</div><h2>What runs by itself, so nothing waits on us</h2>
+<table><tr><th>Job</th><th>When</th><th>Runs on</th><th>If it fails</th></tr>
+<tr><td>Test, type-check and build every code change</td><td>Every push</td><td>GitHub Actions</td><td>Change is blocked from going live</td></tr>
+<tr><td>Deploy: preview first, then live</td><td>On merge to main</td><td>Vercel</td><td>One-click roll back to the last good version</td></tr>
+<tr><td>Database changes (new columns, tables)</td><td>With the code change, after approval</td><td>Supabase migration step in the workflow</td><td>Applied to the staging copy first; the live app never runs ahead of its database</td></tr>
+<tr><td>Retry wallet cards that failed to update</td><td>Daily (more often on Vercel Pro)</td><td>Vercel Cron</td><td>Alert email if any card stays out of sync</td></tr>
+<tr><td>Weather check and mood messages; scheduled and win-back campaigns</td><td>Every morning, 9 am</td><td>Vercel Cron</td><td>Logged in "Recent sends"; never more than 3 Google messages a card a day</td></tr>
+<tr><td>Expire unused gifts and return them to the sender</td><td>Daily</td><td>Vercel Cron</td><td>Logged</td></tr>
+<tr><td>Off-site encrypted database backup</td><td>Nightly</td><td>GitHub Actions to Cloudflare R2</td><td>Alert email</td></tr>
+<tr><td>Health check of the app, database and wallet engines</td><td>Every 10 minutes</td><td>GitHub Actions</td><td>Alert email to both founders</td></tr>
+<tr><td>Dependency and security updates</td><td>Weekly</td><td>GitHub Dependabot</td><td>Pull request to review</td></tr>
+<tr><td>Monthly cafe report: visits, members, credit loaded and spent</td><td>1st of the month</td><td>Vercel Cron + email</td><td>Logged</td></tr></table>
+<h3>How we avoid lag and breakdowns</h3>
+<ul><li><b>The counter never waits on Google or Apple.</b> The ledger is saved first. The wallet card updates right after, and if Google or Apple is slow, the daily retry finishes the job.</li>
+<li><b>No double charges.</b> Every scan carries a one-time key, so a double tap or a weak network can't charge twice.</li>
+<li><b>Fast for India.</b> Database in Mumbai; app served from Vercel's edge network.</li>
+<li><b>Safe changes.</b> Staging first, automatic tests, preview link, then live. Roll back in one click.</li>
+<li><b>Room to grow.</b> Vercel Pro and Supabase Pro comfortably carry 5 to 50 cafes before any upgrade.</li></ul>
+</section><section class="sec"><div class="kicker">6 &nbsp;/&nbsp; SECURITY</div><h2>How the code, website and servers stay safe</h2>
+<table><tr><th>Area</th><th>What we do</th><th class="n">Cost</th></tr>
+<tr><td>Accounts</td><td>Two-step login on Google, Apple, Vercel, Supabase, GitHub, Cloudflare and the domain registrar. Only the two founders are owners.</td><td class="n">Rs 0</td></tr>
+<tr><td>Keys and certificates</td><td>Stored only as Vercel Secrets and in Bitwarden. Google key and Apple certificate rotated once a year. Never in code or chat.</td><td class="n">Rs 0</td></tr>
+<tr><td>Code</td><td>Private repository, protected main branch, review before merge, Dependabot alerts, no secrets in the repository.</td><td class="n">GitHub Team</td></tr>
+<tr><td>Database</td><td>Row-level security per cafe; staff can scan but not see the member list; owner-only reversals; append-only ledger.</td><td class="n">Rs 0</td></tr>
+<tr><td>App</td><td>HTTPS only, security headers and content policy, rate limits on sign-up, single-use pay codes, scan-only limit and daily cap on credit.</td><td class="n">Rs 0</td></tr>
+<tr><td>Network</td><td>Vercel's built-in DDoS protection; Cloudflare in front of the domain.</td><td class="n">Rs 0</td></tr>
+<tr><td>Backups</td><td>Two copies in two companies, encrypted, restore tested monthly.</td><td class="n">Rs 0</td></tr>
+<tr><td>Outside test (later)</td><td>Professional penetration test once we pass about 10 cafes or before any chain.</td><td class="n">about Rs 1 to 1.5 lakh, once (E)</td></tr></table>
+<div class="callout red"><b>Before the first real customer.</b> Turn on two-step login everywhere (Vercel asked for it on 18 October and it was skipped), mark every Vercel setting as Secret, and delete the old Google key file from Downloads.</div>
+</section><section class="sec"><div class="kicker">7 &nbsp;/&nbsp; ONE-TIME AND BUILD</div><h2>What we pay once, and the build that is left</h2>
+<table><tr><th>One-time item</th><th class="c">Src</th><th class="n">Cost</th></tr><tr><td>Lawyer: cafe agreement, privacy notice (DPDP Act), programme terms</td><td class="c">E</td><td class="n">Rs 25,000 to Rs 60,000</td></tr><tr><td>CA: GST registration and set-up</td><td class="c">E</td><td class="n">Rs 2,000 to Rs 5,000</td></tr><tr><td>Trademark filing for aikia.wallet, 1 class, e-filing (government fee)</td><td class="c">S</td><td class="n">Rs 4,500</td></tr><tr><td>QR standee and counter poster, 5 cafes</td><td class="c">E</td><td class="n">Rs 1,500 to Rs 2,500</td></tr><tr><td>Test iPhone (second-hand) if no one in the team has one</td><td class="c">E</td><td class="n">Rs 0 to Rs 25,000</td></tr>
+<tr><td><b>Total before launch</b></td><td></td><td class="n"><b>Rs 33,000 to Rs 97,000</b></td></tr>
+<tr><td>Lawyer: written opinion on venue-only prepaid credit (before real money)</td><td class="c">E</td><td class="n">Rs 50,000 to Rs 1,00,000</td></tr></table>
+<h3>Build left before launch on our own engines</h3>
+<table><tr><th>Work</th><th class="c">When</th><th class="n">Effort</th></tr><tr><td>Apple Wallet engine: build and sign passes, Apple&#x27;s update web service, push to iPhones</td><td class="c">Before launch</td><td class="n">12 days</td></tr><tr><td>Switch to our Google engine (already built), finish publishing approval, move cards</td><td class="c">Before launch</td><td class="n">3 days</td></tr><tr><td>Geofence and weather on own engines: Apple lock-screen text, Google nearby + message</td><td class="c">Before launch</td><td class="n">2 days</td></tr><tr><td>Notification budget: never more than 3 messages a card a day on Google</td><td class="c">Before launch</td><td class="n">1 days</td></tr><tr><td>Remove PassKit from settings and code paths</td><td class="c">Before launch</td><td class="n">1 days</td></tr><tr><td>Automation: nightly off-site backup, health checks, alert emails</td><td class="c">Before launch</td><td class="n">2 days</td></tr><tr><td>Staging copy and safe database-change workflow</td><td class="c">Before launch</td><td class="n">2 days</td></tr><tr><td>Security review and fixes</td><td class="c">Before launch</td><td class="n">5 days</td></tr><tr><td>Own email sender and domain</td><td class="c">Before launch</td><td class="n">1 days</td></tr><tr><td>Testing on real Android and iPhone at a cafe counter</td><td class="c">Before launch</td><td class="n">4 days</td></tr><tr><td>Online top-up through the cafe&#x27;s own Razorpay / UPI account (optional)</td><td class="c">Later</td><td class="n">15 days</td></tr></table>
+<table><tr><th>Who builds it</th><th class="n">Before launch (33 days)</th><th class="n">With online top-up (48 days)</th></tr>
+<tr><td>Us, with Claude</td><td class="n">Rs 0 extra cash</td><td class="n">Rs 0 extra cash</td></tr>
+<tr><td>Partner company at about Rs 70,000 a person-month (assumption; ask them to quote)</td><td class="n">Rs 1,10,000</td><td class="n">Rs 1,60,000</td></tr></table>
+</section><section class="sec"><div class="kicker">8 &nbsp;/&nbsp; BUDGET AND ROADMAP</div><h2>The money to keep aside, and the order of work</h2>
+<table><tr><th>Budget line</th><th class="n">Amount</th></tr>
+<tr><td>Running cost, a month</td><td class="n">Rs 12,724</td></tr>
+<tr><td>Running cost, a year</td><td class="n">Rs 1,52,682</td></tr>
+<tr><td>One-time before launch</td><td class="n">Rs 33,000 to Rs 97,000</td></tr>
+<tr><td>Contingency 15% on running cost</td><td class="n">Rs 22,902</td></tr>
+<tr><td><b>Year one to keep aside (before any cafe pays)</b></td><td class="n"><b>Rs 1,85,682 to Rs 2,72,585</b></td></tr>
+<tr><td>Year one income at 5 cafes x Rs 2,999 a month + Rs 4,999 setup, after card fees</td><td class="n">Rs 2,00,099</td></tr></table>
+<table><tr><th>When</th><th>What we do</th><th class="n">Monthly cost</th></tr>
+<tr><td><b>Weeks 0 to 2</b></td><td>Enrol in Apple Developer. Finish the Google business profile and request publishing access. Lawyer drafts agreement and privacy notice. CA registers GST. Keep demoing on PassKit's free draft cards.</td><td class="n">about Rs 935</td></tr>
+<tr><td><b>Weeks 2 to 5</b></td><td>Build the Apple engine, switch to our Google engine, automation, security review, test on real phones. Sign 3 founding cafes.</td><td class="n">about Rs 935</td></tr>
+<tr><td><b>Week 5</b></td><td>Launch: Vercel Pro, Supabase Pro, GitHub Team, weather licence on. Cancel PassKit. Onboard the first 3 cafes.</td><td class="n">Rs 12,724</td></tr>
+<tr><td><b>Months 2 to 3</b></td><td>Cafes 4 and 5 at Rs 2,999 a month. Break-even reached.</td><td class="n">Rs 12,724</td></tr>
+<tr><td><b>Months 4 to 6</b></td><td>Fix pricing with real data, 2 case studies, then 10 to 25 cafes. Penetration test past 10 cafes.</td><td class="n">Rs 12,724</td></tr></table>
+<h3>Sources (checked 19 Oct 2026)</h3>
+<ul class="srclist small">
+<li>Google Wallet push and nearby notifications, 3 a card a day: developers.google.com/wallet/retail/loyalty-cards/use-cases/trigger-push-notifications</li>
+<li>Vercel Pro US$20 a seat, Hobby non-commercial: makerkit.dev/blog/saas/vercel-cost; community.vercel.com</li>
+<li>Supabase Pro US$25, daily backups 7 days, PITR US$100 extra: supabase.com/pricing; jetadmin.io Supabase pricing guide 2026</li>
+<li>Open-Meteo commercial plans: openmeteo.substack.com/p/api-subscriptions-for-commercial</li>
+<li>Resend free tier: resend.com/docs/knowledge-base/what-is-resend-pricing</li>
+<li>GitHub plans (protected branches on private repositories need Team): docs.github.com, About GitHub's plans; github.com/pricing</li>
+<li>Apple Developer Program US$99 a year: developer.apple.com/programs</li>
+<li>Rupee rate about 96.5 per US$: pluang.com, mid-October 2026</li></ul>
+</section></body></html>
