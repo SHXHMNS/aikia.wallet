@@ -1,0 +1,173 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>AIKIA.WALLET pilot costing</title><style>@page { size: A4; margin: 15mm 14mm 16mm 14mm; }
+@page wide { size: A4 landscape; margin: 12mm 12mm 14mm 12mm; }
+:root {
+  --ink: #15131c; --ink2: #3b3846; --mute: #6f6b7a; --line: #e4e1ea; --paper: #ffffff;
+  --soft: #f6f4f9; --pink: #e6007a; --pink2: #ff4fa3; --pinkbg: #fff0f7; --chrome: #b9b6c4;
+  --teal: #0f8b8d; --amber: #b7791f; --red: #c0392b; --green: #1e8449; --blue: #2b5fb3;
+}
+* { box-sizing: border-box; }
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { margin: 0; font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif; color: var(--ink); font-size: 9.1pt; line-height: 1.42; background: #fff; }
+h1, h2, h3, h4 { font-family: "Bahnschrift", "Segoe UI Semibold", "Segoe UI", sans-serif; margin: 0; letter-spacing: -0.01em; color: var(--ink); }
+h1 { font-size: 25pt; line-height: 1.08; }
+h2 { font-size: 17pt; line-height: 1.15; margin: 0 0 3mm; }
+h3 { font-size: 11.5pt; margin: 5mm 0 1.6mm; }
+h4 { font-size: 9.6pt; margin: 3mm 0 1mm; color: var(--pink); text-transform: uppercase; letter-spacing: .06em; }
+p { margin: 0 0 2.4mm; }
+ul, ol { margin: 0 0 2.6mm; padding-left: 4.6mm; }
+li { margin-bottom: 0.9mm; }
+a { color: var(--pink); text-decoration: none; }
+.sec { page-break-before: always; }
+.sec:first-of-type { page-break-before: auto; }
+.wide { page: wide; }
+.kicker { font-size: 7.6pt; letter-spacing: .14em; text-transform: uppercase; color: var(--pink); font-weight: 700; margin-bottom: 1.6mm; }
+.lede { font-size: 10.6pt; color: var(--ink2); max-width: 165mm; margin-bottom: 4mm; }
+.small { font-size: 8pt; color: var(--mute); }
+.tiny { font-size: 7.2pt; color: var(--mute); }
+.cover { height: 262mm; display: flex; flex-direction: column; justify-content: flex-start; gap: 22mm; page-break-after: always; }
+.cover .band { background: var(--ink); color: #fff; padding: 11mm 11mm 9mm; border-radius: 3mm; position: relative; overflow: hidden; }
+.cover .band h1 { color: #fff; font-size: 31pt; }
+.cover .band .kicker { color: var(--pink2); }
+.cover .band p { color: #d8d5e2; font-size: 11pt; max-width: 140mm; }
+.cover .ring { position: absolute; right: -18mm; top: -18mm; width: 80mm; height: 80mm; border-radius: 50%; border: 5mm solid var(--pink); opacity: .85; }
+.cover .ring2 { position: absolute; right: 8mm; top: 8mm; width: 28mm; height: 28mm; border-radius: 50%; border: 2.4mm solid var(--chrome); opacity: .7; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3.4mm; }
+.grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3mm; }
+.card { border: 0.3mm solid var(--line); border-radius: 2mm; padding: 3.2mm 3.6mm; background: #fff; break-inside: avoid; }
+.card.soft { background: var(--soft); border-color: transparent; }
+.card.pink { background: var(--pinkbg); border-color: #ffd0e6; }
+.card.dark { background: var(--ink); color: #fff; border-color: var(--ink); }
+.card.dark h3, .card.dark h4 { color: #fff; }
+.card h3 { margin-top: 0; }
+.stat { font-family: "Bahnschrift", "Segoe UI Semibold", sans-serif; font-size: 19pt; line-height: 1; color: var(--pink); }
+.stat small { display: block; font-family: "Segoe UI", sans-serif; font-size: 7.4pt; color: var(--mute); margin-top: 1.4mm; line-height: 1.3; }
+table { width: 100%; border-collapse: collapse; margin: 1.5mm 0 3mm; font-size: 8pt; }
+th { text-align: left; background: var(--ink); color: #fff; font-weight: 600; padding: 1.7mm 2mm; font-size: 7.8pt; letter-spacing: .02em; }
+td { padding: 1.25mm 2mm; border-bottom: 0.25mm solid var(--line); vertical-align: top; }
+tr { break-inside: avoid; }
+tbody tr:nth-child(even) td { background: #fbfafd; }
+td.n, th.n { text-align: right; white-space: nowrap; }
+td.c, th.c { text-align: center; }
+.tag { display: inline-block; font-size: 6.8pt; font-weight: 700; padding: 0.3mm 1.6mm; border-radius: 2mm; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; }
+.t1 { background: #e1f5ea; color: var(--green); }
+.t2 { background: #fff1d6; color: var(--amber); }
+.t3 { background: #e7ecf7; color: var(--blue); }
+.tR { background: #fde4e1; color: var(--red); }
+.callout { border-left: 1.1mm solid var(--pink); background: var(--pinkbg); padding: 2.6mm 3.4mm; margin: 2.6mm 0 3.2mm; border-radius: 0 1.6mm 1.6mm 0; break-inside: avoid; }
+.callout.warn { border-color: var(--amber); background: #fff7e6; }
+.callout.red { border-color: var(--red); background: #fdeeed; }
+.callout.ok { border-color: var(--green); background: #eaf7ef; }
+.callout b:first-child { color: var(--ink); }
+.cluster { margin-top: 4mm; break-inside: avoid-page; }
+.cluster-h { break-after: avoid; page-break-after: avoid; display: flex; align-items: baseline; gap: 2.4mm; margin: 4mm 0 1mm; }
+.cluster-h .no { font-family: "Bahnschrift", sans-serif; background: var(--pink); color: #fff; width: 6.4mm; height: 6.4mm; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 8.6pt; flex: none; }
+.cluster-h h3 { margin: 0; }
+.cluster-h .why { color: var(--mute); font-size: 8pt; }
+.dot { display: inline-block; width: 2.3mm; height: 2.3mm; vertical-align: middle; border-radius: 50%; }
+.dot.full { background: var(--pink); }
+.dot.half { background: linear-gradient(90deg, var(--pink) 50%, #fff 50%); border: 0.3mm solid var(--pink); }
+.matrix td, .matrix th { padding: 0.55mm 0.6mm; font-size: 6.9pt; line-height: 1.2; text-align: center; }
+.matrix td:first-child, .matrix th:first-child { text-align: left; padding-left: 1.6mm; white-space: nowrap; }
+.matrix th { vertical-align: bottom; height: 27mm; }
+.matrix th span { display: inline-block; writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; font-size: 7pt; }
+.matrix td.grp { background: var(--soft); font-weight: 700; color: var(--pink); text-align: left; font-size: 7pt; letter-spacing: .06em; text-transform: uppercase; }
+.chart { width: 100%; height: auto; display: block; }
+.chart text { font-family: "Segoe UI", sans-serif; }
+.foot { font-size: 7pt; color: var(--mute); border-top: 0.25mm solid var(--line); padding-top: 1.6mm; margin-top: 4mm; }
+.srclist { font-size: 7.4pt; color: var(--ink2); columns: 2; column-gap: 6mm; }
+.srclist li { break-inside: avoid; margin-bottom: 1.2mm; word-break: break-word; }
+.toc { columns: 2; column-gap: 8mm; font-size: 9.4pt; }
+.toc div { display: flex; gap: 2mm; padding: 1.1mm 0; border-bottom: 0.25mm dotted var(--chrome); break-inside: avoid; }
+.toc b { color: var(--pink); width: 6mm; flex: none; }
+.pill { display: inline-block; background: var(--soft); border-radius: 2mm; padding: 0.4mm 2mm; font-size: 7.6pt; margin: 0 0.8mm 0.8mm 0; }
+.kv { display: grid; grid-template-columns: 38mm 1fr; gap: 1mm 3mm; font-size: 8.6pt; }
+.kv dt { font-weight: 700; color: var(--ink2); }
+.kv dd { margin: 0; }
+.nb { white-space: nowrap; }
+.pn { page-break-inside: avoid; }
+</style></head><body><section class="cover"><div class="band"><div class="ring"></div><div class="ring2"></div>
+<div class="kicker">AIKIA.WALLET &nbsp;/&nbsp; PILOT COSTING</div>
+<h1>What 3 to 5 cafes<br>cost us to run.</h1>
+<p style="max-width:62%">Monthly and yearly running costs for 3 to 5 cafes with 100 to 200 customers each, the cost per cafe, one-time costs, the development still to do, break-even pricing and a roadmap. Prices checked 19 October 2026 at Rs 96 to the US dollar, plus 18% GST on imported software.</p></div>
+<div><div class="grid3" style="margin-bottom:5mm">
+<div class="card pink"><div class="stat">Rs 17,311<small>A MONTH to run 3 cafes with 150 customers each (450 cards), all-in.</small></div></div>
+<div class="card pink"><div class="stat">Rs 18,841<small>A MONTH to run 5 cafes with 150 customers each (750 cards). That is Rs 3,768 a cafe.</small></div></div>
+<div class="card pink"><div class="stat">Rs 2,26,088<small>A YEAR for 5 cafes, plus Rs 33,000 to Rs 72,000 one-time to start.</small></div></div>
+</div>
+<div class="callout red"><b>The big finding.</b> At this size most of the cost is fixed platform fees, not customers. PassKit also charges about Rs 5 a customer card every month after the first 250. At our earlier Starter price of Rs 4,999 a year (Rs 417 a month) a cafe never covers its own cost. Pilot pricing must be closer to Rs 1,500 to Rs 2,000 a month, or we move to our own Google Wallet engine early.</div>
+<div class="callout warn"><b>How to read this.</b> Figures are planning numbers, not quotes. S = price found in a published source (re-check on the vendor page before paying). E = our estimate. Founder time is not costed. Development is shown separately because most of the product is already built.</div>
+</div></section><section class="sec"><div class="kicker">1 &nbsp;/&nbsp; MONTHLY RUNNING COSTS</div><h2>The fixed bill: the same for 1 cafe or 5</h2>
+<p class="lede">These are the services that keep the product online for every cafe. They don't grow with the number of cafes until well past 5.</p>
+<table><tr><th>Service and why</th><th>Price basis</th><th class="c">Src</th><th class="n">Rs a month</th></tr><tr><td><b>PassKit, platform fee (1 user)</b><br><span class="small">Issues and updates the Google (and later Apple) wallet cards. Includes the first 250 cards.</span></td><td>US$39.50 a month</td><td class="c">S</td><td class="n">Rs 3,792</td></tr><tr><td><b>Vercel Pro (1 seat)</b><br><span class="small">Hosts the app: join page, staff scanner, owner dashboard, guest pages. The free Hobby plan is for non-commercial use only.</span></td><td>US$20 a seat a month, usage credit included</td><td class="c">S</td><td class="n">Rs 1,920</td></tr><tr><td><b>Supabase Pro</b><br><span class="small">Database, ledger, logins and backups. The free plan pauses after 7 days without activity, which is not safe for paying cafes.</span></td><td>US$25 a month, US$10 compute credit included</td><td class="c">S</td><td class="n">Rs 2,400</td></tr><tr><td><b>Apple Developer Program</b><br><span class="small">Needed to make cards permanent on PassKit (the certificate) and for iPhone cards.</span></td><td>US$99 a year, shown per month</td><td class="c">S</td><td class="n">Rs 792</td></tr><tr><td><b>Weather data, commercial licence (Open-Meteo Standard)</b><br><span class="small">Weather-mood messages. The free Open-Meteo API is for non-commercial use.</span></td><td>US$29 a month in Open-Meteo&#x27;s own announcement; confirm on its pricing page</td><td class="c">S</td><td class="n">Rs 2,784</td></tr><tr><td><b>Chartered accountant (GST and books)</b><br><span class="small">GST registration, monthly returns, invoices to cafes.</span></td><td>monthly retainer</td><td class="c">E</td><td class="n">Rs 2,500</td></tr>
+<tr><td colspan="3">GST at 18% on the imported services (US$121.75 a month)</td><td class="n">Rs 2,104</td></tr>
+<tr><td colspan="3"><b>Fixed total a month</b></td><td class="n"><b>Rs 16,292</b></td></tr></table>
+<h3>Free at this size</h3><table><tr><th>Service</th><th>Why it's enough</th><th>Cost</th></tr><tr><td><b>Login-link email (Resend free tier)</b></td><td class="small">3,000 emails a month, 100 a day. Enough for 5 cafes&#x27; owners and staff.</td><td>Rs 0 (US$20 a month only past the free limits)</td></tr><tr><td><b>Google Wallet API</b></td><td class="small">Used later by our own engine. No per-card fee found.</td><td>Rs 0</td></tr><tr><td><b>Code hosting (GitHub), error alerts (free tiers)</b></td><td class="small">Source code, automatic checks, crash alerts.</td><td>Rs 0 at this size</td></tr><tr><td><b>Domain</b></td><td class="small">A sub-domain of aikia.world (for example wallet.aikia.world). aikia.world is already paid for by the agency.</td><td>Rs 0 extra</td></tr><tr><td><b>Staff devices</b></td><td class="small">Staff use their own phone or the cafe&#x27;s tablet to scan.</td><td>Rs 0</td></tr></table>
+<div class="callout"><b>Customer cards.</b> PassKit includes 250 stored cards. After that each card costs US$0.045 a month (cards 251 to 2,500), about Rs 5 with GST, every month the card exists, used or not. Cards of customers who leave should be deleted so they stop costing.</div>
+</section><section class="sec"><div class="kicker">2 &nbsp;/&nbsp; 3 TO 5 CAFES</div><h2>Monthly and yearly, by number of cafes and customers</h2>
+<h3>On PassKit (today's set-up)</h3>
+<table><tr><th>Cafes x customers</th><th class="n">Cards</th><th class="n">Fixed</th><th class="n">Cards fee</th><th class="n">A month</th><th class="n">A year</th><th class="n">Per cafe a month</th><th class="n">Per customer a month</th></tr><tr><td>3 cafes x 100</td><td class="n">300</td><td class="n">Rs 16,292</td><td class="n">Rs 255</td><td class="n"><b>Rs 16,547</b></td><td class="n">Rs 1,98,561</td><td class="n">Rs 5,516</td><td class="n">Rs 55</td></tr><tr><td>3 cafes x 150</td><td class="n">450</td><td class="n">Rs 16,292</td><td class="n">Rs 1,020</td><td class="n"><b>Rs 17,311</b></td><td class="n">Rs 2,07,736</td><td class="n">Rs 5,770</td><td class="n">Rs 38</td></tr><tr><td>3 cafes x 200</td><td class="n">600</td><td class="n">Rs 16,292</td><td class="n">Rs 1,784</td><td class="n"><b>Rs 18,076</b></td><td class="n">Rs 2,16,912</td><td class="n">Rs 6,025</td><td class="n">Rs 30</td></tr><tr><td>5 cafes x 100</td><td class="n">500</td><td class="n">Rs 16,292</td><td class="n">Rs 1,274</td><td class="n"><b>Rs 17,566</b></td><td class="n">Rs 2,10,795</td><td class="n">Rs 3,513</td><td class="n">Rs 35</td></tr><tr><td>5 cafes x 150</td><td class="n">750</td><td class="n">Rs 16,292</td><td class="n">Rs 2,549</td><td class="n"><b>Rs 18,841</b></td><td class="n">Rs 2,26,088</td><td class="n">Rs 3,768</td><td class="n">Rs 25</td></tr><tr><td>5 cafes x 200</td><td class="n">1000</td><td class="n">Rs 16,292</td><td class="n">Rs 3,823</td><td class="n"><b>Rs 20,115</b></td><td class="n">Rs 2,41,380</td><td class="n">Rs 4,023</td><td class="n">Rs 20</td></tr></table>
+<h3>On our own Google Wallet engine (after Google approves publishing)</h3>
+<p>No PassKit fee and no per-card fee. The Apple Developer fee is kept for iPhone cards later.</p>
+<table><tr><th>Cafes x customers</th><th class="n">Cards</th><th class="n">Fixed</th><th class="n">Cards fee</th><th class="n">A month</th><th class="n">A year</th><th class="n">Per cafe a month</th><th class="n">Per customer a month</th></tr><tr><td>3 cafes x 100</td><td class="n">300</td><td class="n">Rs 11,817</td><td class="n">Rs 0</td><td class="n"><b>Rs 11,817</b></td><td class="n">Rs 1,41,807</td><td class="n">Rs 3,939</td><td class="n">Rs 39</td></tr><tr><td>3 cafes x 150</td><td class="n">450</td><td class="n">Rs 11,817</td><td class="n">Rs 0</td><td class="n"><b>Rs 11,817</b></td><td class="n">Rs 1,41,807</td><td class="n">Rs 3,939</td><td class="n">Rs 26</td></tr><tr><td>3 cafes x 200</td><td class="n">600</td><td class="n">Rs 11,817</td><td class="n">Rs 0</td><td class="n"><b>Rs 11,817</b></td><td class="n">Rs 1,41,807</td><td class="n">Rs 3,939</td><td class="n">Rs 20</td></tr><tr><td>5 cafes x 100</td><td class="n">500</td><td class="n">Rs 11,817</td><td class="n">Rs 0</td><td class="n"><b>Rs 11,817</b></td><td class="n">Rs 1,41,807</td><td class="n">Rs 2,363</td><td class="n">Rs 24</td></tr><tr><td>5 cafes x 150</td><td class="n">750</td><td class="n">Rs 11,817</td><td class="n">Rs 0</td><td class="n"><b>Rs 11,817</b></td><td class="n">Rs 1,41,807</td><td class="n">Rs 2,363</td><td class="n">Rs 16</td></tr><tr><td>5 cafes x 200</td><td class="n">1000</td><td class="n">Rs 11,817</td><td class="n">Rs 0</td><td class="n"><b>Rs 11,817</b></td><td class="n">Rs 1,41,807</td><td class="n">Rs 2,363</td><td class="n">Rs 12</td></tr></table>
+<div class="callout ok"><b>What the switch saves.</b> For 5 cafes with 150 customers each, our own engine costs Rs 11,817 a month instead of Rs 18,841: about Rs 84,280 a year less. The code for it is already built and was tested on 6 October; it is waiting for Google's publishing approval.</div>
+</section><section class="sec"><div class="kicker">3 &nbsp;/&nbsp; ONE CAFE</div><h2>The cost of one cafe, to set its price</h2>
+<p class="lede">A cafe's true cost is its share of the fixed bill plus its customers' cards. The share falls as more cafes join.</p>
+<table><tr><th>Number of cafes sharing the fixed bill</th><th class="n">Fixed share a month</th><th class="n">Its 150 cards (past the free 250)</th><th class="n">Cost of one cafe a month</th><th class="n">A year</th></tr><tr><td>1 cafe</td><td class="n">Rs 16,292</td><td class="n">Rs 0</td><td class="n"><b>Rs 16,292</b></td><td class="n">Rs 1,95,502</td></tr><tr><td>3 cafes</td><td class="n">Rs 5,431</td><td class="n">Rs 765</td><td class="n"><b>Rs 6,195</b></td><td class="n">Rs 74,343</td></tr><tr><td>5 cafes</td><td class="n">Rs 3,258</td><td class="n">Rs 765</td><td class="n"><b>Rs 4,023</b></td><td class="n">Rs 48,276</td></tr><tr><td>10 cafes</td><td class="n">Rs 1,629</td><td class="n">Rs 765</td><td class="n"><b>Rs 2,394</b></td><td class="n">Rs 28,726</td></tr><tr><td>25 cafes</td><td class="n">Rs 652</td><td class="n">Rs 765</td><td class="n"><b>Rs 1,416</b></td><td class="n">Rs 16,996</td></tr></table>
+<h3>What we spend on each cafe besides software</h3>
+<table><tr><th>Item</th><th>When</th><th class="n">Cost</th></tr>
+<tr><td>QR standee and counter poster</td><td>Once, at onboarding</td><td class="n">Rs 300 to 500</td></tr>
+<tr><td>Onboarding visit: set up venue, tiers, staff, train the counter (about 2 hours)</td><td>Once</td><td class="n">Founder time</td></tr>
+<tr><td>Payment fee when the cafe pays us by card (about 2% plus GST); UPI is free</td><td>Each payment</td><td class="n">about 2.36%</td></tr>
+<tr><td>Support calls and changes to offers</td><td>Monthly</td><td class="n">Founder time</td></tr></table>
+<div class="callout warn"><b>Data and the ledger.</b> 5 cafes with 200 customers each is about 1,000 members. A year of visits is still only tens of thousands of ledger lines, a few MB. Supabase Pro covers this many times over, with daily backups. Data use is not a cost driver until thousands of cafes.</div>
+</section><section class="sec"><div class="kicker">4 &nbsp;/&nbsp; PRICING</div><h2>How many cafes cover the bill</h2>
+<p class="lede">Cafes needed before the monthly bill is covered, at different monthly prices (150 customers a cafe, after a 2.36% card-payment fee).</p>
+<table><tr><th>Price per cafe</th><th class="n">On PassKit</th><th class="n">On our own Google engine</th></tr><tr><td>Rs 417 a month (Rs 4,999 a year)</td><td class="n">never</td><td class="n">30 cafes</td></tr><tr><td>Rs 999 a month</td><td class="n">78 cafes</td><td class="n">13 cafes</td></tr><tr><td>Rs 1,499 a month</td><td class="n">24 cafes</td><td class="n">9 cafes</td></tr><tr><td>Rs 1,999 a month</td><td class="n">14 cafes</td><td class="n">7 cafes</td></tr><tr><td>Rs 2,999 a month</td><td class="n">8 cafes</td><td class="n">5 cafes</td></tr></table>
+<h3>What this means for the pilot</h3>
+<ul><li><b>The pilot runs at a loss, and that is normal.</b> With 5 cafes at Rs 1,499 a month we collect Rs 7,495 and spend about Rs 18,841: a gap of about Rs 11,346 a month. That gap is the price of proof.</li>
+<li><b>Charge a one-time setup fee.</b> Rs 2,999 to Rs 4,999 per cafe covers the standee, the onboarding visit and part of the legal set-up.</li>
+<li><b>Suggested pilot offer:</b> setup Rs 2,999, then Rs 1,499 a month (or Rs 14,999 a year paid upfront), with credit and gifts as a Growth add-on once the lawyer approves.</li>
+<li><b>Move to our own Google engine as soon as Google approves.</b> It removes the biggest fixed fee and the per-card fee, so about 8 to 10 cafes at Rs 1,499 cover the bill.</li></ul>
+<div class="callout red"><b>Re-price the old plans.</b> The earlier Rs 4,999-a-year Starter plan does not cover cost at any number of cafes on PassKit. Keep it only for the own-engine set-up and only at 25+ cafes.</div>
+</section><section class="sec"><div class="kicker">5 &nbsp;/&nbsp; ONE-TIME COSTS AND DEVELOPMENT</div><h2>What to pay once, and the build that is left</h2>
+<table><tr><th>One-time item</th><th>When</th><th class="c">Src</th><th class="n">Cost</th></tr><tr><td>Lawyer: cafe agreement, privacy notice (DPDP Act), programme terms</td><td>Before the first paying cafe</td><td class="c">E</td><td class="n">Rs 25,000 to Rs 60,000</td></tr><tr><td>CA: GST registration and set-up</td><td>Before invoicing cafes</td><td class="c">E</td><td class="n">Rs 2,000 to Rs 5,000</td></tr><tr><td>Trademark filing for aikia.wallet (1 class, e-filing, individual or small business)</td><td>Government fee; agent fees extra if used</td><td class="c">S</td><td class="n">Rs 4,500</td></tr><tr><td>QR standee and counter poster, per cafe x 5</td><td>Rs 300 to 500 per cafe</td><td class="c">E</td><td class="n">Rs 1,500 to Rs 2,500</td></tr><tr><td>Lawyer: written opinion on venue-only prepaid credit</td><td>Only before cafes take real money as credit</td><td class="c">E</td><td class="n">Rs 50,000 to Rs 1,00,000</td></tr>
+<tr><td colspan="3"><b>Before the first paying cafe</b> (first four lines)</td><td class="n"><b>Rs 33,000 to Rs 72,000</b></td></tr>
+<tr><td colspan="3"><b>Including the credit legal opinion</b></td><td class="n"><b>Rs 83,000 to Rs 1,72,000</b></td></tr></table>
+<h3>Development still to do</h3>
+<p>The product for 3 to 5 cafes is already built and live: cards, join page, staff scanner, scan-and-charge, tiers, offers, weather messages, credit and gifts. What is left:</p>
+<table><tr><th>Work</th><th class="c">When</th><th class="n">Effort</th></tr><tr><td>Own email sender and custom domain for the app</td><td class="c">Before pilot</td><td class="n">1 days</td></tr><tr><td>Monitoring, uptime alerts, backup restore test</td><td class="c">Before pilot</td><td class="n">2 days</td></tr><tr><td>Security review and fixes before real customers</td><td class="c">Before pilot</td><td class="n">5 days</td></tr><tr><td>Testing on real Android phones at a cafe counter</td><td class="c">Before pilot</td><td class="n">3 days</td></tr><tr><td>Apple Wallet switch-on and test (after the certificate)</td><td class="c">Before pilot</td><td class="n">2 days</td></tr><tr><td>Sales demo (browser demo) updated with credit and gifts</td><td class="c">Later</td><td class="n">3 days</td></tr><tr><td>Online top-up through the cafe&#x27;s own Razorpay / UPI account</td><td class="c">Later</td><td class="n">15 days</td></tr><tr><td>Own Google Wallet engine switch-over and card migration</td><td class="c">Later</td><td class="n">3 days</td></tr></table>
+<table><tr><th>Who builds it</th><th class="n">Before pilot (13 days)</th><th class="n">Everything (34 days)</th></tr>
+<tr><td>Us, with Claude (what we did so far)</td><td class="n">Rs 0 extra cash</td><td class="n">Rs 0 extra cash</td></tr>
+<tr><td>Partner company at about Rs 70,000 a person-month (assumption; ask them to quote)</td><td class="n">Rs 43,333</td><td class="n">Rs 1,13,333</td></tr></table>
+</section><section class="sec"><div class="kicker">6 &nbsp;/&nbsp; BUDGET</div><h2>Monthly and yearly budget to keep aside</h2>
+<table><tr><th>Budget line</th><th class="n">3 cafes, 150 each</th><th class="n">5 cafes, 150 each</th><th class="n">5 cafes, 200 each</th></tr>
+<tr><td>Running cost a month (PassKit)</td><td class="n">Rs 17,311</td><td class="n">Rs 18,841</td><td class="n">Rs 20,115</td></tr>
+<tr><td>Running cost a year (PassKit)</td><td class="n">Rs 2,07,736</td><td class="n">Rs 2,26,088</td><td class="n">Rs 2,41,380</td></tr>
+<tr><td>One-time start (without credit opinion), upper end</td><td class="n">Rs 72,000</td><td class="n">Rs 72,000</td><td class="n">Rs 72,000</td></tr>
+<tr><td>Contingency 15% on the year</td><td class="n">Rs 31,160</td><td class="n">Rs 33,913</td><td class="n">Rs 36,207</td></tr>
+<tr><td><b>Year one total to keep aside</b></td><td class="n"><b>Rs 3,10,897</b></td><td class="n"><b>Rs 3,32,001</b></td><td class="n"><b>Rs 3,49,588</b></td></tr>
+<tr><td>Same, if we move to our own Google engine from month 3</td><td class="n">Rs 2,47,715</td><td class="n">Rs 2,51,232</td><td class="n">Rs 2,54,163</td></tr></table>
+<div class="callout"><b>Cheapest safe start.</b> While cafes are on free trial, the bill can stay near Rs 5,409 a month: PassKit plus Apple only, on the free Vercel and Supabase plans. Switch Vercel and Supabase to paid the day the first cafe pays, because the free plans don't allow commercial use or may pause.</div>
+</section><section class="sec"><div class="kicker">7 &nbsp;/&nbsp; ROADMAP</div><h2>From demo to 5 paying cafes</h2>
+<table><tr><th>When</th><th>Goal</th><th>What we do</th><th class="n">Monthly cost</th></tr>
+<tr><td><b>Weeks 0 to 2</b></td><td>Demos and first yes</td><td>Show the live demo in 10 to 15 Vadodara cafes. Sign 3 pilot cafes. Lawyer drafts the cafe agreement and privacy notice. CA registers GST.</td><td class="n">about Rs 5,409</td></tr>
+<tr><td><b>Weeks 2 to 4</b></td><td>Cards that last</td><td>Enrol in Apple Developer and upload the certificate to PassKit, so cards stop expiring after 48 hours. Finish the Google business profile and ask Google for publishing access. Own email sender.</td><td class="n">about Rs 5,409</td></tr>
+<tr><td><b>Weeks 4 to 8</b></td><td>3 cafes live</td><td>Switch Vercel and Supabase to paid. Onboard 3 cafes: tiers, staff, standee, 2-hour training. Weekly check-in, fix what the counter staff report.</td><td class="n">Rs 17,311</td></tr>
+<tr><td><b>Months 3 to 4</b></td><td>5 cafes, own engine</td><td>Add 2 more cafes. When Google approves, switch to our own Google engine and re-issue cards. Credit only after the lawyer's written opinion.</td><td class="n">Rs 11,817 to Rs 18,841</td></tr>
+<tr><td><b>Months 5 to 6</b></td><td>Price and proof</td><td>Measure repeat visits per cafe, fix the price, write 2 case studies, then sell to 10 to 25 cafes.</td><td class="n">Rs 11,817 and up</td></tr></table>
+<h3>Risks that change the cost</h3>
+<ul><li><b>PassKit draft mode.</b> Until the Apple certificate is uploaded, cards are deleted after about 48 hours. Do not onboard real customers before this.</li>
+<li><b>Nearby (geofence) messages.</b> On PassKit, location alerts work on Apple Wallet only. On Android, weather offers still reach guests as card messages, but not as "you are near the cafe" alerts.</li>
+<li><b>Dollar rate.</b> Most costs are in US dollars. Every Rs 5 move in the rate changes the fixed bill by about Rs 718 a month.</li>
+<li><b>Cards that are never deleted.</b> PassKit bills every stored card. Clean up members who leave, every month.</li></ul>
+<h3>Sources (checked 19 Oct 2026)</h3>
+<ul class="srclist small">
+<li>PassKit pricing model: help.passkit.com/en/articles/3133669-the-passkit-pricing-model (platform fee, card tiers, Apple certificate, location alerts Apple only)</li>
+<li>Vercel Pro US$20 a seat and Hobby non-commercial: makerkit.dev/blog/saas/vercel-cost; community.vercel.com (commercial use needs Pro)</li>
+<li>Supabase Pro US$25 and free-plan pausing: jetadmin.io/blog/supabase-pricing-2026-guide-to-plans-limits-and-real-world-costs</li>
+<li>Open-Meteo commercial plans: openmeteo.substack.com/p/api-subscriptions-for-commercial; open-meteo.com/en/pricing</li>
+<li>Resend free tier and Pro: resend.com/docs/knowledge-base/what-is-resend-pricing</li>
+<li>Rupee rate about 96.5 per US$: pluang.com currency converter, mid-October 2026</li>
+<li>Card payment fee about 2% plus GST, UPI free: AIKIA.WALLET Budget Plan (October 2026)</li></ul>
+</section></body></html>
