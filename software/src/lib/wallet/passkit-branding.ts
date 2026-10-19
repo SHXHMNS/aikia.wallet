@@ -39,7 +39,7 @@ const addedFields = [
 const textModule = (name: string) => ({ firstValue: { fields: [{ fieldPath: `object.textModulesData['${name.replace('.', '-')}']` }] } });
 // Front: name + stamps, tier + rewards ready, credit. Back: member ID, My card link, how to use, benefits.
 const googleLayout = {
-  detailsTemplateOverride: { detailsItemInfos: [{ item: { firstValue: { fields: [{ fieldPath: 'object.accountId' }] } } }, { item: textModule('meta.myCardUrl') }, { item: textModule('universal.info') }, { item: textModule('meta.tierBenefits') }] },
+  detailsTemplateOverride: { detailsItemInfos: [{ item: { firstValue: { fields: [{ fieldPath: 'object.accountId' }] } } }, { item: textModule('custom.latest') }, { item: textModule('meta.myCardUrl') }, { item: textModule('universal.info') }, { item: textModule('meta.tierBenefits') }] },
   cardTemplateOverride: { cardRowTemplateInfos: [
     { threeItems: { startItem: textModule('person.forename'), middleItem: textModule('person.surname'), endItem: { firstValue: { fields: [{ fieldPath: 'object.loyaltyPoints.balance' }] } } } },
     { twoItems: { startItem: { firstValue: { fields: [{ fieldPath: 'class.localizedRewardsTier' }] } }, endItem: textModule('meta.rewardsAvailable') } },
