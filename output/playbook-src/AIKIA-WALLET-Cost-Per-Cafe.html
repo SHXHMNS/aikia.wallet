@@ -1,0 +1,125 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>AIKIA.WALLET cost per cafe</title><style>@page { size: A4; margin: 15mm 14mm 16mm 14mm; }
+@page wide { size: A4 landscape; margin: 12mm 12mm 14mm 12mm; }
+:root {
+  --ink: #15131c; --ink2: #3b3846; --mute: #6f6b7a; --line: #e4e1ea; --paper: #ffffff;
+  --soft: #f6f4f9; --pink: #e6007a; --pink2: #ff4fa3; --pinkbg: #fff0f7; --chrome: #b9b6c4;
+  --teal: #0f8b8d; --amber: #b7791f; --red: #c0392b; --green: #1e8449; --blue: #2b5fb3;
+}
+* { box-sizing: border-box; }
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { margin: 0; font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif; color: var(--ink); font-size: 9.1pt; line-height: 1.42; background: #fff; }
+h1, h2, h3, h4 { font-family: "Bahnschrift", "Segoe UI Semibold", "Segoe UI", sans-serif; margin: 0; letter-spacing: -0.01em; color: var(--ink); }
+h1 { font-size: 25pt; line-height: 1.08; }
+h2 { font-size: 17pt; line-height: 1.15; margin: 0 0 3mm; }
+h3 { font-size: 11.5pt; margin: 5mm 0 1.6mm; }
+h4 { font-size: 9.6pt; margin: 3mm 0 1mm; color: var(--pink); text-transform: uppercase; letter-spacing: .06em; }
+p { margin: 0 0 2.4mm; }
+ul, ol { margin: 0 0 2.6mm; padding-left: 4.6mm; }
+li { margin-bottom: 0.9mm; }
+a { color: var(--pink); text-decoration: none; }
+.sec { page-break-before: always; }
+.sec:first-of-type { page-break-before: auto; }
+.wide { page: wide; }
+.kicker { font-size: 7.6pt; letter-spacing: .14em; text-transform: uppercase; color: var(--pink); font-weight: 700; margin-bottom: 1.6mm; }
+.lede { font-size: 10.6pt; color: var(--ink2); max-width: 165mm; margin-bottom: 4mm; }
+.small { font-size: 8pt; color: var(--mute); }
+.tiny { font-size: 7.2pt; color: var(--mute); }
+.cover { height: 262mm; display: flex; flex-direction: column; justify-content: flex-start; gap: 22mm; page-break-after: always; }
+.cover .band { background: var(--ink); color: #fff; padding: 11mm 11mm 9mm; border-radius: 3mm; position: relative; overflow: hidden; }
+.cover .band h1 { color: #fff; font-size: 31pt; }
+.cover .band .kicker { color: var(--pink2); }
+.cover .band p { color: #d8d5e2; font-size: 11pt; max-width: 140mm; }
+.cover .ring { position: absolute; right: -18mm; top: -18mm; width: 80mm; height: 80mm; border-radius: 50%; border: 5mm solid var(--pink); opacity: .85; }
+.cover .ring2 { position: absolute; right: 8mm; top: 8mm; width: 28mm; height: 28mm; border-radius: 50%; border: 2.4mm solid var(--chrome); opacity: .7; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3.4mm; }
+.grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3mm; }
+.card { border: 0.3mm solid var(--line); border-radius: 2mm; padding: 3.2mm 3.6mm; background: #fff; break-inside: avoid; }
+.card.soft { background: var(--soft); border-color: transparent; }
+.card.pink { background: var(--pinkbg); border-color: #ffd0e6; }
+.card.dark { background: var(--ink); color: #fff; border-color: var(--ink); }
+.card.dark h3, .card.dark h4 { color: #fff; }
+.card h3 { margin-top: 0; }
+.stat { font-family: "Bahnschrift", "Segoe UI Semibold", sans-serif; font-size: 19pt; line-height: 1; color: var(--pink); }
+.stat small { display: block; font-family: "Segoe UI", sans-serif; font-size: 7.4pt; color: var(--mute); margin-top: 1.4mm; line-height: 1.3; }
+table { width: 100%; border-collapse: collapse; margin: 1.5mm 0 3mm; font-size: 8pt; }
+th { text-align: left; background: var(--ink); color: #fff; font-weight: 600; padding: 1.7mm 2mm; font-size: 7.8pt; letter-spacing: .02em; }
+td { padding: 1.25mm 2mm; border-bottom: 0.25mm solid var(--line); vertical-align: top; }
+tr { break-inside: avoid; }
+tbody tr:nth-child(even) td { background: #fbfafd; }
+td.n, th.n { text-align: right; white-space: nowrap; }
+td.c, th.c { text-align: center; }
+.tag { display: inline-block; font-size: 6.8pt; font-weight: 700; padding: 0.3mm 1.6mm; border-radius: 2mm; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; }
+.t1 { background: #e1f5ea; color: var(--green); }
+.t2 { background: #fff1d6; color: var(--amber); }
+.t3 { background: #e7ecf7; color: var(--blue); }
+.tR { background: #fde4e1; color: var(--red); }
+.callout { border-left: 1.1mm solid var(--pink); background: var(--pinkbg); padding: 2.6mm 3.4mm; margin: 2.6mm 0 3.2mm; border-radius: 0 1.6mm 1.6mm 0; break-inside: avoid; }
+.callout.warn { border-color: var(--amber); background: #fff7e6; }
+.callout.red { border-color: var(--red); background: #fdeeed; }
+.callout.ok { border-color: var(--green); background: #eaf7ef; }
+.callout b:first-child { color: var(--ink); }
+.cluster { margin-top: 4mm; break-inside: avoid-page; }
+.cluster-h { break-after: avoid; page-break-after: avoid; display: flex; align-items: baseline; gap: 2.4mm; margin: 4mm 0 1mm; }
+.cluster-h .no { font-family: "Bahnschrift", sans-serif; background: var(--pink); color: #fff; width: 6.4mm; height: 6.4mm; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 8.6pt; flex: none; }
+.cluster-h h3 { margin: 0; }
+.cluster-h .why { color: var(--mute); font-size: 8pt; }
+.dot { display: inline-block; width: 2.3mm; height: 2.3mm; vertical-align: middle; border-radius: 50%; }
+.dot.full { background: var(--pink); }
+.dot.half { background: linear-gradient(90deg, var(--pink) 50%, #fff 50%); border: 0.3mm solid var(--pink); }
+.matrix td, .matrix th { padding: 0.55mm 0.6mm; font-size: 6.9pt; line-height: 1.2; text-align: center; }
+.matrix td:first-child, .matrix th:first-child { text-align: left; padding-left: 1.6mm; white-space: nowrap; }
+.matrix th { vertical-align: bottom; height: 27mm; }
+.matrix th span { display: inline-block; writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; font-size: 7pt; }
+.matrix td.grp { background: var(--soft); font-weight: 700; color: var(--pink); text-align: left; font-size: 7pt; letter-spacing: .06em; text-transform: uppercase; }
+.chart { width: 100%; height: auto; display: block; }
+.chart text { font-family: "Segoe UI", sans-serif; }
+.foot { font-size: 7pt; color: var(--mute); border-top: 0.25mm solid var(--line); padding-top: 1.6mm; margin-top: 4mm; }
+.srclist { font-size: 7.4pt; color: var(--ink2); columns: 2; column-gap: 6mm; }
+.srclist li { break-inside: avoid; margin-bottom: 1.2mm; word-break: break-word; }
+.toc { columns: 2; column-gap: 8mm; font-size: 9.4pt; }
+.toc div { display: flex; gap: 2mm; padding: 1.1mm 0; border-bottom: 0.25mm dotted var(--chrome); break-inside: avoid; }
+.toc b { color: var(--pink); width: 6mm; flex: none; }
+.pill { display: inline-block; background: var(--soft); border-radius: 2mm; padding: 0.4mm 2mm; font-size: 7.6pt; margin: 0 0.8mm 0.8mm 0; }
+.kv { display: grid; grid-template-columns: 38mm 1fr; gap: 1mm 3mm; font-size: 8.6pt; }
+.kv dt { font-weight: 700; color: var(--ink2); }
+.kv dd { margin: 0; }
+.nb { white-space: nowrap; }
+.pn { page-break-inside: avoid; }
+</style></head><body><section class="cover"><div class="band"><div class="ring"></div><div class="ring2"></div>
+<div class="kicker">AIKIA.WALLET &nbsp;/&nbsp; COST PER CAFE</div>
+<h1 style="max-width:70%">What one cafe<br>costs us to serve.</h1>
+<p style="max-width:62%">Cost price only, no selling price. Every item we need to run the service and look after a cafe, per month and per year. Own Google and Apple wallet, no PassKit. Prices checked 19 October 2026 at Rs 96 to the US dollar.</p></div>
+<div><div class="grid3" style="margin-bottom:5mm">
+<div class="card pink"><div class="stat">Rs 7,136<small>A MONTH per cafe if we serve 5 cafes (year 1, including start-up costs). Rs 85,636 a year.</small></div></div>
+<div class="card pink"><div class="stat">Rs 3,645<small>A MONTH per cafe at 5 cafes from year 2 (start-up costs repaid). Rs 43,736 a year.</small></div></div>
+<div class="card pink"><div class="stat">Rs 100<small>A MONTH: the cafe's own direct cost (support, hosting growth, extras). The rest is its share of shared costs.</small></div></div>
+</div>
+<div class="callout warn"><b>Why the number depends on how many cafes we have.</b> Most of the cost is shared: hosting, database, Apple, accounts and travel cost the same whether we serve 1 cafe or 50. A cafe's cost is its direct cost plus its share of the shared bill. Section 3 shows it for 1 to 100 cafes.</div>
+<div class="callout"><b>Not included.</b> Founders' salaries and time, office rent, paid advertising, WhatsApp or SMS messages, a penetration test (about Rs 1 to 1.5 lakh once, past 10 cafes) and the lawyer's opinion on prepaid credit (Rs 50,000 to 1 lakh, only before real-money credit).</div>
+</div></section><section class="sec"><div class="kicker">1 &nbsp;/&nbsp; SHARED RUNNING COSTS</div><h2>What we pay to run the service at all</h2>
+<table><tr><th>Item</th><th>Basis</th><th class="c">Src</th><th class="n">A month</th><th class="n">A year</th></tr><tr><td><b>Hosting</b><br><span class="small">Vercel Pro, 1 seat: app, join page, staff scanner, owner dashboard, guest pages, scheduled jobs</span></td><td>US$20 a month</td><td class="c">S</td><td class="n">Rs 1,920</td><td class="n">Rs 23,040</td></tr><tr><td><b>Database and ledger</b><br><span class="small">Supabase Pro: members, ledger, credit, gifts, logins, daily backups kept 7 days</span></td><td>US$25 a month</td><td class="c">S</td><td class="n">Rs 2,400</td><td class="n">Rs 28,800</td></tr><tr><td><b>Apple Wallet</b><br><span class="small">Apple Developer Program: our pass certificate and iPhone card updates</span></td><td>US$99 a year</td><td class="c">S</td><td class="n">Rs 792</td><td class="n">Rs 9,504</td></tr><tr><td><b>Weather data</b><br><span class="small">Open-Meteo commercial licence for weather-mood messages</span></td><td>US$29 a month (confirm)</td><td class="c">S</td><td class="n">Rs 2,784</td><td class="n">Rs 33,408</td></tr><tr><td><b>Code security</b><br><span class="small">GitHub Team, 2 users: protected code and reviews</span></td><td>about US$4 a user a month</td><td class="c">S</td><td class="n">Rs 768</td><td class="n">Rs 9,216</td></tr><tr><td><b>GST on imported software</b><br><span class="small">18% on the five services above (claimable once GST-registered)</span></td><td>18%</td><td class="c">S</td><td class="n">Rs 1,560</td><td class="n">Rs 18,714</td></tr><tr><td><b>Accounts and GST filing</b><br><span class="small">Chartered accountant retainer</span></td><td>monthly</td><td class="c">E</td><td class="n">Rs 2,500</td><td class="n">Rs 30,000</td></tr><tr><td><b>Phone and internet</b><br><span class="small">Business phone and data for support and sales</span></td><td>monthly</td><td class="c">E</td><td class="n">Rs 1,000</td><td class="n">Rs 12,000</td></tr><tr><td><b>Travel</b><br><span class="small">Visits for onboarding, support and sales</span></td><td>monthly</td><td class="c">E</td><td class="n">Rs 3,000</td><td class="n">Rs 36,000</td></tr><tr><td><b>Admin</b><br><span class="small">Printing, stationery, bank charges, small tools</span></td><td>monthly</td><td class="c">E</td><td class="n">Rs 1,000</td><td class="n">Rs 12,000</td></tr>
+<tr><td colspan="3"><b>Shared running cost</b></td><td class="n"><b>Rs 17,724</b></td><td class="n"><b>Rs 2,12,682</b></td></tr></table>
+<h3>Needed but free at our size</h3>
+<table><tr><th>Item</th><th>What it does</th><th class="n">Cost</th></tr><tr><td><b>Google Wallet API and console</b></td><td>Android cards, updates, messages, nearby alerts</td><td class="n">Rs 0</td></tr><tr><td><b>Apple push notifications</b></td><td>Tells iPhones to refresh the card</td><td class="n">Rs 0</td></tr><tr><td><b>Email (Resend free tier)</b></td><td>Login links and alerts, up to 3,000 a month</td><td class="n">Rs 0</td></tr><tr><td><b>Automation (GitHub Actions)</b></td><td>Tests, nightly backup, health checks</td><td class="n">Rs 0</td></tr><tr><td><b>Off-site backup (Cloudflare R2)</b></td><td>Nightly encrypted database copy, up to 10 GB</td><td class="n">Rs 0</td></tr><tr><td><b>DNS and protection (Cloudflare)</b></td><td>Domain records, DDoS shield</td><td class="n">Rs 0</td></tr><tr><td><b>Password manager (Bitwarden, 2 users)</b></td><td>Keys and passwords vault</td><td class="n">Rs 0</td></tr><tr><td><b>Domain</b></td><td>wallet.aikia.world sub-domain</td><td class="n">Rs 0</td></tr></table>
+</section><section class="sec"><div class="kicker">2 &nbsp;/&nbsp; ONE-TIME AND DIRECT COSTS</div><h2>Start-up costs and the cost of each cafe</h2>
+<h3>One-time, to start the service (spread over the first 12 months)</h3>
+<table><tr><th>Item</th><th class="c">Src</th><th class="n">Once</th><th class="n">A month in year 1</th></tr><tr><td><b>Development left before launch</b><br><span class="small">Apple engine, own Google engine switch, automation, security, testing (33 days at a partner rate; Rs 0 if built in-house)</span></td><td class="c">E</td><td class="n">Rs 1,10,000</td><td class="n">Rs 9,167</td></tr><tr><td><b>Lawyer</b><br><span class="small">Cafe agreement, privacy notice (DPDP Act), programme terms</span></td><td class="c">E</td><td class="n">Rs 60,000</td><td class="n">Rs 5,000</td></tr><tr><td><b>GST registration</b><br><span class="small">CA set-up fee</span></td><td class="c">E</td><td class="n">Rs 5,000</td><td class="n">Rs 417</td></tr><tr><td><b>Trademark</b><br><span class="small">aikia.wallet, 1 class, e-filing government fee</span></td><td class="c">S</td><td class="n">Rs 4,500</td><td class="n">Rs 375</td></tr><tr><td><b>Test iPhone</b><br><span class="small">Second-hand, if no one in the team has one</span></td><td class="c">E</td><td class="n">Rs 25,000</td><td class="n">Rs 2,083</td></tr>
+<tr><td colspan="2"><b>Total</b></td><td class="n"><b>Rs 2,04,500</b></td><td class="n"><b>Rs 17,042</b></td></tr></table>
+<h3>Each cafe, once (spread over its first 12 months)</h3>
+<table><tr><th>Item</th><th class="c">Src</th><th class="n">Once</th><th class="n">A month in year 1</th></tr><tr><td><b>QR standee and counter poster</b><br><span class="small">Printed and laminated</span></td><td class="c">E</td><td class="n">Rs 400</td><td class="n">Rs 33</td></tr><tr><td><b>Onboarding visit</b><br><span class="small">Travel and time to set up the venue, tiers and staff (about 2 hours)</span></td><td class="c">E</td><td class="n">Rs 600</td><td class="n">Rs 50</td></tr></table>
+<h3>Each cafe, every month</h3>
+<table><tr><th>Item</th><th class="c">Src</th><th class="n">A month</th><th class="n">A year</th></tr><tr><td><b>Support</b><br><span class="small">Calls, changes to offers, staff questions (about 1 hour a month of time and calls)</span></td><td class="c">E</td><td class="n">Rs 60</td><td class="n">Rs 720</td></tr><tr><td><b>Hosting growth</b><br><span class="small">Extra database rows, traffic and card updates for 100 to 200 customers</span></td><td class="c">E</td><td class="n">Rs 20</td><td class="n">Rs 240</td></tr><tr><td><b>Card messages and alerts</b><br><span class="small">Google and Apple card updates and push (free); our alert emails</span></td><td class="c">E</td><td class="n">Rs 0</td><td class="n">Rs 0</td></tr><tr><td><b>Replacement standee and small extras</b><br><span class="small">Worn posters, reprints</span></td><td class="c">E</td><td class="n">Rs 20</td><td class="n">Rs 240</td></tr>
+<tr><td colspan="2"><b>Direct cost of one cafe</b></td><td class="n"><b>Rs 100</b></td><td class="n"><b>Rs 1,200</b></td></tr></table>
+<div class="callout"><b>Customers don't add cost.</b> Google and Apple charge nothing per card, so a cafe with 100 or 200 customers costs us the same. A cafe's ledger for a year is a few MB.</div>
+</section><section class="sec"><div class="kicker">3 &nbsp;/&nbsp; COST OF ONE CAFE</div><h2>Per cafe, per month and per year</h2>
+<h3>Year 1 (start-up costs spread over 12 months)</h3>
+<table><tr><th class="n">Cafes we serve</th><th class="n">Share of running costs</th><th class="n">Share of start-up costs</th><th class="n">Direct cost</th><th class="n">Cost of one cafe a month</th><th class="n">A year</th></tr><tr><td class="n">1</td><td class="n">Rs 17,724</td><td class="n">Rs 17,042</td><td class="n">Rs 183</td><td class="n"><b>Rs 34,949</b></td><td class="n"><b>Rs 4,19,382</b></td></tr><tr><td class="n">3</td><td class="n">Rs 5,908</td><td class="n">Rs 5,681</td><td class="n">Rs 183</td><td class="n"><b>Rs 11,772</b></td><td class="n"><b>Rs 1,41,261</b></td></tr><tr style="background:#fff0f7"><td class="n">5</td><td class="n">Rs 3,545</td><td class="n">Rs 3,408</td><td class="n">Rs 183</td><td class="n"><b>Rs 7,136</b></td><td class="n"><b>Rs 85,636</b></td></tr><tr><td class="n">10</td><td class="n">Rs 1,772</td><td class="n">Rs 1,704</td><td class="n">Rs 183</td><td class="n"><b>Rs 3,660</b></td><td class="n"><b>Rs 43,918</b></td></tr><tr><td class="n">25</td><td class="n">Rs 709</td><td class="n">Rs 682</td><td class="n">Rs 183</td><td class="n"><b>Rs 1,574</b></td><td class="n"><b>Rs 18,887</b></td></tr><tr><td class="n">50</td><td class="n">Rs 354</td><td class="n">Rs 341</td><td class="n">Rs 183</td><td class="n"><b>Rs 879</b></td><td class="n"><b>Rs 10,544</b></td></tr><tr><td class="n">100</td><td class="n">Rs 177</td><td class="n">Rs 170</td><td class="n">Rs 183</td><td class="n"><b>Rs 531</b></td><td class="n"><b>Rs 6,372</b></td></tr></table>
+<h3>Year 2 onward (start-up costs repaid)</h3>
+<table><tr><th class="n">Cafes we serve</th><th class="n">Share of running costs</th><th class="n">Share of start-up costs</th><th class="n">Direct cost</th><th class="n">Cost of one cafe a month</th><th class="n">A year</th></tr><tr><td class="n">1</td><td class="n">Rs 17,724</td><td class="n">Rs 0</td><td class="n">Rs 100</td><td class="n"><b>Rs 17,824</b></td><td class="n"><b>Rs 2,13,882</b></td></tr><tr><td class="n">3</td><td class="n">Rs 5,908</td><td class="n">Rs 0</td><td class="n">Rs 100</td><td class="n"><b>Rs 6,008</b></td><td class="n"><b>Rs 72,094</b></td></tr><tr style="background:#fff0f7"><td class="n">5</td><td class="n">Rs 3,545</td><td class="n">Rs 0</td><td class="n">Rs 100</td><td class="n"><b>Rs 3,645</b></td><td class="n"><b>Rs 43,736</b></td></tr><tr><td class="n">10</td><td class="n">Rs 1,772</td><td class="n">Rs 0</td><td class="n">Rs 100</td><td class="n"><b>Rs 1,872</b></td><td class="n"><b>Rs 22,468</b></td></tr><tr><td class="n">25</td><td class="n">Rs 709</td><td class="n">Rs 0</td><td class="n">Rs 100</td><td class="n"><b>Rs 809</b></td><td class="n"><b>Rs 9,707</b></td></tr><tr><td class="n">50</td><td class="n">Rs 354</td><td class="n">Rs 0</td><td class="n">Rs 100</td><td class="n"><b>Rs 454</b></td><td class="n"><b>Rs 5,454</b></td></tr><tr><td class="n">100</td><td class="n">Rs 177</td><td class="n">Rs 0</td><td class="n">Rs 100</td><td class="n"><b>Rs 277</b></td><td class="n"><b>Rs 3,327</b></td></tr></table>
+<div class="callout warn"><b>If we serve just one cafe</b>, that cafe carries everything: Rs 34,949 a month (Rs 4,19,382 a year) in year 1, and Rs 17,824 a month (Rs 2,13,882 a year) after. With 100 cafes the same service costs Rs 531 a month per cafe in year 1 and Rs 277 from year 2.</div>
+<h3>Sources and notes</h3>
+<ul class="srclist small"><li>Vercel, Supabase, Apple, Open-Meteo, GitHub prices and the Rs 96 rate: AIKIA.WALLET Launch Costing (own wallet), sources listed there, checked 19 Oct 2026.</li>
+<li>GST on imported software is a real cost until we are GST-registered; after registration it is claimed back (about Rs 1,560 a month less).</li>
+<li>Estimates (E) are planning figures to be replaced with real numbers after the first 3 months.</li></ul>
+</section></body></html>
