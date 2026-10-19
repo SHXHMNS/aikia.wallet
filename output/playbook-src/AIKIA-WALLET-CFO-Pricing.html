@@ -1,0 +1,172 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>AIKIA.WALLET CFO pricing</title><style>@page { size: A4; margin: 15mm 14mm 16mm 14mm; }
+@page wide { size: A4 landscape; margin: 12mm 12mm 14mm 12mm; }
+:root {
+  --ink: #15131c; --ink2: #3b3846; --mute: #6f6b7a; --line: #e4e1ea; --paper: #ffffff;
+  --soft: #f6f4f9; --pink: #e6007a; --pink2: #ff4fa3; --pinkbg: #fff0f7; --chrome: #b9b6c4;
+  --teal: #0f8b8d; --amber: #b7791f; --red: #c0392b; --green: #1e8449; --blue: #2b5fb3;
+}
+* { box-sizing: border-box; }
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { margin: 0; font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif; color: var(--ink); font-size: 9.1pt; line-height: 1.42; background: #fff; }
+h1, h2, h3, h4 { font-family: "Bahnschrift", "Segoe UI Semibold", "Segoe UI", sans-serif; margin: 0; letter-spacing: -0.01em; color: var(--ink); }
+h1 { font-size: 25pt; line-height: 1.08; }
+h2 { font-size: 17pt; line-height: 1.15; margin: 0 0 3mm; }
+h3 { font-size: 11.5pt; margin: 5mm 0 1.6mm; }
+h4 { font-size: 9.6pt; margin: 3mm 0 1mm; color: var(--pink); text-transform: uppercase; letter-spacing: .06em; }
+p { margin: 0 0 2.4mm; }
+ul, ol { margin: 0 0 2.6mm; padding-left: 4.6mm; }
+li { margin-bottom: 0.9mm; }
+a { color: var(--pink); text-decoration: none; }
+.sec { page-break-before: always; }
+.sec:first-of-type { page-break-before: auto; }
+.wide { page: wide; }
+.kicker { font-size: 7.6pt; letter-spacing: .14em; text-transform: uppercase; color: var(--pink); font-weight: 700; margin-bottom: 1.6mm; }
+.lede { font-size: 10.6pt; color: var(--ink2); max-width: 165mm; margin-bottom: 4mm; }
+.small { font-size: 8pt; color: var(--mute); }
+.tiny { font-size: 7.2pt; color: var(--mute); }
+.cover { height: 262mm; display: flex; flex-direction: column; justify-content: flex-start; gap: 22mm; page-break-after: always; }
+.cover .band { background: var(--ink); color: #fff; padding: 11mm 11mm 9mm; border-radius: 3mm; position: relative; overflow: hidden; }
+.cover .band h1 { color: #fff; font-size: 31pt; }
+.cover .band .kicker { color: var(--pink2); }
+.cover .band p { color: #d8d5e2; font-size: 11pt; max-width: 140mm; }
+.cover .ring { position: absolute; right: -18mm; top: -18mm; width: 80mm; height: 80mm; border-radius: 50%; border: 5mm solid var(--pink); opacity: .85; }
+.cover .ring2 { position: absolute; right: 8mm; top: 8mm; width: 28mm; height: 28mm; border-radius: 50%; border: 2.4mm solid var(--chrome); opacity: .7; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3.4mm; }
+.grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3mm; }
+.card { border: 0.3mm solid var(--line); border-radius: 2mm; padding: 3.2mm 3.6mm; background: #fff; break-inside: avoid; }
+.card.soft { background: var(--soft); border-color: transparent; }
+.card.pink { background: var(--pinkbg); border-color: #ffd0e6; }
+.card.dark { background: var(--ink); color: #fff; border-color: var(--ink); }
+.card.dark h3, .card.dark h4 { color: #fff; }
+.card h3 { margin-top: 0; }
+.stat { font-family: "Bahnschrift", "Segoe UI Semibold", sans-serif; font-size: 19pt; line-height: 1; color: var(--pink); }
+.stat small { display: block; font-family: "Segoe UI", sans-serif; font-size: 7.4pt; color: var(--mute); margin-top: 1.4mm; line-height: 1.3; }
+table { width: 100%; border-collapse: collapse; margin: 1.5mm 0 3mm; font-size: 8pt; }
+th { text-align: left; background: var(--ink); color: #fff; font-weight: 600; padding: 1.7mm 2mm; font-size: 7.8pt; letter-spacing: .02em; }
+td { padding: 1.25mm 2mm; border-bottom: 0.25mm solid var(--line); vertical-align: top; }
+tr { break-inside: avoid; }
+tbody tr:nth-child(even) td { background: #fbfafd; }
+td.n, th.n { text-align: right; white-space: nowrap; }
+td.c, th.c { text-align: center; }
+.tag { display: inline-block; font-size: 6.8pt; font-weight: 700; padding: 0.3mm 1.6mm; border-radius: 2mm; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; }
+.t1 { background: #e1f5ea; color: var(--green); }
+.t2 { background: #fff1d6; color: var(--amber); }
+.t3 { background: #e7ecf7; color: var(--blue); }
+.tR { background: #fde4e1; color: var(--red); }
+.callout { border-left: 1.1mm solid var(--pink); background: var(--pinkbg); padding: 2.6mm 3.4mm; margin: 2.6mm 0 3.2mm; border-radius: 0 1.6mm 1.6mm 0; break-inside: avoid; }
+.callout.warn { border-color: var(--amber); background: #fff7e6; }
+.callout.red { border-color: var(--red); background: #fdeeed; }
+.callout.ok { border-color: var(--green); background: #eaf7ef; }
+.callout b:first-child { color: var(--ink); }
+.cluster { margin-top: 4mm; break-inside: avoid-page; }
+.cluster-h { break-after: avoid; page-break-after: avoid; display: flex; align-items: baseline; gap: 2.4mm; margin: 4mm 0 1mm; }
+.cluster-h .no { font-family: "Bahnschrift", sans-serif; background: var(--pink); color: #fff; width: 6.4mm; height: 6.4mm; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 8.6pt; flex: none; }
+.cluster-h h3 { margin: 0; }
+.cluster-h .why { color: var(--mute); font-size: 8pt; }
+.dot { display: inline-block; width: 2.3mm; height: 2.3mm; vertical-align: middle; border-radius: 50%; }
+.dot.full { background: var(--pink); }
+.dot.half { background: linear-gradient(90deg, var(--pink) 50%, #fff 50%); border: 0.3mm solid var(--pink); }
+.matrix td, .matrix th { padding: 0.55mm 0.6mm; font-size: 6.9pt; line-height: 1.2; text-align: center; }
+.matrix td:first-child, .matrix th:first-child { text-align: left; padding-left: 1.6mm; white-space: nowrap; }
+.matrix th { vertical-align: bottom; height: 27mm; }
+.matrix th span { display: inline-block; writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; font-size: 7pt; }
+.matrix td.grp { background: var(--soft); font-weight: 700; color: var(--pink); text-align: left; font-size: 7pt; letter-spacing: .06em; text-transform: uppercase; }
+.chart { width: 100%; height: auto; display: block; }
+.chart text { font-family: "Segoe UI", sans-serif; }
+.foot { font-size: 7pt; color: var(--mute); border-top: 0.25mm solid var(--line); padding-top: 1.6mm; margin-top: 4mm; }
+.srclist { font-size: 7.4pt; color: var(--ink2); columns: 2; column-gap: 6mm; }
+.srclist li { break-inside: avoid; margin-bottom: 1.2mm; word-break: break-word; }
+.toc { columns: 2; column-gap: 8mm; font-size: 9.4pt; }
+.toc div { display: flex; gap: 2mm; padding: 1.1mm 0; border-bottom: 0.25mm dotted var(--chrome); break-inside: avoid; }
+.toc b { color: var(--pink); width: 6mm; flex: none; }
+.pill { display: inline-block; background: var(--soft); border-radius: 2mm; padding: 0.4mm 2mm; font-size: 7.6pt; margin: 0 0.8mm 0.8mm 0; }
+.kv { display: grid; grid-template-columns: 38mm 1fr; gap: 1mm 3mm; font-size: 8.6pt; }
+.kv dt { font-weight: 700; color: var(--ink2); }
+.kv dd { margin: 0; }
+.nb { white-space: nowrap; }
+.pn { page-break-inside: avoid; }
+</style></head><body><section class="cover"><div class="band"><div class="ring"></div><div class="ring2"></div>
+<div class="kicker">AIKIA.WALLET &nbsp;/&nbsp; CFO PRICING PLAN</div>
+<h1 style="max-width:66%">The cheapest price<br>that keeps us<br>out of debt.</h1>
+<p style="max-width:62%">Every cost counted: platform, data, management, sales, development and launch. Then the lowest monthly price at which the cafes pay for all of it, and how many cafes that takes. Own Google and Apple wallet engines, no PassKit. October 2026.</p></div>
+<div><div class="grid3" style="margin-bottom:5mm">
+<div class="card pink"><div class="stat">Rs 499<small>A MONTH, Basic plan (Rs 4,999 a year). Rs 17 a day: less than one cup of coffee. 85% below Reelo's Growth plan.</small></div></div>
+<div class="card pink"><div class="stat">45 cafes<small>TO BREAK EVEN every month on running costs (30% on the Rs 799 Plus plan). 88 cafes to also repay development and launch within 12 months.</small></div></div>
+<div class="card pink"><div class="stat">Rs 2,72,061<small>CASH TO HAVE IN HAND before launch, so we never borrow: the lowest point at 12 new cafes a month.</small></div></div>
+</div>
+<div class="callout ok"><b>The decision.</b> Basic Rs 499 a month (or Rs 4,999 a year), Plus Rs 799 a month (or Rs 7,999 a year), no setup fee for the first 50 founding cafes. Prices before GST. Break-even at about 45 cafes; all money back by month 17 at 12 new cafes a month.</div>
+<div class="callout red"><b>Why not cheaper.</b> At Rs 299 we would need 158 cafes just to cover running costs. For a brand nobody knows yet, that is a year of selling before we stop losing money. Rs 499 is cheap enough to feel like no risk and still reachable.</div>
+</div></section><section class="sec"><div class="kicker">1 &nbsp;/&nbsp; THE MARKET PRICE</div><h2>What cafes pay today</h2>
+<table><tr><th>Option</th><th>What it is</th><th class="n">Price</th><th class="c">Src</th></tr>
+<tr><td><b>Reelo Growth</b></td><td>The best-known cafe loyalty and CRM tool in India</td><td class="n">Rs 3,250 a month per outlet (Rs 39,000 a year + GST)</td><td class="c">S</td></tr>
+<tr><td><b>Reelo Forever Free</b></td><td>Basic SMS and email campaigns, customer insights</td><td class="n">Rs 0</td><td class="c">S</td></tr>
+<tr><td><b>Petpooja POS</b></td><td>Billing software; loyalty and wallet are add-ons priced on request</td><td class="n">about Rs 10,000 to 12,000 a year base</td><td class="c">S</td></tr>
+<tr><td><b>Paper stamp cards</b></td><td>Printed cards and a rubber stamp</td><td class="n">Rs 1,000 to 3,000 a year</td><td class="c">E</td></tr>
+<tr><td><b>AIKIA.WALLET Basic (proposed)</b></td><td>Google and Apple Wallet card, stamps, tiers, offers, geofencing, no app download</td><td class="n"><b>Rs 499 a month</b></td><td class="c">-</td></tr></table>
+<div class="callout"><b>Where we stand.</b> At Rs 499 we are about 85%% below Reelo's paid plan and cost about the same as a year of paper stamp cards, yet the card lives in the customer's phone wallet. Reelo's free plan is the real competitor at the bottom: our answer is the wallet card itself, which no free tool gives.</div>
+<p class="small">India has about 5,339 branded coffee-shop outlets (World Coffee Portal, 2025) and independent outlets are about 76%% of the cafes-and-bars market (Mordor Intelligence). A city-by-city count of independent cafes in Vadodara, Ahmedabad and Surat is NOT DOCUMENTED; we need it before planning beyond 100 cafes.</p>
+</section><section class="sec"><div class="kicker">2 &nbsp;/&nbsp; EVERY COST</div><h2>What the cafes have to pay for</h2>
+<table><tr><th>Cost</th><th>What it covers</th><th class="c">Src</th><th class="n">Rs a month</th></tr>
+<tr><td><b>Platform</b></td><td>Hosting, database and ledger with backups, Apple Developer, weather licence, GitHub, GST on imported software, CA</td><td class="c">S/E</td><td class="n">Rs 12,724</td></tr>
+<tr><td><b>Management and operations</b></td><td>Phone and internet, travel for sales and onboarding, admin</td><td class="c">E</td><td class="n">Rs 5,000</td></tr>
+<tr><td><b>Development and launch, repaid in 12 months</b></td><td>Rs 1,10,000 build left (partner rate) + Rs 97,000 launch costs, spread over 12 months</td><td class="c">E</td><td class="n">Rs 17,250</td></tr>
+<tr><td colspan="3"><b>Fixed cost a month, year 1</b></td><td class="n"><b>Rs 34,974</b></td></tr>
+<tr><td colspan="3"><b>Fixed cost a month, from year 2</b> (development repaid)</td><td class="n"><b>Rs 17,724</b></td></tr></table>
+<table><tr><th>Cost per cafe</th><th>What it covers</th><th class="c">Src</th><th class="n">Rs a month</th></tr>
+<tr><td>Serving</td><td>Support calls, hosting growth, card messages</td><td class="c">E</td><td class="n">Rs 100</td></tr>
+<tr><td>Winning the cafe</td><td>Standee and onboarding visit (Rs 1,000 once), spread over 12 months</td><td class="c">E</td><td class="n">Rs 83</td></tr>
+<tr><td>Collecting the fee</td><td>UPI Autopay mandate: no MDR; gateway platform fee about 1%</td><td class="c">S/E</td><td class="n">1% of price</td></tr>
+<tr><td colspan="3"><b>Per cafe a month</b></td><td class="n"><b>Rs 183 + 1%</b></td></tr></table>
+<div class="callout warn"><b>What is not in here.</b> Founder salaries (shown separately in section 4), office rent, paid ads, WhatsApp messages and the credit legal opinion. If we build the remaining work ourselves with Claude, development is Rs 0 and year-1 break-even drops sharply.</div>
+</section><section class="sec"><div class="kicker">3 &nbsp;/&nbsp; THE PRICE LADDER</div><h2>Cafes needed at each price</h2>
+<p class="lede">Each cafe leaves us its price minus the 1% collection fee and Rs 183 of its own cost. That remainder has to cover the fixed bill.</p>
+<table><tr><th>A month</th><th class="n">A year</th><th class="n">Left per cafe</th><th class="n">Break-even, running costs</th><th class="n">Also repay dev + launch in 12 months</th><th class="n">Also pay founders Rs 25,000 each</th></tr><tr><td>Rs 299</td><td class="n">Rs 2,999</td><td class="n">Rs 113</td><td class="n">158</td><td class="n">311</td><td class="n">602</td></tr><tr><td>Rs 399</td><td class="n">Rs 3,999</td><td class="n">Rs 212</td><td class="n">84</td><td class="n">166</td><td class="n">320</td></tr><tr style="background:#fff0f7"><td>Rs 499</td><td class="n">Rs 4,999</td><td class="n">Rs 311</td><td class="n">58</td><td class="n">113</td><td class="n">218</td></tr><tr><td>Rs 599</td><td class="n">Rs 5,999</td><td class="n">Rs 410</td><td class="n">44</td><td class="n">86</td><td class="n">166</td></tr><tr><td>Rs 699</td><td class="n">Rs 6,999</td><td class="n">Rs 509</td><td class="n">35</td><td class="n">69</td><td class="n">134</td></tr><tr><td>Rs 799</td><td class="n">Rs 7,999</td><td class="n">Rs 608</td><td class="n">30</td><td class="n">58</td><td class="n">112</td></tr><tr><td>Rs 999</td><td class="n">Rs 9,999</td><td class="n">Rs 806</td><td class="n">22</td><td class="n">44</td><td class="n">85</td></tr></table>
+<h3>Reading the ladder</h3>
+<ul><li><b>Rs 299</b> is the cheapest price that covers anything, but needs 158 cafes before we stop losing money. Too slow for a new brand.</li>
+<li><b>Rs 499</b> is the sweet spot: Rs 17 a day for the cafe, and 58 cafes to cover running costs.</li>
+<li><b>Rs 999 and up</b> breaks even faster, but loses the "too cheap to say no" message we need without references.</li>
+<li><b>Every price below about Rs 186 loses money on each cafe</b>, whatever the number of cafes.</li></ul>
+</section><section class="sec"><div class="kicker">4 &nbsp;/&nbsp; THE OFFER</div><h2>Two cheap plans, one clear choice</h2>
+<table><tr><th>Plan</th><th>Includes</th><th class="n">Monthly</th><th class="n">Yearly (2 months free)</th></tr>
+<tr><td><b>Basic</b></td><td>Google and Apple Wallet card with the cafe's brand, stamps and free-reward rule, 3 tiers, staff scanner, offers and campaign messages, geofencing, owner dashboard, unlimited customers</td><td class="n">Rs 499</td><td class="n">Rs 4,999</td></tr>
+<tr><td><b>Plus</b></td><td>Everything in Basic, plus prepaid credit with scan-and-charge, Send-a-gift, weather-mood messages and the monthly money report</td><td class="n">Rs 799</td><td class="n">Rs 7,999</td></tr></table>
+<ul><li><b>No setup fee for the first 50 founding cafes</b>; Rs 999 setup after that.</li>
+<li><b>30-day free trial</b>, no card needed. Billing by UPI Autopay so renewals never need a reminder.</li>
+<li><b>Prices before GST.</b> Below Rs 20 lakh a year of turnover a service business usually doesn't need GST registration; ask the CA whether to register from day one (it lets us claim back GST on imported software).</li>
+<li><b>Founding price lock:</b> the first 50 cafes keep their price for 2 years. That is the trust-builder we can afford.</li></ul>
+<div class="callout ok"><b>Blended price.</b> If 30% of cafes take Plus, the average is Rs 589 a month. Break-even on running costs: <b>45 cafes</b>. Repay development and launch within 12 months as well: <b>88 cafes</b>.</div>
+<div class="callout warn"><b>Credit on Plus.</b> Prepaid credit with real money waits for the lawyer's written opinion. Until then Plus sells on gifts, weather messages and the report, and credit is switched on per cafe once cleared.</div>
+</section><section class="sec"><div class="kicker">5 &nbsp;/&nbsp; CASH PLAN</div><h2>Month by month, so we never borrow</h2>
+<p class="lede">Development and launch are paid upfront (Rs 2,07,000). Then each month: income from active cafes, running costs, and 3% of cafes leaving (the low end of the 3 to 7% small-business benchmark). Blended price Rs 589.</p>
+<table><tr><th>New cafes a month</th><th class="n">Monthly break-even reached</th><th class="n">Lowest cash point</th><th class="n">All money back</th></tr>
+<tr><td>8 (slow)</td><td class="n">month 8</td><td class="n">Rs 2,85,107</td><td class="n">month 22</td></tr>
+<tr><td><b>12 (plan)</b></td><td class="n"><b>month 6</b></td><td class="n"><b>Rs 2,72,061</b></td><td class="n"><b>month 17</b></td></tr>
+<tr><td>20 (strong)</td><td class="n">month 5</td><td class="n">Rs 2,64,129</td><td class="n">month 12</td></tr></table>
+<p class="small">Monthly break-even in the cash plan comes later than the 45 cafes in section 4 because each month also pays Rs 12,000 to win 12 new cafes. Stop adding cafes and 45 is enough.</p>
+<h3>The plan, 12 new cafes a month</h3>
+<table><tr><th>Month</th><th class="n">Active cafes</th><th class="n">Income</th><th class="n">Costs</th><th class="n">Cash position</th></tr><tr><td>Month 1</td><td class="n">12</td><td class="n">Rs 6,997</td><td class="n">Rs 30,924</td><td class="n">-Rs 2,30,927</td></tr><tr><td>Month 2</td><td class="n">24</td><td class="n">Rs 13,785</td><td class="n">Rs 32,088</td><td class="n">-Rs 2,49,230</td></tr><tr><td>Month 3</td><td class="n">35</td><td class="n">Rs 20,368</td><td class="n">Rs 33,217</td><td class="n">-Rs 2,62,079</td></tr><tr><td>Month 4</td><td class="n">46</td><td class="n">Rs 26,755</td><td class="n">Rs 34,312</td><td class="n">-Rs 2,69,636</td></tr><tr><td>Month 6</td><td class="n">67</td><td class="n">Rs 38,958</td><td class="n">Rs 36,405</td><td class="n">-Rs 2,69,508</td></tr><tr><td>Month 8</td><td class="n">87</td><td class="n">Rs 50,441</td><td class="n">Rs 38,374</td><td class="n">-Rs 2,50,060</td></tr><tr><td>Month 10</td><td class="n">105</td><td class="n">Rs 61,244</td><td class="n">Rs 40,227</td><td class="n">-Rs 2,12,433</td></tr><tr><td>Month 12</td><td class="n">122</td><td class="n">Rs 71,409</td><td class="n">Rs 41,970</td><td class="n">-Rs 1,57,701</td></tr><tr><td>Month 18</td><td class="n">169</td><td class="n">Rs 98,440</td><td class="n">Rs 46,606</td><td class="n">Rs 99,306</td></tr><tr><td>Month 24</td><td class="n">207</td><td class="n">Rs 1,20,956</td><td class="n">Rs 50,467</td><td class="n">Rs 4,77,259</td></tr></table>
+<div class="callout red"><b>Money to keep in hand: Rs 2,72,061.</b> That is the deepest point of the plan. With it we never borrow. If we build the remaining work ourselves (Rs 0 development) it falls to about Rs 1,62,061.</div>
+</section><section class="sec"><div class="kicker">6 &nbsp;/&nbsp; HOW WE GET THERE</div><h2>Sales targets and money rules</h2>
+<table><tr><th>Target</th><th class="n">Cafes</th><th>What it takes</th></tr>
+<tr><td>Weekly</td><td class="n">3</td><td>About 15 cafe visits a week with the live demo (1 in 5 signs)</td></tr>
+<tr><td>Month 3</td><td class="n">about 34</td><td>Vadodara cafes and bakeries; the first case study</td></tr>
+<tr><td>Month 4 to 5</td><td class="n">45</td><td>Monthly break-even on running costs</td></tr>
+<tr><td>Month 12</td><td class="n">about 122</td><td>Expand to Ahmedabad and Surat, and to sweet shops, salons and gyms at the same price</td></tr></table>
+<h3>Rules from the finance desk</h3>
+<ol><li><b>Sell yearly first.</b> Offer Rs 4,999 a year with two months free. Ten yearly cafes bring Rs 50,000 on day one, which funds the launch without borrowing.</li>
+<li><b>Never go below Rs 186 a month.</b> Below that, each cafe costs more than it pays.</li>
+<li><b>No discounts on top of the founding offer.</b> The price is already the discount.</li>
+<li><b>Keep 3 months of running cost (Rs 53,172) in the bank</b> at all times.</li>
+<li><b>Watch two numbers every month:</b> cafes leaving (keep under 3%) and new cafes (keep at or above 12).</li>
+<li><b>Raise prices only for new cafes</b>, once we have 3 case studies and 50+ cafes. Founding cafes keep theirs.</li>
+<li><b>Build the remaining work ourselves</b> where we can: every Rs 1 lakh saved on development is about 20 fewer cafes needed in year one.</li></ol>
+<h3>Sources (checked 19 Oct 2026)</h3>
+<ul class="srclist small">
+<li>Reelo pricing, Growth Rs 3,250 a month per outlet and Forever Free: reelo.io/pricing; techjockey.com/detail/reelocrm</li>
+<li>Petpooja price estimates: dineopen.com/blog/petpooja-pricing-plans-2026; techjockey.com/detail/petpooja-pos</li>
+<li>Cafe market: worldcoffeeportal.com Project Cafe India 2025 (5,339 branded outlets); mordorintelligence.com India cafes and bars market</li>
+<li>UPI Autopay mandates and MDR: razorpay.com/blog/upi-mdr-for-merchants-in-payment-gateway-explained</li>
+<li>SMB churn 3 to 7% a month: kalungi.com/blog/saas-churn-rate-benchmarks; velaris.io</li>
+<li>Platform costs: AIKIA.WALLET Launch Costing (own wallet), October 2026</li></ul>
+</section></body></html>
